@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 72" width="340" height="72" role="img" aria-label="Regenerate Skin &amp; Hair Clinic">
+  <g transform="translate(0,4)">
+  <g fill="none" stroke="#2c2717" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="32.00" y1="22.80" x2="32.00" y2="11.00" opacity="0.9"/><circle cx="32.00" cy="9.60" r="1.15" opacity="0.85"/><line x1="33.60" y1="23.23" x2="39.50" y2="13.01" opacity="0.9"/><circle cx="40.20" cy="11.80" r="1.15" opacity="0.85"/><line x1="34.77" y1="24.40" x2="44.99" y2="18.50" opacity="0.9"/><circle cx="46.20" cy="17.80" r="1.15" opacity="0.85"/><line x1="35.20" y1="26.00" x2="47.00" y2="26.00" opacity="0.9"/><circle cx="48.40" cy="26.00" r="1.15" opacity="0.85"/><line x1="34.77" y1="27.60" x2="44.99" y2="33.50" opacity="0.9"/><circle cx="46.20" cy="34.20" r="1.15" opacity="0.85"/><line x1="33.60" y1="28.77" x2="39.50" y2="38.99" opacity="0.9"/><circle cx="40.20" cy="40.20" r="1.15" opacity="0.85"/><line x1="32.00" y1="29.20" x2="32.00" y2="41.00" opacity="0.9"/><circle cx="32.00" cy="42.40" r="1.15" opacity="0.85"/><line x1="30.40" y1="28.77" x2="24.50" y2="38.99" opacity="0.9"/><circle cx="23.80" cy="40.20" r="1.15" opacity="0.85"/><line x1="29.23" y1="27.60" x2="19.01" y2="33.50" opacity="0.9"/><circle cx="17.80" cy="34.20" r="1.15" opacity="0.85"/><line x1="28.80" y1="26.00" x2="17.00" y2="26.00" opacity="0.9"/><circle cx="15.60" cy="26.00" r="1.15" opacity="0.85"/><line x1="29.23" y1="24.40" x2="19.01" y2="18.50" opacity="0.9"/><circle cx="17.80" cy="17.80" r="1.15" opacity="0.85"/><line x1="30.40" y1="23.23" x2="24.50" y2="13.01" opacity="0.9"/><circle cx="23.80" cy="11.80" r="1.15" opacity="0.85"/>
+    <circle cx="32" cy="26" r="2.1" fill="#2c2717" stroke="none"/>
+    <path d="M32 28 C 32 40, 30.5 48, 33 58" opacity="0.9"/>
+    <path d="M32.4 41 C 27 40, 24.5 43.5, 24 47 C 28.5 47, 31.4 45, 32.4 41 Z" opacity="0.75"/>
+    <g opacity="0.7">
+      <line x1="50" y1="16" x2="54" y2="12"/><circle cx="55.2" cy="10.6" r="1"/>
+      <line x1="50" y1="16" x2="49" y2="11"/><circle cx="48.6" cy="9.6" r="1"/>
+    </g>
+    <g opacity="0.55"><line x1="12" y1="12" x2="9" y2="8"/><circle cx="7.9" cy="6.7" r="0.9"/></g>
+  </g></g>
+  <g font-family="'Cormorant Garamond', Georgia, serif" fill="#2c2717">
+    <text x="78" y="38" font-size="30" letter-spacing="0.5">Regenerate</text>
+  </g>
+  <text x="79" y="56" font-family="'Manrope','Segoe UI',sans-serif" font-size="9" letter-spacing="3.4" fill="#8c7a45">SKIN &amp; HAIR CLINIC</text>
+</svg>
