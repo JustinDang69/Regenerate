@@ -75,12 +75,7 @@ export const technologies: Technology[] = [
   },
 ];
 
-/* Short homepage snippet describing the clinic's science-led approach. */
-export const scienceIntro = {
-  eyebrow: "Science-led approach",
-  title: "Considered technology, applied with care",
-  body:
-    "Our treatments draw on a considered range of modalities — from radio frequency and high frequency to therapeutic LED, ultrasound and nourishing actives. Each is selected to suit your concern and confirmed with you in consultation, never applied by default.",
-  // Treatment duration guidance from the client brief.
-  durationNote: "Most treatments run for approximately 45–90 minutes.",
-};
+/* NOTE: the `scienceIntro` snippet was removed in client revision round 1 along
+   with the homepage science-led section. The concern → technology → benefit
+   narrative now lives solely on the Skin and Hair pages, which consume the
+   `technologies` array above directly. */

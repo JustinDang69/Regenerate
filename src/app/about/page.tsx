@@ -5,6 +5,7 @@ import Container from "@/components/ui/Container";
 import SectionHeader from "@/components/ui/SectionHeader";
 import SplitEditorial from "@/components/sections/SplitEditorial";
 import PractitionerCard from "@/components/cards/PractitionerCard";
+import ImageFrame from "@/components/ui/ImageFrame";
 import CTABlock from "@/components/sections/CTABlock";
 import Reveal from "@/components/motion/Reveal";
 import Divider from "@/components/brand/Divider";
@@ -90,6 +91,32 @@ export default function AboutPage() {
             </Reveal>
           ))}
         </div>
+      </Section>
+
+      {/* --- The clinic space ----------------------------------------------
+          CLIENT REVISION: moved here from the homepage. Copy trimmed to avoid
+          duplicating the "Why we exist" story and the Values section above —
+          this block now covers only the physical environment and what a visit
+          feels like. Three distinct images, not repeated placeholders. */}
+      <Section id="space" tone="elevated" className="scroll-mt-28">
+        <Container>
+          <SectionHeader
+            eyebrow="The clinic"
+            title="A calm, considered space"
+            lead="Our Pascoe Vale South clinic is designed to feel unhurried — private treatment rooms, soft natural light, and time to talk things through properly."
+          />
+          <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <Reveal className="sm:col-span-2 lg:col-span-1 lg:row-span-2">
+              <ImageFrame ratio="tall" placeholderLabel="Reception & waiting area" />
+            </Reveal>
+            <Reveal delay={80}>
+              <ImageFrame ratio="landscape" placeholderLabel="Private treatment room" />
+            </Reveal>
+            <Reveal delay={160}>
+              <ImageFrame ratio="landscape" placeholderLabel="Considered interior detail" />
+            </Reveal>
+          </div>
+        </Container>
       </Section>
 
       <Divider className="mx-auto max-w-[var(--container-max)] px-[var(--gutter)]" />

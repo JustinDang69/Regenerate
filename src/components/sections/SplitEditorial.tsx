@@ -11,6 +11,8 @@ type Props = {
   title: React.ReactNode;
   children: React.ReactNode; // body copy
   image?: { src?: string; alt?: string; label?: string; mask?: "none" | "arch" | "soft"; ratio?: "portrait" | "landscape" | "square" | "tall" };
+  /** Optional caption rendered directly beneath the image (e.g. name — role). */
+  imageCaption?: React.ReactNode;
   reverse?: boolean;
   cta?: { label: string; href: string; variant?: "primary" | "secondary" | "ghost" };
   secondaryCta?: { label: string; href: string };
@@ -21,6 +23,7 @@ export default function SplitEditorial({
   title,
   children,
   image,
+  imageCaption,
   reverse,
   cta,
   secondaryCta,
@@ -35,6 +38,7 @@ export default function SplitEditorial({
           mask={image?.mask ?? "soft"}
           placeholderLabel={image?.label ?? "Clinic photography"}
         />
+        {imageCaption && <div className="mt-4">{imageCaption}</div>}
       </Reveal>
 
       <div className={`flex flex-col gap-5 ${reverse ? "md:order-1" : ""}`}>

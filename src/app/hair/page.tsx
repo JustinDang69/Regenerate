@@ -32,7 +32,6 @@ export default function HairPage() {
         title="Support for your hair and scalp, planned around you"
         lead="Noticing thinning, scalp discomfort or simply wanting to support hair vitality? We lead with consultation, then design a considered, restorative plan."
         primary={{ label: cta.book, href: cta.bookHref }}
-        secondary={{ label: cta.exploreSkin, href: "/skin" }}
       />
 
       <Section tone="base">

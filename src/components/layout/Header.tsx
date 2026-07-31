@@ -27,11 +27,15 @@ export default function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Close drawer on route change.
-  useEffect(() => {
+  /* Close the drawer/dropdown on route change. Adjusting state during render
+     (React's documented pattern for "reset state when a value changes") rather
+     than in an effect — avoids the extra commit and cascading re-render. */
+  const [lastPath, setLastPath] = useState(pathname);
+  if (pathname !== lastPath) {
+    setLastPath(pathname);
     setOpenMenu(false);
     setOpenDropdown(null);
-  }, [pathname]);
+  }
 
   // Body scroll lock + ESC handling for the mobile drawer.
   useEffect(() => {
@@ -115,9 +119,14 @@ export default function Header() {
         </nav>
 
         <div className="flex items-center gap-3">
-          <Button href={cta.bookHref} size="sm" className="hidden sm:inline-flex">
-            {cta.book}
-          </Button>
+          {/* Visibility is controlled on this wrapper, not on Button itself —
+              Button's base `inline-flex` would otherwise override `hidden`.
+              The sticky mobile CTA covers booking below the `sm` breakpoint. */}
+          <span className="hidden sm:inline-flex">
+            <Button href={cta.bookHref} size="sm">
+              {cta.book}
+            </Button>
+          </span>
 
           {/* Mobile toggle */}
           <button

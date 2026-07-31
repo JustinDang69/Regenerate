@@ -24,8 +24,12 @@ type AsLink = CommonProps & {
 type AsButton = CommonProps &
   ButtonHTMLAttributes<HTMLButtonElement> & { href?: undefined };
 
+/* NOTE: `whitespace-nowrap` keeps CTA labels on a single line at narrow widths.
+   Do NOT pass display utilities (e.g. `hidden`) via className — the base
+   `inline-flex` here competes with them in the same CSS layer. Wrap the Button
+   in a container element and control visibility there instead. */
 const base =
-  "group inline-flex items-center justify-center gap-2 rounded-[var(--radius-pill)] font-sans font-semibold tracking-wide transition-all duration-[var(--dur-fast)] ease-[var(--ease-soft)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:opacity-50 disabled:pointer-events-none";
+  "group inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[var(--radius-pill)] font-sans font-semibold tracking-wide transition-all duration-[var(--dur-fast)] ease-[var(--ease-soft)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:opacity-50 disabled:pointer-events-none";
 
 const sizes: Record<Size, string> = {
   sm: "px-4 py-2 text-[0.8rem]",

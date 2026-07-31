@@ -13,7 +13,8 @@ type Props = {
   body?: React.ReactNode;
   tone?: "accent" | "soft";
   primary?: { label: string; href: string };
-  secondary?: { label: string; href: string };
+  /** Pass `null` to render a single-action CTA (no secondary button). */
+  secondary?: { label: string; href: string } | null;
 };
 
 export default function CTABlock({

@@ -7,7 +7,7 @@ import Link from "next/link";
 import Logo from "@/components/brand/Logo";
 import DandelionMark from "@/components/brand/DandelionMark";
 import Button from "@/components/ui/Button";
-import { site, footerNav, cta } from "@/lib/site";
+import { site, footerNav, cta, addressLines } from "@/lib/site";
 
 function LinkGroup({ title, links }: { title: string; links: { label: string; href: string }[] }) {
   return (
@@ -38,7 +38,7 @@ export default function Footer() {
         {/* Top: brand + closing CTA */}
         <div className="flex flex-col gap-8 border-b border-border pb-12 md:flex-row md:items-end md:justify-between">
           <div className="max-w-md">
-            <Logo />
+            <Logo placement="footer" />
             <p className="mt-4 text-secondary text-pretty">{site.tagline}</p>
           </div>
           <div className="flex flex-wrap gap-3">
@@ -52,10 +52,11 @@ export default function Footer() {
           <div className="flex flex-col gap-3">
             <h3 className="eyebrow text-muted">Visit us</h3>
             <address className="not-italic text-[0.9rem] leading-relaxed text-secondary">
-              {a.line1}
-              <br />
-              {a.suburb}, {a.state} {a.postcode}
-              <br />
+              {addressLines.map((line) => (
+                <span key={line} className="block">
+                  {line}
+                </span>
+              ))}
               <span className="text-muted">{a.precinct}</span>
             </address>
             <a href={`mailto:${site.contact.email}`} className="text-[0.9rem] text-secondary hover:text-accent-contrast">
@@ -68,7 +69,7 @@ export default function Footer() {
             <div className="mt-2 text-[0.85rem] text-muted">
               {site.hours.map((h) => (
                 <div key={h.days}>
-                  {h.days}: {h.time}
+                  {h.days} {h.time}
                 </div>
               ))}
             </div>

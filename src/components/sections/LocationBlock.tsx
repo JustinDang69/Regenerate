@@ -5,7 +5,7 @@
    ========================================================================== */
 import Reveal from "@/components/motion/Reveal";
 import Button from "@/components/ui/Button";
-import { site, cta } from "@/lib/site";
+import { site, addressLines } from "@/lib/site";
 
 const mapsEmbed = `https://www.google.com/maps?q=${encodeURIComponent(
   site.contact.mapQuery
@@ -34,12 +34,16 @@ export default function LocationBlock({ showMap = true }: { showMap?: boolean })
 
         <dl className="mt-8">
           <InfoRow label="Address">
-            {a.line1}, {a.suburb}, {a.state} {a.postcode}
+            {addressLines.map((line) => (
+              <span key={line} className="block">
+                {line}
+              </span>
+            ))}
           </InfoRow>
           <InfoRow label="Opening hours">
             {site.hours.map((h) => (
               <span key={h.days} className="block">
-                {h.days}: {h.time}
+                {h.days} {h.time}
               </span>
             ))}
           </InfoRow>
@@ -71,8 +75,9 @@ export default function LocationBlock({ showMap = true }: { showMap?: boolean })
           <InfoRow label="Accessibility">{site.access.accessibility}</InfoRow>
         </dl>
 
+        {/* CLIENT REVISION: booking CTA removed from the location block —
+            Get directions is the only action here. */}
         <div className="mt-8 flex flex-wrap gap-4">
-          <Button href={cta.bookHref}>{cta.book}</Button>
           <Button
             href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(site.contact.mapQuery)}`}
             variant="secondary"
