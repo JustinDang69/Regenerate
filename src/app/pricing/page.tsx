@@ -7,7 +7,7 @@ import PackageCard from "@/components/cards/PackageCard";
 import TreatmentCard from "@/components/cards/TreatmentCard";
 import PricingNav from "@/components/sections/PricingNav";
 import CTABlock from "@/components/sections/CTABlock";
-import DandelionMark from "@/components/brand/DandelionMark";
+import Motif from "@/components/brand/Motif";
 
 import { skinPackages, hairPackages, singleTreatments } from "@/content/packages";
 import { cta } from "@/lib/site";
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 function GroupHeading({ eyebrow, title }: { eyebrow: string; title: string }) {
   return (
     <Reveal className="mb-8 flex items-center gap-4">
-      <DandelionMark className="h-6 w-6 text-accent/60" strokeWidth={1} />
+      <Motif className="h-6 w-6 text-accent/60" />
       <div>
         <span className="eyebrow text-muted">{eyebrow}</span>
         <h3 className="text-h3">{title}</h3>

@@ -50,9 +50,11 @@ further. Not required; current output is clean.
 
 | File | Use |
 | --- | --- |
-| `logo-full.png` / `.webp` | Full-resolution transparent master |
+| `logo-full.png` / `.webp` | Full-resolution transparent master (whole lockup) |
 | `logo-header.png` / `.webp` | Optimised header lockup |
 | `logo-footer.png` / `.webp` | Optimised footer lockup |
+| `logo-mark.png` / `.webp` | The mark alone — R + curve + dandelions |
+| `motif-dandelion.png` / `.webp` | Decorative dandelion head (see below) |
 | `favicon-16/32/48.png` | Raster favicons |
 | `../favicon.ico` | Multi-use browser favicon |
 | `apple-touch-icon.png` | 180×180 iOS home-screen icon |
@@ -60,8 +62,25 @@ further. Not required; current output is clean.
 | `icon-512-transparent.png` | Transparent 512 variant |
 | `og-image.png` | 1200×630 social preview on brand ivory |
 
-Icons are padded onto a square ivory tile so the artwork is never cropped or
-distorted — only ever scaled proportionally.
+### Icons use the mark, not the full lockup
+
+The lockup stacks four elements (mark / "regenerate" / "SKIN & HAIR" / "CLINIC"),
+which is an illegible smudge at 32px. All favicons and app icons are therefore built
+from the **mark only**, padded onto a square ivory tile so the artwork is never
+cropped or distorted. The script detects the mark's band automatically rather than
+using hard-coded coordinates, so it survives a re-exported logo.
+
+### The decorative dandelion
+
+`motif-dandelion.png` is the large seed head lifted from the client's own artwork,
+isolated with a circular mask centred on its hub (which cleanly drops the stem and the
+smaller head while keeping every filament). It is used site-wide for dividers, section
+accents, background flourishes and image placeholders via
+`src/components/brand/Motif.tsx`, which renders it as a CSS mask filled with
+`currentColor` so it can be tinted — light on the olive CTA band, faint elsewhere.
+
+This replaced an earlier hand-drawn glyph. **Every dandelion on the site now comes
+from the real logo**, so decoration and brand mark never diverge.
 
 ## Usage rules
 

@@ -9,7 +9,7 @@ import ImageFrame from "@/components/ui/ImageFrame";
 import CTABlock from "@/components/sections/CTABlock";
 import Reveal from "@/components/motion/Reveal";
 import Divider from "@/components/brand/Divider";
-import DandelionMark from "@/components/brand/DandelionMark";
+import Motif from "@/components/brand/Motif";
 
 import { practitioners } from "@/content/practitioners";
 import { cta } from "@/lib/site";
@@ -62,7 +62,7 @@ export default function AboutPage() {
       <Section tone="elevated">
         <Container size="narrow" className="text-center">
           <Reveal className="mx-auto flex flex-col items-center gap-6">
-            <DandelionMark className="h-16 w-16 text-accent/70" strokeWidth={0.9} />
+            <Motif className="h-16 w-16 text-accent/70" />
             <span className="eyebrow">Our motif</span>
             <h2 className="text-h2 text-balance">The meaning of the dandelion</h2>
             <p className="text-lead text-secondary text-pretty">

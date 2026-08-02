@@ -116,16 +116,119 @@ for (const [name, height] of [
     .toFile(join(BRAND, `${name}.webp`));
 }
 
+/* --- 3. Isolate the mark (R + curve + dandelions) --------------------------
+   The lockup stacks: [mark] / "regenerate" / "SKIN & HAIR" / "CLINIC".
+   Icons and favicons must use the MARK only — the full stacked lockup is an
+   illegible smudge at 32px. Bands are detected from the artwork rather than
+   hard-coded, so this survives the client supplying a re-exported logo. */
+const tRaw = await sharp(trimmed).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+const TW = tRaw.info.width, TH = tRaw.info.height, TD = tRaw.data;
+const alphaAt = (x, y) => TD[(y * TW + x) * 4 + 3];
+
+const rowHas = [];
+for (let y = 0; y < TH; y++) {
+  let c = 0;
+  for (let x = 0; x < TW; x++) if (alphaAt(x, y) > 25) { c = 1; break; }
+  rowHas.push(c);
+}
+const rowBands = [];
+for (let y = 0, s = null; y <= TH; y++) {
+  if (y < TH && rowHas[y] && s === null) s = y;
+  if ((y === TH || !rowHas[y]) && s !== null) { rowBands.push([s, y - 1]); s = null; }
+}
+// Merge bands separated by only a hairline gap (anti-aliasing artefacts).
+const merged = [];
+for (const b of rowBands) {
+  const last = merged[merged.length - 1];
+  if (last && b[0] - last[1] <= 3) last[1] = b[1];
+  else merged.push([...b]);
+}
+const markBand = merged[0];
+if (!markBand || markBand[1] - markBand[0] < TH * 0.15) {
+  console.error("✖ Could not identify the logo mark band — check the source artwork.");
+  process.exit(1);
+}
+// Column extent of the mark band.
+let mx0 = TW, mx1 = -1;
+for (let y = markBand[0]; y <= markBand[1]; y++)
+  for (let x = 0; x < TW; x++)
+    if (alphaAt(x, y) > 25) { if (x < mx0) mx0 = x; if (x > mx1) mx1 = x; }
+
+const markBox = {
+  left: mx0,
+  top: markBand[0],
+  width: mx1 - mx0 + 1,
+  height: markBand[1] - markBand[0] + 1,
+};
+console.log(
+  `Mark detected at ${markBox.width}×${markBox.height} (rows ${markBand[0]}–${markBand[1]})`
+);
+
+const mark = await sharp(trimmed).extract(markBox).png().toBuffer();
+await sharp(mark).png().toFile(join(BRAND, "logo-mark.png"));
+await sharp(mark).webp({ quality: 92 }).toFile(join(BRAND, "logo-mark.webp"));
+
+/* --- 4. Decorative dandelion motif ----------------------------------------
+   The site uses a dandelion as a subtle ornament (dividers, section accents,
+   background flourishes). It is taken from the CLIENT'S OWN artwork so the
+   decoration matches the logo exactly — never redrawn.
+
+   The large seed head is a radial burst, so we locate its hub (densest local
+   window in the mark's upper-right) and mask to a circle around it. That keeps
+   every filament intact while cleanly dropping the stem and the smaller head. */
+const mRaw = await sharp(mark).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+const MW = mRaw.info.width, MH = mRaw.info.height, MD = mRaw.data;
+const mAlpha = (x, y) => MD[(y * MW + x) * 4 + 3];
+
+const WIN = Math.max(6, Math.round(MW * 0.03)); // local density window
+let hub = { x: 0, y: 0, score: -1 };
+for (let y = WIN; y < Math.round(MH * 0.6); y += 2) {
+  for (let x = Math.round(MW * 0.5); x < MW - WIN; x += 2) {
+    let c = 0;
+    for (let dy = -WIN; dy <= WIN; dy += 2)
+      for (let dx = -WIN; dx <= WIN; dx += 2)
+        if (mAlpha(x + dx, y + dy) > 25) c++;
+    if (c > hub.score) hub = { x, y, score: c };
+  }
+}
+const headR = Math.round(MW * 0.205); // radial extent of the seed head
+console.log(`Dandelion hub at (${hub.x}, ${hub.y}), radius ${headR}`);
+
+const size = headR * 2;
+const motif = Buffer.alloc(size * size * 4);
+for (let y = 0; y < size; y++) {
+  for (let x = 0; x < size; x++) {
+    const sx = hub.x - headR + x;
+    const sy = hub.y - headR + y;
+    const inside = Math.hypot(x - headR, y - headR) <= headR;
+    const o = (y * size + x) * 4;
+    if (inside && sx >= 0 && sy >= 0 && sx < MW && sy < MH) {
+      const s = (sy * MW + sx) * 4;
+      motif[o] = MD[s]; motif[o + 1] = MD[s + 1];
+      motif[o + 2] = MD[s + 2]; motif[o + 3] = MD[s + 3];
+    }
+  }
+}
+await sharp(motif, { raw: { width: size, height: size, channels: 4 } })
+  .png()
+  .trim({ threshold: 1 })
+  .png()
+  .toFile(join(BRAND, "motif-dandelion.png"));
+await sharp(join(BRAND, "motif-dandelion.png"))
+  .webp({ quality: 92 })
+  .toFile(join(BRAND, "motif-dandelion.webp"));
+
 /* --- Square icon base -----------------------------------------------------
-   Icons must be square; pad the trimmed logo onto a square ivory tile so the
-   artwork is never cropped or distorted. */
+   Icons must be square; pad the MARK onto a square ivory tile so the artwork is
+   never cropped or distorted. Uses the mark rather than the full stacked lockup
+   because "regenerate / SKIN & HAIR / CLINIC" is unreadable at favicon sizes. */
 const iconBase = async (size, background) => {
-  // Inner artwork box, leaving ~10% clear space on each edge.
-  const inner = Math.round(size * 0.8);
+  // Inner artwork box, leaving ~8% clear space on each edge.
+  const inner = Math.round(size * 0.84);
   // NOTE: sharp only honours the LAST .resize() in a pipeline and applies it
   // BEFORE .extend(), so padding must happen in its own pass — otherwise the
   // output ends up `size * 1.2` instead of `size`.
-  const padded = await sharp(trimmed)
+  const padded = await sharp(mark)
     .resize({
       width: inner,
       height: inner,

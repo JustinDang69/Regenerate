@@ -4,7 +4,7 @@
    ========================================================================== */
 import Reveal from "@/components/motion/Reveal";
 import Button from "@/components/ui/Button";
-import DandelionMark from "@/components/brand/DandelionMark";
+import Motif from "@/components/brand/Motif";
 import { cta } from "@/lib/site";
 
 type Props = {
@@ -34,10 +34,7 @@ export default function CTABlock({
           : "border border-border bg-surface-elevated text-primary"
       }`}
     >
-      <DandelionMark
-        aria-hidden
-        className={`absolute -right-6 -top-6 h-40 w-40 ${isAccent ? "text-on-accent/10" : "text-accent/10"}`}
-        strokeWidth={0.7}
+      <Motif className={`absolute -right-6 -top-6 h-40 w-40 ${isAccent ? "text-on-accent/10" : "text-accent/10"}`}
       />
       <div className="relative mx-auto flex max-w-2xl flex-col items-center gap-5">
         {eyebrow && (

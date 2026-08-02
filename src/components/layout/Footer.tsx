@@ -5,7 +5,7 @@
    ========================================================================== */
 import Link from "next/link";
 import Logo from "@/components/brand/Logo";
-import DandelionMark from "@/components/brand/DandelionMark";
+import Motif from "@/components/brand/Motif";
 import Button from "@/components/ui/Button";
 import { site, footerNav, cta, addressLines } from "@/lib/site";
 
@@ -32,7 +32,7 @@ export default function Footer() {
 
   return (
     <footer className="relative overflow-hidden border-t border-border bg-surface-elevated">
-      <DandelionMark aria-hidden className="pointer-events-none absolute -bottom-10 right-[6%] h-56 w-56 text-accent/[0.06]" strokeWidth={0.7} />
+      <Motif className="pointer-events-none absolute -bottom-10 right-[6%] h-56 w-56 text-accent/[0.06]" />
 
       <div className="mx-auto max-w-[var(--container-max)] px-[var(--gutter)] py-16">
         {/* Top: brand + closing CTA */}
