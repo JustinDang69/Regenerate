@@ -62,13 +62,22 @@ further. Not required; current output is clean.
 | `icon-512-transparent.png` | Transparent 512 variant |
 | `og-image.png` | 1200×630 social preview on brand ivory |
 
-### Icons use the mark, not the full lockup
+### Icons simplify as they get smaller
 
 The lockup stacks four elements (mark / "regenerate" / "SKIN & HAIR" / "CLINIC"),
-which is an illegible smudge at 32px. All favicons and app icons are therefore built
-from the **mark only**, padded onto a square ivory tile so the artwork is never
-cropped or distorted. The script detects the mark's band automatically rather than
-using hard-coded coordinates, so it survives a re-exported logo.
+which is an illegible smudge at icon sizes — so icons step down in detail:
+
+| Size | Artwork | Why |
+| --- | --- | --- |
+| 16 / 32 / 48 (favicons) | **R only**, ivory on an olive chip | The dandelion's hairline filaments anti-alias into pale beige at these sizes and the icon reads as an empty box. The R is a solid letterform with real mass, and reversing it out of olive keeps it visible on both light and dark browser tab bars. |
+| 180 / 192 / 512 (app icons) | **Full mark** on an ivory tile | Enough resolution for the dandelion detail to survive, so the icon keeps the brand's most distinctive element. |
+
+Both the mark band and the R glyph are **detected by measuring the artwork**, not
+hard-coded, so a re-exported logo still works. Nothing is ever cropped mid-shape or
+distorted — only scaled proportionally and padded.
+
+> Browsers cache favicons aggressively. After a change, hard-refresh
+> (<kbd>Ctrl</kbd>+<kbd>F5</kbd>) or reopen the tab to see it.
 
 ### The decorative dandelion
 

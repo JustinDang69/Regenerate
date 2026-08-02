@@ -255,8 +255,69 @@ const iconBase = async (size, background) => {
 const opaque = { r: 251, g: 248, b: 241, alpha: 1 }; // ivory tile
 const clear = { r: 0, g: 0, b: 0, alpha: 0 };
 
+/* --- 5. Small favicons: simplify to the R --------------------------------
+   At 16–48px the dandelion's hairline filaments anti-alias into pale beige and
+   the icon reads as an empty box. Favicons therefore use the R alone — a solid
+   letterform with real mass — reversed out of an olive chip so it stays visible
+   on both light and dark browser tab bars. Larger icons below keep the full
+   mark, where the dandelion detail survives.
+
+   The R is located by measuring the mark: below the dandelions only the R
+   remains, so its column span comes from the lower band, then we scan upward
+   for its top edge. No hard-coded coordinates. */
+let rx0 = MW, rx1 = -1;
+for (let y = Math.round(MH * 0.72); y < MH; y++)
+  for (let x = 0; x < MW; x++)
+    if (mAlpha(x, y) > 25) { if (x < rx0) rx0 = x; if (x > rx1) rx1 = x; }
+let ry0 = MH;
+for (let y = 0; y < MH && ry0 === MH; y++)
+  for (let x = rx0; x <= rx1; x++)
+    if (mAlpha(x, y) > 25) { ry0 = y; break; }
+
+const rGlyph = await sharp(mark)
+  .extract({ left: rx0, top: ry0, width: rx1 - rx0 + 1, height: MH - ry0 })
+  .png()
+  .toBuffer();
+console.log(`R glyph detected at ${rx1 - rx0 + 1}×${MH - ry0}`);
+
+/** Reverse the R out of a solid olive chip for maximum small-size contrast. */
+const faviconAt = async (size) => {
+  const inner = Math.round(size * 0.72);
+  const fitted = await sharp(rGlyph)
+    .resize({ width: inner, height: inner, fit: "contain", background: clear })
+    .ensureAlpha()
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+  // Repaint the glyph ivory, keeping its alpha (shape) untouched.
+  for (let i = 0; i < fitted.data.length; i += 4) {
+    fitted.data[i] = 251; fitted.data[i + 1] = 248; fitted.data[i + 2] = 241;
+  }
+  const glyphPng = await sharp(fitted.data, {
+    raw: { width: fitted.info.width, height: fitted.info.height, channels: 4 },
+  })
+    .png()
+    .toBuffer();
+  return sharp({
+    create: {
+      width: size,
+      height: size,
+      channels: 4,
+      background: { r: ink[0], g: ink[1], b: ink[2], alpha: 1 },
+    },
+  })
+    .composite([
+      {
+        input: glyphPng,
+        left: Math.floor((size - fitted.info.width) / 2),
+        top: Math.floor((size - fitted.info.height) / 2),
+      },
+    ])
+    .png()
+    .toBuffer();
+};
+
 for (const s of [16, 32, 48]) {
-  writeFileSync(join(BRAND, `favicon-${s}.png`), await iconBase(s, opaque));
+  writeFileSync(join(BRAND, `favicon-${s}.png`), await faviconAt(s));
 }
 writeFileSync(join(BRAND, "apple-touch-icon.png"), await iconBase(180, opaque));
 writeFileSync(join(BRAND, "icon-192.png"), await iconBase(192, opaque));
