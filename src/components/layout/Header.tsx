@@ -160,10 +160,16 @@ export default function Header() {
         />
         <nav
           aria-label="Mobile"
-          className={`absolute right-0 top-0 flex h-full w-[min(88vw,22rem)] flex-col gap-1 overflow-y-auto bg-background px-6 pb-10 pt-24 shadow-[var(--shadow-lg)] transition-transform duration-[var(--dur-base)] ease-[var(--ease-soft)] ${
+          className={`absolute right-0 top-0 flex h-full w-[min(88vw,22rem)] flex-col gap-1 overflow-y-auto bg-background px-6 pb-10 pt-6 shadow-[var(--shadow-lg)] transition-transform duration-[var(--dur-base)] ease-[var(--ease-soft)] ${
             openMenu ? "translate-x-0" : "translate-x-full"
           }`}
         >
+          {/* The drawer overlays the header, so it carries the logo itself —
+              keeps the brand present throughout the mobile navigation. */}
+          <div className="mb-4 flex justify-start border-b border-border pb-5">
+            <Logo />
+          </div>
+
           {primaryNav.map((item) => (
             <div key={item.label} className="border-b border-border py-1">
               <Link

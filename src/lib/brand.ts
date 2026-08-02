@@ -4,19 +4,12 @@
    The client's ORIGINAL logo PNG is the single source of truth for the logo.
    It must NOT be recreated, traced or reinterpreted in code.
 
-   ▸ TO ACTIVATE THE REAL LOGO:
-     1. Save the client's original PNG to:
-          public/brand/source/regenerate-logo-original.png
-     2. Run:  node scripts/generate-logo-assets.mjs
-        (derives header/footer/favicon/apple-touch/192/512/WebP variants from it)
-     3. Flip LOGO_READY below to `true`.
-
-   Until then the site renders the previous vector lockup so nothing appears
-   broken — but that lockup is NOT the client's logo and must not ship.
+   ▸ TO UPDATE THE LOGO (if the client supplies new artwork):
+     1. Replace: public/brand/source/regenerate-logo-original.png
+     2. Run:     node scripts/generate-logo-assets.mjs
+        (re-derives header/footer/favicon/apple-touch/192/512/WebP/OG variants)
+     3. Update LOGO_ASPECT below if the script reports a new trimmed size.
    ========================================================================== */
-
-/** Flip to true once the client's original PNG is in place (see steps above). */
-export const LOGO_READY = false;
 
 /** Derived, web-optimised logo assets (produced by generate-logo-assets.mjs). */
 export const logoAssets = {
@@ -26,9 +19,11 @@ export const logoAssets = {
   header: "/brand/logo-header.png",
   /** Optimised asset for the footer. */
   footer: "/brand/logo-footer.png",
-  /** Light/reversed treatment for dark surfaces, if supplied. */
-  reversed: "/brand/logo-reversed.png",
+  /** Full-resolution transparent master, for any larger placement. */
+  full: "/brand/logo-full.png",
 } as const;
 
-/** Intrinsic aspect ratio of the client logo (square lockup: R + wordmark). */
-export const LOGO_ASPECT = { width: 1000, height: 1000 };
+/** Intrinsic dimensions of the trimmed client logo (R + dandelion + wordmark).
+    Matches public/brand/logo-full.png — keep in sync if the client supplies a
+    new original (the generator prints the trimmed size when it runs). */
+export const LOGO_ASPECT = { width: 1704, height: 1472 };

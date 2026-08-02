@@ -44,10 +44,54 @@ if (!existsSync(SOURCE)) {
 
 mkdirSync(BRAND, { recursive: true });
 
-/* Trim surrounding transparent/white padding so the logo can be positioned
-   precisely in the UI, then keep a transparent background throughout. */
-const trimmed = await sharp(SOURCE)
-  .trim({ threshold: 10 })
+/* --- 1. White background → true transparency -------------------------------
+   The client's original is supplied as flattened artwork on a solid white
+   background. Placed on the site's cream surfaces that would render as a white
+   box, so we recover an alpha channel.
+
+   The artwork is a single olive ink colour, so every non-white pixel is exactly
+   `alpha × ink + (1 - alpha) × white`. That makes the inverse exact: derive
+   alpha from how far each pixel sits from white, then restore the pure ink
+   colour. Anti-aliased edges stay smooth and NOTHING about the artwork's shape,
+   proportions or colour is altered — this is a format conversion, not a redraw. */
+const src = await sharp(SOURCE).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+const { data: px, info } = src;
+const CH = info.channels;
+
+const lum = (r, g, b) => 0.2126 * r + 0.7152 * g + 0.0722 * b;
+
+// Measure the solid-ink colour from the darkest pixels rather than assuming it.
+let ir = 0, ig = 0, ib = 0, n = 0;
+for (let i = 0; i < px.length; i += CH) {
+  if (lum(px[i], px[i + 1], px[i + 2]) < 95) {
+    ir += px[i]; ig += px[i + 1]; ib += px[i + 2]; n++;
+  }
+}
+if (!n) {
+  console.error("✖ Could not detect logo ink — is the source blank?");
+  process.exit(1);
+}
+const ink = [Math.round(ir / n), Math.round(ig / n), Math.round(ib / n)];
+const inkLum = lum(...ink);
+console.log(`Detected ink colour rgb(${ink.join(", ")}) from ${n} solid pixels`);
+
+const out = Buffer.alloc(info.width * info.height * 4);
+for (let i = 0, o = 0; i < px.length; i += CH, o += 4) {
+  const l = lum(px[i], px[i + 1], px[i + 2]);
+  // 255 (white) → alpha 0; inkLum or darker → alpha 255.
+  const a = Math.max(0, Math.min(255, Math.round(((255 - l) / (255 - inkLum)) * 255)));
+  out[o] = ink[0];
+  out[o + 1] = ink[1];
+  out[o + 2] = ink[2];
+  out[o + 3] = a;
+}
+
+/* --- 2. Trim surrounding empty space so the logo positions precisely -------- */
+const trimmed = await sharp(out, {
+  raw: { width: info.width, height: info.height, channels: 4 },
+})
+  .png()
+  .trim({ threshold: 1 })
   .png()
   .toBuffer();
 
@@ -59,10 +103,11 @@ await sharp(trimmed).png().toFile(join(BRAND, "logo-full.png"));
 await sharp(trimmed).webp({ quality: 92 }).toFile(join(BRAND, "logo-full.webp"));
 
 /* --- Header / footer optimised versions ----------------------------------
-   Height-constrained: the UI caps rendered height, so ~2x for crisp retina. */
+   Height-constrained. The UI caps rendered height at 64px (header) and 96px
+   (footer), so these are sized for ~3x displays without shipping the full master. */
 for (const [name, height] of [
-  ["logo-header", 220],
-  ["logo-footer", 260],
+  ["logo-header", 200],
+  ["logo-footer", 300],
 ]) {
   await sharp(trimmed).resize({ height }).png().toFile(join(BRAND, `${name}.png`));
   await sharp(trimmed)
@@ -74,24 +119,35 @@ for (const [name, height] of [
 /* --- Square icon base -----------------------------------------------------
    Icons must be square; pad the trimmed logo onto a square ivory tile so the
    artwork is never cropped or distorted. */
-const iconBase = async (size, background) =>
-  sharp(trimmed)
+const iconBase = async (size, background) => {
+  // Inner artwork box, leaving ~10% clear space on each edge.
+  const inner = Math.round(size * 0.8);
+  // NOTE: sharp only honours the LAST .resize() in a pipeline and applies it
+  // BEFORE .extend(), so padding must happen in its own pass — otherwise the
+  // output ends up `size * 1.2` instead of `size`.
+  const padded = await sharp(trimmed)
     .resize({
-      width: Math.round(size * 0.8),
-      height: Math.round(size * 0.8),
+      width: inner,
+      height: inner,
       fit: "contain",
       background: { r: 0, g: 0, b: 0, alpha: 0 },
     })
-    .extend({
-      top: Math.round(size * 0.1),
-      bottom: Math.round(size * 0.1),
-      left: Math.round(size * 0.1),
-      right: Math.round(size * 0.1),
-      background,
-    })
-    .resize(size, size)
     .png()
     .toBuffer();
+
+  const padL = Math.floor((size - inner) / 2);
+  const padT = Math.floor((size - inner) / 2);
+  return sharp(padded)
+    .extend({
+      top: padT,
+      bottom: size - inner - padT,
+      left: padL,
+      right: size - inner - padL,
+      background,
+    })
+    .png()
+    .toBuffer();
+};
 
 const opaque = { r: 251, g: 248, b: 241, alpha: 1 }; // ivory tile
 const clear = { r: 0, g: 0, b: 0, alpha: 0 };

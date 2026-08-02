@@ -19,23 +19,32 @@ Preserved exactly, by definition, because we only ever resize the original:
 > The website's own fonts (Cormorant Garamond + Manrope) are unrelated to the
 > lettering *inside* the logo and remain unchanged.
 
-## Activating / updating the logo
+## Updating the logo
 
 ```bash
-# 1. Save the client's original PNG here:
+# 1. Replace the original at:
 #      public/brand/source/regenerate-logo-original.png
-# 2. Derive every web asset from it:
+# 2. Re-derive every web asset from it:
 node scripts/generate-logo-assets.mjs
-# 3. Set LOGO_READY = true in src/lib/brand.ts
+# 3. If the script reports a new trimmed size, update LOGO_ASPECT in src/lib/brand.ts
 ```
-
-Re-run steps 1–2 any time the client supplies an updated logo.
 
 ### Current status
 
-⚠️ `LOGO_READY` is **false** — the original PNG has not been supplied yet, so the
-header/footer temporarily render a placeholder lockup. **This placeholder is not the
-client's logo and must not go live.** Complete the three steps above before launch.
+✅ **Live** — the client's original logo is in place and is used in the header,
+mobile navigation and footer, plus all favicons, app icons and the social preview.
+
+### One production note
+
+The supplied original is a **flattened JPEG on a solid white background** (2000×2000,
+no alpha). Because the artwork is a single olive ink colour, the generator recovers a
+true alpha channel exactly — every non-white pixel is `alpha × ink + (1−alpha) × white`,
+so the inverse is lossless and anti-aliased edges stay smooth. Shape, proportions and
+colour are untouched.
+
+If the client can supply a **vector** (AI / EPS / PDF / SVG) or a transparent PNG
+master, drop it in and re-run the script — quality at large sizes would improve
+further. Not required; current output is clean.
 
 ## Generated outputs
 
