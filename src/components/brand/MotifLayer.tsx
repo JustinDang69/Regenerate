@@ -3,7 +3,7 @@
    Combines an ambient gold glow with very faint dandelion line-art. Purely
    presentational (aria-hidden). Keep opacity low — restraint is the brand.
    ========================================================================== */
-import DandelionMark from "./DandelionMark";
+import Motif from "./Motif";
 
 type Props = {
   /** Placement preset for the ambient glow + motif. */
@@ -24,17 +24,15 @@ export default function MotifLayer({ variant = "quiet", className }: Props) {
         <>
           <div className="glow absolute -right-[10%] -top-[20%] h-[70vh] w-[70vh]" />
           <div className="glow absolute -bottom-[30%] left-[5%] h-[50vh] w-[50vh] opacity-70" />
-          <DandelionMark
+          <Motif
             className="absolute right-[6%] top-[14%] hidden h-64 w-64 text-accent/10 md:block"
-            strokeWidth={0.7}
           />
         </>
       )}
 
       {variant === "corner" && (
-        <DandelionMark
+        <Motif
           className="absolute -bottom-8 -left-6 h-48 w-48 text-accent/[0.07]"
-          strokeWidth={0.8}
         />
       )}
 

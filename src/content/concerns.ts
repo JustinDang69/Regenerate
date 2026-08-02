@@ -146,12 +146,6 @@ export const hairConcerns: Concern[] = [
   },
 ];
 
-/* Homepage overview: a curated blend of top skin + hair concerns. */
-export const featuredConcerns: Concern[] = [
-  skinConcerns[0], // Acne
-  skinConcerns[1], // Scarring
-  skinConcerns[3], // Rejuvenation
-  hairConcerns[0], // Thinning
-  hairConcerns[1], // Scalp
-  hairConcerns[3], // Grey
-];
+/* NOTE: the `featuredConcerns` homepage selection was removed in client revision
+   round 1 — the "Concerns We Support" homepage section no longer exists. Concern
+   content is presented in full on the dedicated /skin and /hair pages. */

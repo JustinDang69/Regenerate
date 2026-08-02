@@ -27,11 +27,15 @@ export default function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Close drawer on route change.
-  useEffect(() => {
+  /* Close the drawer/dropdown on route change. Adjusting state during render
+     (React's documented pattern for "reset state when a value changes") rather
+     than in an effect — avoids the extra commit and cascading re-render. */
+  const [lastPath, setLastPath] = useState(pathname);
+  if (pathname !== lastPath) {
+    setLastPath(pathname);
     setOpenMenu(false);
     setOpenDropdown(null);
-  }, [pathname]);
+  }
 
   // Body scroll lock + ESC handling for the mobile drawer.
   useEffect(() => {
@@ -115,9 +119,14 @@ export default function Header() {
         </nav>
 
         <div className="flex items-center gap-3">
-          <Button href={cta.bookHref} size="sm" className="hidden sm:inline-flex">
-            {cta.book}
-          </Button>
+          {/* Visibility is controlled on this wrapper, not on Button itself —
+              Button's base `inline-flex` would otherwise override `hidden`.
+              The sticky mobile CTA covers booking below the `sm` breakpoint. */}
+          <span className="hidden sm:inline-flex">
+            <Button href={cta.bookHref} size="sm">
+              {cta.book}
+            </Button>
+          </span>
 
           {/* Mobile toggle */}
           <button
@@ -151,10 +160,16 @@ export default function Header() {
         />
         <nav
           aria-label="Mobile"
-          className={`absolute right-0 top-0 flex h-full w-[min(88vw,22rem)] flex-col gap-1 overflow-y-auto bg-background px-6 pb-10 pt-24 shadow-[var(--shadow-lg)] transition-transform duration-[var(--dur-base)] ease-[var(--ease-soft)] ${
+          className={`absolute right-0 top-0 flex h-full w-[min(88vw,22rem)] flex-col gap-1 overflow-y-auto bg-background px-6 pb-10 pt-6 shadow-[var(--shadow-lg)] transition-transform duration-[var(--dur-base)] ease-[var(--ease-soft)] ${
             openMenu ? "translate-x-0" : "translate-x-full"
           }`}
         >
+          {/* The drawer overlays the header, so it carries the logo itself —
+              keeps the brand present throughout the mobile navigation. */}
+          <div className="mb-4 flex justify-start border-b border-border pb-5">
+            <Logo />
+          </div>
+
           {primaryNav.map((item) => (
             <div key={item.label} className="border-b border-border py-1">
               <Link

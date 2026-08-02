@@ -9,7 +9,7 @@
    space, close-up skin/hair). Replace placeholders by passing `src` + `alt`.
    ========================================================================== */
 import Image from "next/image";
-import DandelionMark from "@/components/brand/DandelionMark";
+import Motif from "@/components/brand/Motif";
 
 type Ratio = "portrait" | "landscape" | "square" | "wide" | "tall";
 type Mask = "none" | "arch" | "soft";
@@ -67,7 +67,7 @@ export default function ImageFrame({
       ) : (
         // On-brand placeholder — never a broken image, always elegant.
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-gradient-to-br from-surface-elevated via-surface to-[var(--accent-soft)] text-center">
-          <DandelionMark className="h-12 w-12 text-accent/40" strokeWidth={0.9} />
+          <Motif className="h-12 w-12 text-accent/40" />
           <span className="eyebrow text-muted">{placeholderLabel}</span>
           <span className="text-[0.7rem] text-muted/80">Image placeholder</span>
         </div>

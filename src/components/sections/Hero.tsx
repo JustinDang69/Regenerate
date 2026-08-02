@@ -11,7 +11,7 @@ import Button from "@/components/ui/Button";
 import MotifLayer from "@/components/brand/MotifLayer";
 import ImageFrame from "@/components/ui/ImageFrame";
 import { gsap } from "@/lib/motion/gsap";
-import { cta, site } from "@/lib/site";
+import { cta } from "@/lib/site";
 
 export default function Hero() {
   const root = useRef<HTMLDivElement>(null);
@@ -65,13 +65,11 @@ export default function Hero() {
       <div className="mx-auto grid max-w-[var(--container-max)] items-center gap-12 px-[var(--gutter)] lg:grid-cols-[1.1fr_0.9fr]">
         {/* Copy */}
         <div className="flex flex-col items-start gap-6">
-          <span data-hero-stagger className="eyebrow flex items-center gap-2">
-            <span aria-hidden className="inline-block h-px w-8 bg-accent/60" />
-            Skin Science · Hair Restoration Support
-          </span>
-
+          {/* COMPLIANCE: "Forever in Your 20s" is a client-approved tagline. It was
+              previously flagged for legal/advertising review before public use in
+              regulated advertising — confirm sign-off is on file. */}
           <h1 data-hero-stagger className="text-display text-balance">
-            Regenerate — restoring&nbsp;and reviving your natural&nbsp;confidence
+            Regenerate — Forever in Your&nbsp;20s
           </h1>
 
           <p data-hero-stagger className="max-w-xl text-lead text-secondary text-pretty">
@@ -83,12 +81,6 @@ export default function Hero() {
           <div data-hero-stagger className="mt-2 flex flex-wrap items-center gap-4">
             <Button href={cta.bookHref} size="lg">{cta.book}</Button>
             <Button href="/skin" variant="secondary" size="lg">{cta.exploreSkin}</Button>
-          </div>
-
-          <div data-hero-stagger className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-2 text-[0.82rem] text-muted">
-            <span>◦ Practitioner-led care</span>
-            <span>◦ Concern-first pathways</span>
-            <span>◦ {site.contact.address.suburb}, VIC</span>
           </div>
         </div>
 

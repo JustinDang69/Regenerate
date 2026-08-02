@@ -54,9 +54,16 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image" },
   robots: { index: true, follow: true },
   alternates: { canonical: "/" },
+  /* All icons are derived from the client's original logo by
+     scripts/generate-logo-assets.mjs — see public/brand/README.md. */
   icons: {
-    icon: [{ url: "/favicon.svg", type: "image/svg+xml" }, { url: "/favicon.ico" }],
-    apple: [{ url: "/brand/apple-touch-icon.png" }],
+    icon: [
+      { url: "/favicon.ico", sizes: "32x32" },
+      { url: "/brand/favicon-16.png", type: "image/png", sizes: "16x16" },
+      { url: "/brand/favicon-32.png", type: "image/png", sizes: "32x32" },
+      { url: "/brand/favicon-48.png", type: "image/png", sizes: "48x48" },
+    ],
+    apple: [{ url: "/brand/apple-touch-icon.png", sizes: "180x180" }],
   },
 };
 

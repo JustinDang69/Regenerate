@@ -33,7 +33,6 @@ export default function SkinPage() {
         title="Skin care that starts with your concern"
         lead="From everyday breakouts to texture, hydration and vitality — we explain the concern in plain language, the approach we may take, and what each pathway is designed to support."
         primary={{ label: cta.book, href: cta.bookHref }}
-        secondary={{ label: cta.exploreHair, href: "/hair" }}
       />
 
       {/* Concern narratives */}

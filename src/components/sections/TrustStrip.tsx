@@ -8,7 +8,7 @@ import Reveal from "@/components/motion/Reveal";
 const items: { label: string; sub: string }[] = [
   { label: "Practitioner-led", sub: "Dermal specialists & therapist" },
   { label: "Concern-first", sub: "Plans tailored in consultation" },
-  { label: "Considered technology", sub: "Applied with care, never by default" },
+  { label: "Breakthrough technologies", sub: "Skin and hair science applied with care" },
   { label: "Melbourne clinic", sub: "Pascoe Vale South, VIC" },
 ];
 

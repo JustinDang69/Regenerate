@@ -230,7 +230,9 @@ export const singleTreatments: SingleTreatment[] = [
 ];
 
 export const allPackages = [...skinPackages, ...hairPackages];
-export const featuredPackages = allPackages.filter((p) => p.featured);
+/* NOTE: the derived `featuredPackages` list was removed in client revision round 1
+   with the homepage "Featured Programs" section. The `featured` flag itself is
+   still used to emphasise signature packages on the /pricing page. */
 
 export function formatPrice(value: number): string {
   return "$" + value.toLocaleString("en-AU");

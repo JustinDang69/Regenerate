@@ -1,99 +1,364 @@
 /* =============================================================================
    generate-logo-assets.mjs
-   Emits the Regenerate dandelion logo as standalone SVG assets that match the
-   in-app React <DandelionMark/> exactly. Run: `node scripts/generate-logo-assets.mjs`
    -----------------------------------------------------------------------------
-   IMPORTANT: This is a faithful PLACEHOLDER interpretation — no original logo
-   image was supplied. Replace these with the client's exact traced logo before
-   launch (see public/brand/README.md). Do not restyle the brand.
+   Derives the full web asset set from the CLIENT'S ORIGINAL LOGO PNG.
+
+   The original is the ONLY source of truth. This script never redraws, traces or
+   reinterprets the artwork — it only trims transparent padding, resizes and
+   re-encodes. Run it whenever the client supplies an updated logo.
+
+   Usage:
+     1. Save the client's original PNG to:
+          public/brand/source/regenerate-logo-original.png
+     2. node scripts/generate-logo-assets.mjs
+     3. Set LOGO_READY = true in src/lib/brand.ts
+
+   Outputs (all in public/brand/):
+     logo-header.png / .webp      optimised header lockup
+     logo-footer.png / .webp      optimised footer lockup
+     logo-full.png  / .webp       high-res transparent master
+     favicon.ico, favicon-16/32/48.png, favicon.svg-free
+     apple-touch-icon.png (180)   icon-192.png, icon-512.png
+     og-image.png (1200x630)      social preview on brand ivory
    ========================================================================== */
-import { writeFileSync, mkdirSync } from "node:fs";
+import sharp from "sharp";
+import { existsSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const OUT = join(__dirname, "..", "public", "brand");
-mkdirSync(OUT, { recursive: true });
+const PUB = join(__dirname, "..", "public");
+const BRAND = join(PUB, "brand");
+const SOURCE = join(BRAND, "source", "regenerate-logo-original.png");
 
-const INK = "#2c2717";      // deep olive-brown
-const ACCENT = "#8c7a45";   // muted olive-gold
 const IVORY = "#fbf8f1";
 
-// Match DandelionMark.tsx geometry (12 filaments around head at 32,26).
-function seeds() {
-  const out = [];
-  for (let i = 0; i < 12; i++) {
-    const a = (Math.PI * 2 * i) / 12 - Math.PI / 2;
-    const cx = 32, cy = 26, r1 = 3.2, r2 = 15;
-    out.push({
-      x1: (cx + Math.cos(a) * r1).toFixed(2),
-      y1: (cy + Math.sin(a) * r1).toFixed(2),
-      x2: (cx + Math.cos(a) * r2).toFixed(2),
-      y2: (cy + Math.sin(a) * r2).toFixed(2),
-      px: (cx + Math.cos(a) * (r2 + 1.4)).toFixed(2),
-      py: (cy + Math.sin(a) * (r2 + 1.4)).toFixed(2),
-    });
+if (!existsSync(SOURCE)) {
+  console.error(
+    `\n✖ Client logo not found at:\n    ${SOURCE}\n\n` +
+      `Save the client's ORIGINAL logo PNG there, then re-run this script.\n` +
+      `Do not substitute a recreated or traced version.\n`
+  );
+  process.exit(1);
+}
+
+mkdirSync(BRAND, { recursive: true });
+
+/* --- 1. White background → true transparency -------------------------------
+   The client's original is supplied as flattened artwork on a solid white
+   background. Placed on the site's cream surfaces that would render as a white
+   box, so we recover an alpha channel.
+
+   The artwork is a single olive ink colour, so every non-white pixel is exactly
+   `alpha × ink + (1 - alpha) × white`. That makes the inverse exact: derive
+   alpha from how far each pixel sits from white, then restore the pure ink
+   colour. Anti-aliased edges stay smooth and NOTHING about the artwork's shape,
+   proportions or colour is altered — this is a format conversion, not a redraw. */
+const src = await sharp(SOURCE).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+const { data: px, info } = src;
+const CH = info.channels;
+
+const lum = (r, g, b) => 0.2126 * r + 0.7152 * g + 0.0722 * b;
+
+// Measure the solid-ink colour from the darkest pixels rather than assuming it.
+let ir = 0, ig = 0, ib = 0, n = 0;
+for (let i = 0; i < px.length; i += CH) {
+  if (lum(px[i], px[i + 1], px[i + 2]) < 95) {
+    ir += px[i]; ig += px[i + 1]; ib += px[i + 2]; n++;
   }
-  return out;
+}
+if (!n) {
+  console.error("✖ Could not detect logo ink — is the source blank?");
+  process.exit(1);
+}
+const ink = [Math.round(ir / n), Math.round(ig / n), Math.round(ib / n)];
+const inkLum = lum(...ink);
+console.log(`Detected ink colour rgb(${ink.join(", ")}) from ${n} solid pixels`);
+
+const out = Buffer.alloc(info.width * info.height * 4);
+for (let i = 0, o = 0; i < px.length; i += CH, o += 4) {
+  const l = lum(px[i], px[i + 1], px[i + 2]);
+  // 255 (white) → alpha 0; inkLum or darker → alpha 255.
+  const a = Math.max(0, Math.min(255, Math.round(((255 - l) / (255 - inkLum)) * 255)));
+  out[o] = ink[0];
+  out[o + 1] = ink[1];
+  out[o + 2] = ink[2];
+  out[o + 3] = a;
 }
 
-function markPaths(color, sw = 1.1) {
-  const s = seeds()
-    .map(
-      (p) =>
-        `<line x1="${p.x1}" y1="${p.y1}" x2="${p.x2}" y2="${p.y2}" opacity="0.9"/>` +
-        `<circle cx="${p.px}" cy="${p.py}" r="1.15" opacity="0.85"/>`
-    )
-    .join("");
-  return `
-  <g fill="none" stroke="${color}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round">
-    ${s}
-    <circle cx="32" cy="26" r="2.1" fill="${color}" stroke="none"/>
-    <path d="M32 28 C 32 40, 30.5 48, 33 58" opacity="0.9"/>
-    <path d="M32.4 41 C 27 40, 24.5 43.5, 24 47 C 28.5 47, 31.4 45, 32.4 41 Z" opacity="0.75"/>
-    <g opacity="0.7">
-      <line x1="50" y1="16" x2="54" y2="12"/><circle cx="55.2" cy="10.6" r="1"/>
-      <line x1="50" y1="16" x2="49" y2="11"/><circle cx="48.6" cy="9.6" r="1"/>
-    </g>
-    <g opacity="0.55"><line x1="12" y1="12" x2="9" y2="8"/><circle cx="7.9" cy="6.7" r="0.9"/></g>
-  </g>`;
+/* --- 2. Trim surrounding empty space so the logo positions precisely -------- */
+const trimmed = await sharp(out, {
+  raw: { width: info.width, height: info.height, channels: 4 },
+})
+  .png()
+  .trim({ threshold: 1 })
+  .png()
+  .toBuffer();
+
+const meta = await sharp(trimmed).metadata();
+console.log(`Source trimmed to ${meta.width}×${meta.height}`);
+
+/* --- Full-resolution transparent master ---------------------------------- */
+await sharp(trimmed).png().toFile(join(BRAND, "logo-full.png"));
+await sharp(trimmed).webp({ quality: 92 }).toFile(join(BRAND, "logo-full.webp"));
+
+/* --- Header / footer optimised versions ----------------------------------
+   Height-constrained. The UI caps rendered height at 64px (header) and 96px
+   (footer), so these are sized for ~3x displays without shipping the full master. */
+for (const [name, height] of [
+  ["logo-header", 200],
+  ["logo-footer", 300],
+]) {
+  await sharp(trimmed).resize({ height }).png().toFile(join(BRAND, `${name}.png`));
+  await sharp(trimmed)
+    .resize({ height })
+    .webp({ quality: 92 })
+    .toFile(join(BRAND, `${name}.webp`));
 }
 
-const markSVG = (color) =>
-  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Regenerate dandelion mark">${markPaths(color)}</svg>\n`;
+/* --- 3. Isolate the mark (R + curve + dandelions) --------------------------
+   The lockup stacks: [mark] / "regenerate" / "SKIN & HAIR" / "CLINIC".
+   Icons and favicons must use the MARK only — the full stacked lockup is an
+   illegible smudge at 32px. Bands are detected from the artwork rather than
+   hard-coded, so this survives the client supplying a re-exported logo. */
+const tRaw = await sharp(trimmed).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+const TW = tRaw.info.width, TH = tRaw.info.height, TD = tRaw.data;
+const alphaAt = (x, y) => TD[(y * TW + x) * 4 + 3];
 
-// Full horizontal lockup: mark + serif wordmark.
-const lockupSVG = (ink, accent) =>
-  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 72" width="340" height="72" role="img" aria-label="Regenerate Skin &amp; Hair Clinic">
-  <g transform="translate(0,4)">${markPaths(ink)}</g>
-  <g font-family="'Cormorant Garamond', Georgia, serif" fill="${ink}">
-    <text x="78" y="38" font-size="30" letter-spacing="0.5">Regenerate</text>
-  </g>
-  <text x="79" y="56" font-family="'Manrope','Segoe UI',sans-serif" font-size="9" letter-spacing="3.4" fill="${accent}">SKIN &amp; HAIR CLINIC</text>
-</svg>\n`;
+const rowHas = [];
+for (let y = 0; y < TH; y++) {
+  let c = 0;
+  for (let x = 0; x < TW; x++) if (alphaAt(x, y) > 25) { c = 1; break; }
+  rowHas.push(c);
+}
+const rowBands = [];
+for (let y = 0, s = null; y <= TH; y++) {
+  if (y < TH && rowHas[y] && s === null) s = y;
+  if ((y === TH || !rowHas[y]) && s !== null) { rowBands.push([s, y - 1]); s = null; }
+}
+// Merge bands separated by only a hairline gap (anti-aliasing artefacts).
+const merged = [];
+for (const b of rowBands) {
+  const last = merged[merged.length - 1];
+  if (last && b[0] - last[1] <= 3) last[1] = b[1];
+  else merged.push([...b]);
+}
+const markBand = merged[0];
+if (!markBand || markBand[1] - markBand[0] < TH * 0.15) {
+  console.error("✖ Could not identify the logo mark band — check the source artwork.");
+  process.exit(1);
+}
+// Column extent of the mark band.
+let mx0 = TW, mx1 = -1;
+for (let y = markBand[0]; y <= markBand[1]; y++)
+  for (let x = 0; x < TW; x++)
+    if (alphaAt(x, y) > 25) { if (x < mx0) mx0 = x; if (x > mx1) mx1 = x; }
 
-// Favicon: mark on ivory rounded tile.
-const faviconSVG =
-  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
-  <rect width="64" height="64" rx="14" fill="${IVORY}"/>
-  ${markPaths(ACCENT, 1.4)}
-</svg>\n`;
+const markBox = {
+  left: mx0,
+  top: markBand[0],
+  width: mx1 - mx0 + 1,
+  height: markBand[1] - markBand[0] + 1,
+};
+console.log(
+  `Mark detected at ${markBox.width}×${markBox.height} (rows ${markBand[0]}–${markBand[1]})`
+);
 
-const files = {
-  "logo-mark.svg": markSVG(INK),
-  "logo-mark-accent.svg": markSVG(ACCENT),
-  "logo-mark-mono-dark.svg": markSVG("#000000"),
-  "logo-mark-reversed.svg": markSVG(IVORY), // for dark surfaces
-  "logo-lockup.svg": lockupSVG(INK, ACCENT),
-  "logo-lockup-reversed.svg": lockupSVG(IVORY, "#d3ac6b"),
-  "favicon.svg": faviconSVG,
+const mark = await sharp(trimmed).extract(markBox).png().toBuffer();
+await sharp(mark).png().toFile(join(BRAND, "logo-mark.png"));
+await sharp(mark).webp({ quality: 92 }).toFile(join(BRAND, "logo-mark.webp"));
+
+/* --- 4. Decorative dandelion motif ----------------------------------------
+   The site uses a dandelion as a subtle ornament (dividers, section accents,
+   background flourishes). It is taken from the CLIENT'S OWN artwork so the
+   decoration matches the logo exactly — never redrawn.
+
+   The large seed head is a radial burst, so we locate its hub (densest local
+   window in the mark's upper-right) and mask to a circle around it. That keeps
+   every filament intact while cleanly dropping the stem and the smaller head. */
+const mRaw = await sharp(mark).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+const MW = mRaw.info.width, MH = mRaw.info.height, MD = mRaw.data;
+const mAlpha = (x, y) => MD[(y * MW + x) * 4 + 3];
+
+const WIN = Math.max(6, Math.round(MW * 0.03)); // local density window
+let hub = { x: 0, y: 0, score: -1 };
+for (let y = WIN; y < Math.round(MH * 0.6); y += 2) {
+  for (let x = Math.round(MW * 0.5); x < MW - WIN; x += 2) {
+    let c = 0;
+    for (let dy = -WIN; dy <= WIN; dy += 2)
+      for (let dx = -WIN; dx <= WIN; dx += 2)
+        if (mAlpha(x + dx, y + dy) > 25) c++;
+    if (c > hub.score) hub = { x, y, score: c };
+  }
+}
+const headR = Math.round(MW * 0.205); // radial extent of the seed head
+console.log(`Dandelion hub at (${hub.x}, ${hub.y}), radius ${headR}`);
+
+const size = headR * 2;
+const motif = Buffer.alloc(size * size * 4);
+for (let y = 0; y < size; y++) {
+  for (let x = 0; x < size; x++) {
+    const sx = hub.x - headR + x;
+    const sy = hub.y - headR + y;
+    const inside = Math.hypot(x - headR, y - headR) <= headR;
+    const o = (y * size + x) * 4;
+    if (inside && sx >= 0 && sy >= 0 && sx < MW && sy < MH) {
+      const s = (sy * MW + sx) * 4;
+      motif[o] = MD[s]; motif[o + 1] = MD[s + 1];
+      motif[o + 2] = MD[s + 2]; motif[o + 3] = MD[s + 3];
+    }
+  }
+}
+await sharp(motif, { raw: { width: size, height: size, channels: 4 } })
+  .png()
+  .trim({ threshold: 1 })
+  .png()
+  .toFile(join(BRAND, "motif-dandelion.png"));
+await sharp(join(BRAND, "motif-dandelion.png"))
+  .webp({ quality: 92 })
+  .toFile(join(BRAND, "motif-dandelion.webp"));
+
+/* --- Square icon base -----------------------------------------------------
+   Icons must be square; pad the MARK onto a square ivory tile so the artwork is
+   never cropped or distorted. Uses the mark rather than the full stacked lockup
+   because "regenerate / SKIN & HAIR / CLINIC" is unreadable at favicon sizes. */
+const iconBase = async (size, background) => {
+  // Inner artwork box, leaving ~8% clear space on each edge.
+  const inner = Math.round(size * 0.84);
+  // NOTE: sharp only honours the LAST .resize() in a pipeline and applies it
+  // BEFORE .extend(), so padding must happen in its own pass — otherwise the
+  // output ends up `size * 1.2` instead of `size`.
+  const padded = await sharp(mark)
+    .resize({
+      width: inner,
+      height: inner,
+      fit: "contain",
+      background: { r: 0, g: 0, b: 0, alpha: 0 },
+    })
+    .png()
+    .toBuffer();
+
+  const padL = Math.floor((size - inner) / 2);
+  const padT = Math.floor((size - inner) / 2);
+  return sharp(padded)
+    .extend({
+      top: padT,
+      bottom: size - inner - padT,
+      left: padL,
+      right: size - inner - padL,
+      background,
+    })
+    .png()
+    .toBuffer();
 };
 
-for (const [name, content] of Object.entries(files)) {
-  writeFileSync(join(OUT, name), content);
-  console.log("wrote", name);
+const opaque = { r: 251, g: 248, b: 241, alpha: 1 }; // ivory tile
+const clear = { r: 0, g: 0, b: 0, alpha: 0 };
+
+/* --- 5. Small favicons: simplify to the R --------------------------------
+   At 16–48px the dandelion's hairline filaments anti-alias into pale beige and
+   the icon reads as an empty box. Favicons therefore use the R alone — a solid
+   letterform with real mass — reversed out of an olive chip so it stays visible
+   on both light and dark browser tab bars. Larger icons below keep the full
+   mark, where the dandelion detail survives.
+
+   The R is located by measuring the mark: below the dandelions only the R
+   remains, so its column span comes from the lower band, then we scan upward
+   for its top edge. No hard-coded coordinates. */
+let rx0 = MW, rx1 = -1;
+for (let y = Math.round(MH * 0.72); y < MH; y++)
+  for (let x = 0; x < MW; x++)
+    if (mAlpha(x, y) > 25) { if (x < rx0) rx0 = x; if (x > rx1) rx1 = x; }
+let ry0 = MH;
+for (let y = 0; y < MH && ry0 === MH; y++)
+  for (let x = rx0; x <= rx1; x++)
+    if (mAlpha(x, y) > 25) { ry0 = y; break; }
+
+const rGlyph = await sharp(mark)
+  .extract({ left: rx0, top: ry0, width: rx1 - rx0 + 1, height: MH - ry0 })
+  .png()
+  .toBuffer();
+console.log(`R glyph detected at ${rx1 - rx0 + 1}×${MH - ry0}`);
+
+/** Reverse the R out of a solid olive chip for maximum small-size contrast. */
+const faviconAt = async (size) => {
+  const inner = Math.round(size * 0.72);
+  const fitted = await sharp(rGlyph)
+    .resize({ width: inner, height: inner, fit: "contain", background: clear })
+    .ensureAlpha()
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+  // Repaint the glyph ivory, keeping its alpha (shape) untouched.
+  for (let i = 0; i < fitted.data.length; i += 4) {
+    fitted.data[i] = 251; fitted.data[i + 1] = 248; fitted.data[i + 2] = 241;
+  }
+  const glyphPng = await sharp(fitted.data, {
+    raw: { width: fitted.info.width, height: fitted.info.height, channels: 4 },
+  })
+    .png()
+    .toBuffer();
+  return sharp({
+    create: {
+      width: size,
+      height: size,
+      channels: 4,
+      background: { r: ink[0], g: ink[1], b: ink[2], alpha: 1 },
+    },
+  })
+    .composite([
+      {
+        input: glyphPng,
+        left: Math.floor((size - fitted.info.width) / 2),
+        top: Math.floor((size - fitted.info.height) / 2),
+      },
+    ])
+    .png()
+    .toBuffer();
+};
+
+for (const s of [16, 32, 48]) {
+  writeFileSync(join(BRAND, `favicon-${s}.png`), await faviconAt(s));
 }
-// Favicon at the app root too.
-writeFileSync(join(__dirname, "..", "public", "favicon.svg"), faviconSVG);
-console.log("wrote public/favicon.svg");
-console.log("\nDone. See public/brand/README.md for raster/favicon export steps.");
+writeFileSync(join(BRAND, "apple-touch-icon.png"), await iconBase(180, opaque));
+writeFileSync(join(BRAND, "icon-192.png"), await iconBase(192, opaque));
+writeFileSync(join(BRAND, "icon-512.png"), await iconBase(512, opaque));
+writeFileSync(join(BRAND, "icon-512-transparent.png"), await iconBase(512, clear));
+
+/* --- favicon.ico (PNG-in-ICO wrapper around the 32px icon) ---------------- */
+function pngToIco(pngBuf) {
+  const header = Buffer.alloc(6);
+  header.writeUInt16LE(0, 0);
+  header.writeUInt16LE(1, 2);
+  header.writeUInt16LE(1, 4);
+  const entry = Buffer.alloc(16);
+  entry.writeUInt8(32, 0);
+  entry.writeUInt8(32, 1);
+  entry.writeUInt8(0, 2);
+  entry.writeUInt8(0, 3);
+  entry.writeUInt16LE(1, 4);
+  entry.writeUInt16LE(32, 6);
+  entry.writeUInt32LE(pngBuf.length, 8);
+  entry.writeUInt32LE(22, 12);
+  return Buffer.concat([header, entry, pngBuf]);
+}
+writeFileSync(
+  join(PUB, "favicon.ico"),
+  pngToIco(readFileSync(join(BRAND, "favicon-32.png")))
+);
+
+/* --- Social preview / OG image (1200×630) --------------------------------- */
+const ogBg = Buffer.from(
+  `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630">
+     <rect width="1200" height="630" fill="${IVORY}"/>
+   </svg>`
+);
+const ogLogo = await sharp(trimmed).resize({ height: 380 }).png().toBuffer();
+await sharp(ogBg)
+  .composite([{ input: ogLogo, gravity: "center" }])
+  .png()
+  .toFile(join(BRAND, "og-image.png"));
+
+console.log(
+  "\n✓ Logo assets generated from the client original.\n" +
+    "  Next: set LOGO_READY = true in src/lib/brand.ts\n"
+);

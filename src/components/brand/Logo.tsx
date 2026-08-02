@@ -1,59 +1,53 @@
 /* =============================================================================
-   Logo — lockup of the dandelion mark + serif wordmark.
-   Variants: "full" (mark + wordmark), "stacked", "mark" (glyph only).
-   Tone inherits from `color` via currentColor, so `reversed` just sets a light
-   colour on dark surfaces. Keep this in sync with the exported SVG assets.
+   Logo — renders the CLIENT'S ORIGINAL logo artwork.
+   -----------------------------------------------------------------------------
+   The logo is always an image derived from the client's supplied original
+   (see src/lib/brand.ts and public/brand/README.md). It is never reconstructed
+   from type or vector shapes in code — the capital R, dandelion, curved line,
+   "regenerate", "SKIN & HAIR", "CLINIC", the logo's own lettering, spacing,
+   proportions and olive-gold all come straight from the source file.
+
+   The website's own fonts are unrelated to the lettering inside the logo.
+
+   `placement` picks the size-optimised asset. Note the lockup is a near-square
+   stacked composition, so it needs more height than a horizontal wordmark for
+   the smallest line ("CLINIC") to stay legible.
    ========================================================================== */
 
 import Link from "next/link";
-import DandelionMark from "./DandelionMark";
+import Image from "next/image";
 import { site } from "@/lib/site";
-
-type Variant = "full" | "stacked" | "mark";
+import { LOGO_ASPECT, logoAssets } from "@/lib/brand";
 
 type Props = {
-  variant?: Variant;
   href?: string | null;
   className?: string;
-  markClassName?: string;
+  imageClassName?: string;
   /** Accessible label used when the logo links home. */
   label?: string;
+  /** Selects the size-optimised asset variant. */
+  placement?: "header" | "footer";
 };
 
-function Wordmark({ stacked }: { stacked?: boolean }) {
-  return (
-    <span
-      className={
-        stacked
-          ? "flex flex-col items-center leading-none"
-          : "flex flex-col leading-none"
-      }
-    >
-      <span className="font-serif text-[1.35rem] tracking-[0.02em] text-current">
-        Regenerate
-      </span>
-      <span className="mt-0.5 font-sans text-[0.6rem] font-semibold uppercase tracking-[0.34em] text-current/70">
-        Skin&nbsp;&amp;&nbsp;Hair Clinic
-      </span>
-    </span>
-  );
-}
-
 export default function Logo({
-  variant = "full",
   href = "/",
   className,
-  markClassName,
+  imageClassName,
   label = `${site.name} — home`,
+  placement = "header",
 }: Props) {
   const content = (
-    <span
-      className={`inline-flex items-center gap-3 text-accent-contrast ${
-        variant === "stacked" ? "flex-col gap-2" : ""
-      } ${className ?? ""}`}
-    >
-      <DandelionMark className={`h-9 w-9 shrink-0 ${markClassName ?? ""}`} />
-      {variant !== "mark" && <Wordmark stacked={variant === "stacked"} />}
+    <span className={`inline-flex items-center ${className ?? ""}`}>
+      <Image
+        src={placement === "footer" ? logoAssets.footer : logoAssets.header}
+        alt={site.name}
+        width={LOGO_ASPECT.width}
+        height={LOGO_ASPECT.height}
+        priority={placement === "header"}
+        className={`w-auto object-contain ${
+          placement === "footer" ? "h-20 sm:h-24" : "h-14 sm:h-16"
+        } ${imageClassName ?? ""}`}
+      />
     </span>
   );
 

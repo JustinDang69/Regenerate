@@ -6,7 +6,11 @@
 export const site = {
   name: "Regenerate Skin & Hair Clinic",
   shortName: "Regenerate",
-  tagline: "Skin science and hair restoration support, with calm confidence.",
+  /* CLIENT REVISION: the previous "Skin Science · Hair Restoration Support" line
+     was removed sitewide. This short descriptor draws on the client's confirmed
+     brand note ("Regenerate refers to restoring and reviving beauty") and is kept
+     distinct from the hero tagline to avoid repetition. */
+  tagline: "Restoring and reviving, with calm confidence.",
   // NOTE(compliance): keep the top-line descriptor supportive, non-guaranteeing.
   description:
     "A Melbourne clinic blending medical credibility with luxury care — concern-led skin and hair programs, guided by qualified practitioners.",
@@ -20,18 +24,23 @@ export const site = {
     phoneDisplay: "(03) 0000 0000",
     address: {
       line1: "443 Bell St",
+      // Displayed as "Pascoe Vale South VIC 3044" — no comma between suburb and state.
       suburb: "Pascoe Vale South",
       state: "VIC",
       postcode: "3044",
       country: "Australia",
       precinct: "Melville Junction commercial precinct",
     },
-    // Google Maps embed/lookup uses this formatted string.
+    // Google Maps embed/lookup uses this formatted string (keeps the comma so the
+    // Maps query continues to resolve correctly — display formatting is separate).
     mapQuery: "443 Bell St, Pascoe Vale South VIC 3044",
   },
 
+  /* Opening hours. Format rules: no colon between day and time, lowercase am/pm
+     with a preceding space. Keep consistent everywhere hours are rendered. */
   hours: [
-    { days: "Monday – Saturday", time: "8:30am – 7:00pm" },
+    { days: "Monday–Friday", time: "8:30 am–7:00 pm" },
+    { days: "Saturday", time: "9:00 am–6:00 pm" },
     { days: "Sunday", time: "Closed" },
   ],
 
@@ -41,12 +50,10 @@ export const site = {
       "Additional on-street parking on side roads — please check parking signs.",
     ],
     transport: [
-      "Nearby tram stops along Bell St.",
-      "Local bus stops within short walking distance.",
+      "Nearby tram stop at Melville Junction and nearby bus stops within short walking distance.",
     ],
-    // TODO(client): confirm accessibility details (step-free entry, accessible WC, etc.).
     accessibility:
-      "Accessibility information to be confirmed. Please contact the clinic ahead of your visit for specific access needs.",
+      "Please contact the clinic ahead of your visit for specific access needs.",
   },
 
   social: {
@@ -105,9 +112,22 @@ export const primaryNav: NavItem[] = [
   },
 ];
 
-/* CTA labels — kept centralised so booking language stays consistent site-wide. */
+/* Address display helpers — single source of truth for address formatting so the
+   homepage location section, Contact page and footer never drift apart.
+   Format: "443 Bell St" / "Pascoe Vale South VIC 3044" (no comma before state). */
+export const addressLines = [
+  site.contact.address.line1,
+  `${site.contact.address.suburb} ${site.contact.address.state} ${site.contact.address.postcode}`,
+] as const;
+
+/** Single-line variant, e.g. for schema.org or inline use. */
+export const addressInline = addressLines.join(", ");
+
+/* CTA labels — kept centralised so booking language stays consistent site-wide.
+   NOTE: `book` is the BUTTON label only. Body copy that describes the consultation
+   process still says "consultation" — do not swap that wording. */
 export const cta = {
-  book: "Book Consultation",
+  book: "Book Now",
   enquire: "Enquire Now",
   exploreSkin: "Explore Skin Treatments",
   exploreHair: "Explore Hair Treatments",

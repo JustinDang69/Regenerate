@@ -6,7 +6,7 @@
 import Reveal from "@/components/motion/Reveal";
 import ImageFrame from "@/components/ui/ImageFrame";
 import Button from "@/components/ui/Button";
-import DandelionMark from "@/components/brand/DandelionMark";
+import Motif from "@/components/brand/Motif";
 import type { Concern } from "@/content/concerns";
 import { technologies } from "@/content/technologies";
 import { allPackages, formatPrice } from "@/content/packages";
@@ -52,7 +52,7 @@ export default function ConcernSection({
             <span className="eyebrow text-muted">
               {String(index + 1).padStart(2, "0")}
             </span>
-            <DandelionMark className="h-5 w-5 text-accent/50" strokeWidth={1} />
+            <Motif className="h-5 w-5 text-accent/50" />
           </Reveal>
 
           <Reveal as="h2" delay={40} id={`${concern.slug}-title`} className="text-h2">

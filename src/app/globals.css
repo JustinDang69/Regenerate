@@ -37,35 +37,45 @@
 
   --sage-500: #5f7358; /* validation / success, muted */
 
-  /* --- Semantic tokens (USE THESE in components) --------------------------- */
-  --background: #fbf8f1;          /* warm ivory page ground */
-  --surface: #ffffff;             /* crisp white cards / panels */
-  --surface-elevated: #f6f1e6;    /* raised tint panels, alternating sections */
-  --surface-sunken: #f2ece0;      /* recessed wells */
+  /* --- Semantic tokens (USE THESE in components) ---------------------------
+     CLIENT REVISION (round 1): white and milk/cream are SWAPPED. The page ground
+     is now crisp white; cards and alternating bands carry the warm cream that
+     previously sat behind everything. Contrast raised moderately across text,
+     borders and surfaces — still warm and clinical, never harsh or black-heavy.
+     The olive-gold brand accent (--accent) is unchanged by design. */
+  --background: #ffffff;          /* crisp white page ground (was cream) */
+  --surface: #faf6ec;             /* milk/cream cards & panels (was white) */
+  --surface-elevated: #f4eee0;    /* warm cream alternating section bands */
+  --surface-sunken: #efe7d6;      /* recessed wells */
 
-  --text-primary: #2c2717;        /* deep olive-brown */
-  --text-secondary: #6b6250;      /* warm taupe-grey body */
-  --text-muted: #948a73;          /* captions, meta, disabled */
-  --text-on-accent: #fbf8f1;      /* ivory text on olive fills */
+  --text-primary: #241f11;        /* deep olive-brown, deepened for contrast */
+  --text-secondary: #574f40;      /* warm taupe body, deepened for contrast */
+  --text-muted: #7b7259;          /* captions, meta — still AA on white */
+  /* Pure white maximises label contrast on the olive-gold fill (4.21:1) without
+     altering the brand accent, which the client requires to stay exact.
+     ACCESSIBILITY NOTE: 4.21:1 is just under the WCAG AA 4.5:1 threshold for
+     normal-size text. Reaching AA would require darkening --accent to ~#7d6c3d,
+     which is a brand decision for the client to make — flagged, not assumed. */
+  --text-on-accent: #ffffff;      /* label colour on olive fills */
 
-  --accent: #8c7a45;              /* primary muted olive-gold */
-  --accent-hover: #756538;        /* pressed / hover deepening */
-  --accent-soft: #ece4cf;         /* tinted accent wash / chips */
-  --accent-contrast: #5c4f2c;     /* accent text on ivory (AA-safe) */
+  --accent: #8c7a45;              /* primary muted olive-gold — UNCHANGED */
+  --accent-hover: #63552e;        /* deeper press/hover for clearer state change */
+  --accent-soft: #ece2c8;         /* tinted accent wash / chips */
+  --accent-contrast: #56492a;     /* accent text on light grounds (AA-safe) */
 
   --secondary: #d3ac6b;           /* warm amber highlight */
   --secondary-soft: #f4e8d0;      /* amber wash for glows */
 
-  --border: #e6ddc9;              /* default hairline */
-  --border-strong: #d5c9ae;       /* emphasised divider */
-  --muted-fill: #efe8d8;          /* quiet chip / tag background */
+  --border: #ded3ba;              /* default hairline, strengthened */
+  --border-strong: #c6b795;       /* emphasised divider, strengthened */
+  --muted-fill: #f0e9d9;          /* quiet chip / tag background */
 
-  --success: #5f7358;
+  --success: #55694e;
   --success-soft: #e4ebe0;
 
-  --overlay: rgba(28, 24, 14, 0.52);          /* modal / image scrim */
-  --shadow-tint: rgba(70, 60, 32, 0.14);      /* warm-brown shadow, never neutral grey */
-  --glow-gold: rgba(211, 172, 107, 0.28);     /* ambient radial glow */
+  --overlay: rgba(28, 24, 14, 0.56);          /* modal / image scrim */
+  --shadow-tint: rgba(64, 54, 28, 0.18);      /* warm-brown shadow, never neutral grey */
+  --glow-gold: rgba(211, 172, 107, 0.26);     /* ambient radial glow */
 
   /* --- Elevation (soft, warm, never hard) --------------------------------- */
   --shadow-xs: 0 1px 2px var(--shadow-tint);
