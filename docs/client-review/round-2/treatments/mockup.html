@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Regenerate — Round 2 treatment mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* =============================================================================
+   ROUND-2 CLIENT REVIEW — treatment architecture mockup (ARTIFACT PHASE ONLY).
+   Rendered in Palette B (White + Warm Islands) so colour stays consistent with
+   the recommended visual direction. Views: ?v=index | detail | patterns
+   ========================================================================== */
+*, *::before, *::after { box-sizing:border-box; }
+body { margin:0; }
+:root{
+  --text-primary:#241f11; --text-secondary:#574f40; --text-muted:#7b7259;
+  --text-on-accent:#ffffff; --accent:#8c7a45; --accent-contrast:#56492a;
+  --background:#ffffff; --surface:#ffffff; --surface-elevated:#fbf8f1; --surface-sunken:#f6f1e6;
+  --accent-soft:#eee5cf; --border:#dfd9cc; --border-strong:#c8bda8;
+  --shadow-tint:rgba(64,54,28,.16);
+  --shadow-xs:0 1px 2px var(--shadow-tint); --shadow-md:0 12px 34px -14px var(--shadow-tint);
+  --radius-md:14px; --radius-lg:22px; --radius-xl:34px; --radius-pill:999px;
+  --container-max:78rem; --gutter:clamp(1.25rem,5vw,2.75rem); --section-y:clamp(3rem,6vw,5.5rem);
+}
+body{ background:var(--background); color:var(--text-primary);
+  font-family:'Manrope',system-ui,sans-serif; font-size:1.0625rem; line-height:1.68; -webkit-font-smoothing:antialiased; }
+h1,h2,h3,h4{ font-family:'Cormorant Garamond',Georgia,serif; font-weight:500; letter-spacing:-.01em; margin:0; }
+a{ color:inherit; text-decoration:none; }
+.wrap{ max-width:var(--container-max); margin:0 auto; padding-inline:var(--gutter); }
+.narrow{ max-width:52rem; }
+.eyebrow{ font-size:.75rem; font-weight:600; letter-spacing:.22em; text-transform:uppercase; color:var(--accent-contrast); }
+.banner{ background:var(--text-primary); color:#fff; font-size:.74rem; letter-spacing:.18em; text-transform:uppercase; font-weight:700; text-align:center; padding:9px 12px; }
+header{ border-bottom:1px solid var(--border); background:var(--background); }
+.hdr{ display:flex; align-items:center; justify-content:space-between; gap:1.5rem; padding-block:.75rem; }
+.hdr img{ height:58px; width:auto; display:block; }
+.btn{ display:inline-flex; align-items:center; gap:.5rem; white-space:nowrap; border-radius:var(--radius-pill);
+  font-weight:600; padding:.75rem 1.5rem; font-size:.9rem; background:var(--accent); color:var(--text-on-accent); box-shadow:var(--shadow-xs); }
+.btn.lg{ padding:1rem 2rem; font-size:.95rem; }
+.btn.ghost{ background:transparent; color:var(--accent-contrast); border:1px solid var(--border-strong); box-shadow:none; }
+section{ padding-block:var(--section-y); }
+.band{ background:var(--surface-elevated); border-block:1px solid var(--border); }
+.h1{ font-size:clamp(2.2rem,4.6vw,3.4rem); line-height:1.08; }
+.h2{ font-size:clamp(1.7rem,3.2vw,2.4rem); line-height:1.14; }
+.h3{ font-size:1.35rem; }
+.lead{ font-size:clamp(1.05rem,1.4vw,1.3rem); line-height:1.6; color:var(--text-secondary); margin-top:1rem; }
+.muted{ color:var(--text-secondary); }
+.grid{ display:grid; gap:1.5rem; }
+@media(min-width:768px){ .g2{ grid-template-columns:repeat(2,1fr);} .g3{ grid-template-columns:repeat(3,1fr);} .g4{grid-template-columns:repeat(4,1fr);} }
+.card{ display:flex; flex-direction:column; height:100%; border:1px solid var(--border); border-radius:var(--radius-lg);
+  background:var(--surface); padding:1.75rem; box-shadow:var(--shadow-xs); }
+.card .foot{ margin-top:auto; padding-top:1.5rem; }
+.tags{ display:flex; flex-wrap:wrap; gap:.4rem; margin-top:.9rem; }
+.tag{ font-size:.72rem; border:1px solid var(--border); background:var(--surface-elevated); color:var(--accent-contrast);
+  border-radius:var(--radius-pill); padding:.25rem .7rem; font-weight:500; }
+.sub{ font-family:'Cormorant Garamond',serif; font-size:1.05rem; color:var(--accent-contrast); font-style:italic; }
+ul.clean{ list-style:none; margin:1rem 0 0; padding:0; }
+ul.clean li{ border-top:1px solid var(--border); padding:.75rem 0; color:var(--text-secondary); font-size:.95rem; }
+/* Process rail */
+.rail{ display:grid; gap:.75rem; counter-reset:step; }
+@media(min-width:900px){ .rail{ grid-template-columns:repeat(5,1fr);} }
+.step{ border:1px solid var(--border); border-radius:var(--radius-md); background:var(--surface); padding:1.15rem; position:relative; }
+.step b{ display:block; font-family:'Cormorant Garamond',serif; font-weight:500; font-size:1.15rem; color:var(--accent-contrast); }
+.step span{ font-size:.85rem; color:var(--text-secondary); }
+.step::before{ counter-increment:step; content:counter(step); position:absolute; top:.7rem; right:.9rem;
+  font-size:.7rem; font-weight:700; color:var(--text-muted); }
+/* Wavelength table */
+table{ width:100%; border-collapse:collapse; margin-top:1.25rem; font-size:.9rem; }
+th,td{ text-align:left; padding:.8rem .75rem; border-bottom:1px solid var(--border); vertical-align:top; }
+th{ font-size:.7rem; letter-spacing:.14em; text-transform:uppercase; color:var(--text-muted); font-weight:700; }
+td.sw{ white-space:nowrap; font-weight:600; color:var(--accent-contrast); }
+.dot{ display:inline-block; width:10px; height:10px; border-radius:999px; margin-right:.5rem; vertical-align:middle; border:1px solid rgba(0,0,0,.12); }
+/* Review-only annotation */
+.flag{ border:1px dashed #b4462f; background:#fdf4f1; color:#7d2f1c; border-radius:var(--radius-md);
+  padding:1rem 1.1rem; font-size:.85rem; margin-top:1.5rem; }
+.flag b{ display:block; font-family:'Manrope',sans-serif; font-weight:700; letter-spacing:.08em;
+  text-transform:uppercase; font-size:.68rem; margin-bottom:.35rem; }
+.choice{ border:1px dashed var(--border-strong); background:var(--surface-elevated); border-radius:var(--radius-md);
+  padding:1rem 1.1rem; font-size:.85rem; color:var(--text-secondary); margin-top:1.5rem; }
+.choice b{ display:block; font-family:'Manrope',sans-serif; font-weight:700; letter-spacing:.08em;
+  text-transform:uppercase; font-size:.68rem; margin-bottom:.35rem; color:var(--accent-contrast); }
+.crumb{ font-size:.8rem; color:var(--text-muted); }
+.hide{ display:none !important; }
+</style>
+</head>
+<body>
+<div class="banner" id="banner"></div>
+
+<header><div class="wrap hdr">
+  <img src="../logo/primary-circle-transparent.png" alt="Regenerate Skin &amp; Hair Clinic">
+  <a class="btn" href="#">Book Now →</a>
+</div></header>
+
+<!-- ============================ INDEX VIEW ============================ -->
+<div id="v-index">
+  <section>
+    <div class="wrap">
+      <span class="eyebrow">Treatments</span>
+      <h1 class="h1" style="margin-top:.6rem">Skin and hair treatments, explained clearly</h1>
+      <p class="lead" style="max-width:44rem">Every treatment begins with a consultation. Below is what each one is, what it is designed to support, and what to expect — so you can arrive with questions rather than guesses.</p>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="wrap">
+      <span class="eyebrow" style="color:var(--text-muted)">Skin</span>
+      <div class="grid g2" style="margin-top:1.25rem">
+
+        <article class="card">
+          <h3 class="h3">Microneedling</h3>
+          <div class="sub">The Collagen Booster</div>
+          <p class="muted" style="font-size:.95rem;margin-top:.75rem">A minimally invasive skin-needling treatment designed to support skin renewal, texture and collagen-related remodelling through controlled micro-channels.</p>
+          <div class="tags"><span class="tag">Texture</span><span class="tag">Scarring</span><span class="tag">Rejuvenation</span></div>
+          <div class="foot"><a class="btn ghost" href="#">Learn more →</a></div>
+        </article>
+
+        <article class="card">
+          <h3 class="h3">Mesotherapy</h3>
+          <div class="sub">The Biorevitalisation</div>
+          <p class="muted" style="font-size:.95rem;margin-top:.75rem">Micro-injections of skin boosters and nourishing components placed into the middle layer of the skin — offered for both the face and the scalp.</p>
+          <div class="tags"><span class="tag">Face</span><span class="tag">Scalp</span><span class="tag">Vitality</span></div>
+          <div class="foot"><a class="btn ghost" href="#">Learn more →</a></div>
+        </article>
+
+        <article class="card">
+          <h3 class="h3">LED Light Therapy</h3>
+          <p class="muted" style="font-size:.95rem;margin-top:.75rem">Non-invasive light therapy using specific wavelengths, used on its own or as a supportive step within other treatments.</p>
+          <div class="tags"><span class="tag">Acne support</span><span class="tag">Rejuvenation</span><span class="tag">Calming</span></div>
+          <div class="foot"><a class="btn ghost" href="#">Learn more →</a></div>
+        </article>
+
+        <article class="card">
+          <h3 class="h3">HydraFacial</h3>
+          <p class="muted" style="font-size:.95rem;margin-top:.75rem">A non-invasive facial that cleanses, exfoliates, extracts and deeply hydrates in one session, customised to your skin.</p>
+          <div class="tags"><span class="tag">Congestion</span><span class="tag">Hydration</span><span class="tag">Radiance</span></div>
+          <div class="foot"><a class="btn ghost" href="#">Learn more →</a></div>
+        </article>
+
+      </div>
+
+      <div class="choice"><b>Client decision — Mesotherapy architecture</b>
+        Shown here as ONE card covering face and scalp. The alternative is two separate cards
+        (“Face Mesotherapy” and “Scalp Mesotherapy”) with their own detail pages. Which do you prefer?</div>
+
+      <div class="choice"><b>Client decision — Hydra vs HydraFacial</b>
+        The live pricing page already lists a treatment called <strong>Hydra ($139)</strong>. Is that the same
+        service as the HydraFacial described in the new document? If so, should the public name change?</div>
+
+      <div class="flag"><b>Not shown publicly — needs sign-off</b>
+        No price is displayed for LED Light Therapy or HydraFacial because the source documents do not
+        establish one. Existing prices for Micro, Face Meso, Scalp Meso and Hydra are unchanged in this mockup.</div>
+    </div>
+  </section>
+</div>
+
+<!-- ============================ DETAIL VIEW ============================ -->
+<div id="v-detail">
+  <section>
+    <div class="wrap">
+      <div class="crumb">Treatments → Microneedling</div>
+      <span class="eyebrow" style="margin-top:.8rem;display:inline-block">Skin treatment · Rejuvenation</span>
+      <h1 class="h1" style="margin-top:.5rem">Microneedling</h1>
+      <div class="sub" style="font-size:1.4rem;margin-top:.35rem">The Collagen Booster</div>
+      <p class="lead" style="max-width:44rem">A minimally invasive skin-needling treatment designed to support skin renewal, texture and collagen-related remodelling through controlled micro-channels.</p>
+      <div style="margin-top:1.75rem"><a class="btn lg" href="#">Book Now →</a></div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="wrap">
+      <span class="eyebrow">Treatment pathway</span>
+      <h2 class="h2" style="margin-top:.5rem">What the treatment is designed to support</h2>
+      <div class="grid g3" style="margin-top:2rem">
+        <article class="card"><span class="eyebrow" style="color:var(--text-muted)">Concern</span>
+          <p class="muted" style="margin-top:.75rem;font-size:.95rem">Texture, the appearance of certain scars, and skin rejuvenation goals.</p></article>
+        <article class="card"><span class="eyebrow" style="color:var(--text-muted)">Technology</span>
+          <p class="muted" style="margin-top:.75rem;font-size:.95rem">Sterile fine needles create controlled microscopic channels in the skin as part of a practitioner-led treatment.</p></article>
+        <article class="card"><span class="eyebrow" style="color:var(--text-muted)">Benefit</span>
+          <p class="muted" style="margin-top:.75rem;font-size:.95rem">Designed to support skin renewal and a smoother, revitalised-looking appearance. Individual response and suitability vary.</p></article>
+      </div>
+
+      <div class="flag"><b>Held back from public copy — evidence + legal review</b>
+        The source document states micro-channels improve product absorption “by up to 300% to 500%”.
+        That figure is <strong>not</strong> shown above. Ahpra advertising guidance prohibits claims that create
+        unreasonable expectations of benefit, so this needs supporting evidence and clinical/legal sign-off
+        before it could appear publicly.</div>
+    </div>
+  </section>
+
+  <div class="band"><section style="padding-block:var(--section-y)">
+    <div class="wrap">
+      <span class="eyebrow">Your appointment</span>
+      <h2 class="h2" style="margin-top:.5rem">What to expect</h2>
+      <div class="grid g3" style="margin-top:2rem">
+        <article>
+          <h3 class="h3">Before</h3>
+          <ul class="clean">
+            <li>A consultation with your practitioner, including a health-history review.</li>
+            <li>Skin assessment and a discussion of your goals.</li>
+            <li>Before-and-after photography, only with your consent.</li>
+            <li>Questions are welcome at any point.</li>
+          </ul>
+        </article>
+        <article>
+          <h3 class="h3">During</h3>
+          <ul class="clean">
+            <li>Numbing cream is applied around 30 minutes beforehand.</li>
+            <li>Controlled skin needling is performed by your practitioner.</li>
+            <li>Comfort levels vary between individuals and are discussed beforehand.</li>
+          </ul>
+        </article>
+        <article>
+          <h3 class="h3">After</h3>
+          <ul class="clean">
+            <li>Mild to moderate redness is expected and typically settles within about two days.</li>
+            <li>Dryness or a feeling of tightness may follow, often easing around days 4–5.</li>
+            <li>Many people notice a change once flaking has settled.</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section></div>
+
+  <section>
+    <div class="wrap">
+      <span class="eyebrow">Aftercare</span>
+      <h2 class="h2" style="margin-top:.5rem">Looking after your skin</h2>
+      <div class="grid g3" style="margin-top:2rem">
+        <article class="card"><span class="eyebrow" style="color:var(--text-muted)">Days 0–2</span>
+          <ul class="clean"><li>Avoid touching the face, direct sun, strenuous exercise, swimming, sauna and steam.</li><li>Avoid make-up.</li></ul></article>
+        <article class="card"><span class="eyebrow" style="color:var(--text-muted)">Days 0–4</span>
+          <ul class="clean"><li>Use a gentle cleanser, a hyaluronic-acid serum and moisturiser.</li><li>Apply mineral SPF and reapply regularly.</li></ul></article>
+        <article class="card"><span class="eyebrow" style="color:var(--text-muted)">Days 5–7</span>
+          <ul class="clean"><li>Active serums such as vitamin C can be reintroduced gradually.</li></ul></article>
+      </div>
+
+      <div class="grid g2" style="margin-top:1.5rem">
+        <article class="card"><span class="eyebrow" style="color:var(--text-muted)">Recommended schedule</span>
+          <p class="muted" style="margin-top:.75rem;font-size:.95rem">A course of at least 3–6 sessions, spaced 4–6 weeks apart, with maintenance around every 3–4 months. Your plan is confirmed in consultation.</p></article>
+        <article class="card"><span class="eyebrow" style="color:var(--text-muted)">Suitability</span>
+          <p class="muted" style="margin-top:.75rem;font-size:.95rem">Suitability, expected experience and an individual plan are confirmed during consultation. Results vary from person to person.</p></article>
+      </div>
+
+      <div class="choice"><b>Client decision — naming</b>
+        Is “The Collagen Booster” a public-facing subtitle, or only an internal heading from the Word document?
+        The same question applies to “The Biorevitalisation” for Mesotherapy.</div>
+    </div>
+  </section>
+</div>
+
+<!-- ============================ PATTERNS VIEW ============================ -->
+<div id="v-patterns">
+  <section>
+    <div class="wrap">
+      <span class="eyebrow">Content patterns</span>
+      <h1 class="h1" style="margin-top:.5rem">Three further layouts</h1>
+      <p class="lead" style="max-width:44rem">These show how the remaining source material would be presented, without committing to it yet.</p>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="wrap">
+      <h2 class="h2">Mesotherapy — one page, two sections</h2>
+      <div class="grid g2" style="margin-top:1.5rem">
+        <article class="card">
+          <h3 class="h3">Face Mesotherapy</h3>
+          <p class="muted" style="font-size:.95rem;margin-top:.75rem">Micro-injections of skin boosters, serums and nourishing components into the middle layer of the skin — designed to support glow, skin laxity, the appearance of fine lines and evenness of tone, depending on the products selected.</p>
+          <ul class="clean"><li>Numbing cream applied around 30 minutes beforehand.</li><li>Mild pinching or pricking is expected, particularly in thinner-skinned areas.</li><li>Redness, swelling and small bumps usually settle within a day; tiny needle marks may show for 24–48 hours.</li></ul>
+        </article>
+        <article class="card">
+          <h3 class="h3">Scalp Mesotherapy</h3>
+          <p class="muted" style="font-size:.95rem;margin-top:.75rem">The same micro-injection approach applied to the scalp, delivering selected minerals and amino acids close to the hair follicle as part of a consultation-led hair-support plan.</p>
+          <ul class="clean"><li>Do not wash the hair for 24 hours.</li><li>Avoid scratching or putting pressure on the scalp.</li><li>Avoid hair dye and chemical treatments for one week.</li><li>Sleep on a clean pillowcase.</li></ul>
+        </article>
+      </div>
+      <div class="flag"><b>Removed from public copy — TGA</b>
+        The source document names two prescription medicines in connection with scalp mesotherapy.
+        Those names are deliberately absent above. TGA guidance is that prescription medicines generally
+        cannot be advertised to the public, and promoting a health service by referring to them — directly or
+        indirectly — can itself become prohibited advertising. Kept as an internal clinical note only.</div>
+    </div>
+  </section>
+
+  <div class="band"><section style="padding-block:var(--section-y)">
+    <div class="wrap">
+      <h2 class="h2">LED Light Therapy — wavelength reference</h2>
+      <p class="muted" style="margin-top:.75rem;max-width:44rem">The client's own document is careful about where evidence is stronger or weaker. That caution is preserved rather than flattened into uniform promises.</p>
+      <div style="overflow-x:auto">
+      <table>
+        <thead><tr><th>Light</th><th>Typical wavelength</th><th>Main clinic use</th><th>What the evidence suggests</th></tr></thead>
+        <tbody>
+          <tr><td class="sw"><span class="dot" style="background:#3b6fd4"></span>Blue</td><td>~400–470 nm</td><td>Acne-prone skin</td><td>Targets acne-associated bacteria and may reduce inflammatory lesions.</td></tr>
+          <tr><td class="sw"><span class="dot" style="background:#4aa06a"></span>Green</td><td>~500–570 nm</td><td>Pigmentation / complexion</td><td>Used cosmetically for uneven tone, though clinical evidence is less established.</td></tr>
+          <tr><td class="sw"><span class="dot" style="background:#e0b552"></span>Amber / Yellow</td><td>~570–590 nm</td><td>Redness, rejuvenation</td><td>Investigated for photoageing and vascular or inflammatory effects.</td></tr>
+          <tr><td class="sw"><span class="dot" style="background:#c8503f"></span>Red</td><td>~630–660 nm</td><td>Rejuvenation, repair</td><td>One of the better-studied wavelengths for skin rejuvenation.</td></tr>
+          <tr><td class="sw"><span class="dot" style="background:#8452c8"></span>Red + Blue</td><td>~415 + 633 nm</td><td>Acne</td><td>Combines acne-focused blue light with red light.</td></tr>
+          <tr><td class="sw"><span class="dot" style="background:#7d3a3a"></span>Near-infrared</td><td>~800–850 nm</td><td>Deeper photobiomodulation</td><td>Used for deeper tissue effects and rejuvenation support.</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="choice"><b>Client decision — is LED bookable?</b>
+        LED currently exists on the site as a <em>technology</em> used within other treatments. Should it also become
+        a standalone bookable service with its own price, or stay a supporting modality?</div>
+    </div>
+  </section></div>
+
+  <section>
+    <div class="wrap">
+      <h2 class="h2">HydraFacial — five-step process</h2>
+      <div class="rail" style="margin-top:1.5rem">
+        <div class="step"><b>Cleanse</b><span>Makeup, oil and surface impurities are removed.</span></div>
+        <div class="step"><b>Exfoliate</b><span>Gentle exfoliation lifts dead skin cells.</span></div>
+        <div class="step"><b>Extract</b><span>Vacuum-assisted extraction loosens impurities from pores.</span></div>
+        <div class="step"><b>Hydrate &amp; Infuse</b><span>Hydrating ingredients selected for your skin.</span></div>
+        <div class="step"><b>Protect</b><span>Moisturiser and broad-spectrum sunscreen to finish.</span></div>
+      </div>
+      <div class="grid g2" style="margin-top:1.5rem">
+        <article class="card"><span class="eyebrow" style="color:var(--text-muted)">First 24–48 hours</span>
+          <ul class="clean"><li>Avoid excessive heat, saunas and steam.</li><li>Avoid intense exercise if the skin feels sensitive.</li><li>Avoid harsh exfoliants unless advised otherwise.</li><li>Use gentle products and daily SPF 30+.</li></ul></article>
+        <article class="card"><span class="eyebrow" style="color:var(--text-muted)">Typical frequency</span>
+          <p class="muted" style="margin-top:.75rem;font-size:.95rem">Commonly around every 4–6 weeks, personalised to your skin. More intensive goals may be spaced every 2–4 weeks; longer-term maintenance every 1–3 months.</p></article>
+      </div>
+      <div class="flag"><b>Editorial note</b>
+        The source copy uses emojis and phrases such as “Your Skin. Your Glow.” Those are omitted here — the
+        stated goal this round is to move the impression away from beauty-salon toward restrained clinic.</div>
+    </div>
+  </section>
+</div>
+
+<script>
+  const titles = {
+    index:'Artifact B — proposed /treatments index',
+    detail:'Artifact B — proposed /treatments/microneedling detail template',
+    patterns:'Artifact B — Mesotherapy, LED and HydraFacial content patterns'
+  };
+  const v=(new URLSearchParams(location.search).get('v')||'index').toLowerCase();
+  const view = titles[v] ? v : 'index';
+  for (const k of Object.keys(titles)) {
+    if (k !== view) document.getElementById('v-'+k).classList.add('hide');
+  }
+  document.getElementById('banner').textContent = titles[view];
+</script>
+</body>
+</html>

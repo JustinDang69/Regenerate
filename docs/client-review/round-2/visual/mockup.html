@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Regenerate — Round 2 palette mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* =============================================================================
+   ROUND-2 CLIENT REVIEW MOCKUP — isolated from the production app.
+   Reproduces the live page composition (same fonts, radii, spacing, motion-free)
+   so three palettes can be compared like-for-like. Palette is chosen with
+   ?p=a|b|c. Radii are deliberately UNCHANGED so the client is only judging
+   colour in this round.
+   ========================================================================== */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; }
+
+:root {
+  /* Ink + accent are identical across all three palettes. */
+  --text-primary: #241f11;
+  --text-secondary: #574f40;
+  --text-muted: #7b7259;
+  --text-on-accent: #ffffff;
+  --accent: #8c7a45;              /* UNCHANGED — client requirement */
+  --accent-hover: #63552e;
+  --accent-contrast: #56492a;
+  --shadow-tint: rgba(64,54,28,.16);
+  --shadow-xs: 0 1px 2px var(--shadow-tint);
+  --shadow-sm: 0 4px 14px -6px var(--shadow-tint);
+  --shadow-md: 0 12px 34px -14px var(--shadow-tint);
+  --radius-md: 14px; --radius-lg: 22px; --radius-xl: 34px; --radius-pill: 999px;
+  --container-max: 78rem;
+  --gutter: clamp(1.25rem, 5vw, 2.75rem);
+  --section-y: clamp(3.5rem, 7vw, 6.5rem);
+}
+
+/* --- Palette A — Clinical White ------------------------------------------- */
+html[data-p="a"] {
+  --background:#ffffff; --surface:#ffffff; --surface-elevated:#ffffff; --surface-sunken:#fbf8f1;
+  --accent-soft:#f6f1e6; --muted-fill:#f8f6f1; --border:#e3ded3; --border-strong:#c9c0ad;
+}
+/* --- Palette B — White + Warm Islands ------------------------------------- */
+html[data-p="b"] {
+  --background:#ffffff; --surface:#ffffff; --surface-elevated:#fbf8f1; --surface-sunken:#f6f1e6;
+  --accent-soft:#eee5cf; --muted-fill:#f5f2eb; --border:#dfd9cc; --border-strong:#c8bda8;
+}
+/* --- Palette C — Gallery White / Outlined Panels -------------------------- */
+html[data-p="c"] {
+  --background:#ffffff; --surface:#ffffff; --surface-elevated:#fdfcf9; --surface-sunken:#fbf8f1;
+  --accent-soft:#f3ede0; --muted-fill:#ffffff; --border:#d8d3c9; --border-strong:#bdb4a3;
+}
+
+body {
+  background: var(--background);
+  color: var(--text-primary);
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-size: 1.0625rem; line-height: 1.68;
+  -webkit-font-smoothing: antialiased;
+}
+h1,h2,h3 { font-family:'Cormorant Garamond', Georgia, serif; font-weight:500; letter-spacing:-.01em; margin:0; }
+a { color: inherit; text-decoration: none; }
+
+.wrap { max-width: var(--container-max); margin: 0 auto; padding-inline: var(--gutter); }
+.eyebrow {
+  font-size:.75rem; font-weight:600; letter-spacing:.22em; text-transform:uppercase;
+  color: var(--accent-contrast);
+}
+
+/* --- Palette banner (review aid only — not part of the design) ------------ */
+.banner {
+  background: var(--text-primary); color: #fff; font-size: .74rem; letter-spacing: .18em;
+  text-transform: uppercase; font-weight: 700; text-align: center; padding: 9px 12px;
+}
+
+/* --- Header --------------------------------------------------------------- */
+header {
+  position: sticky; top: 0; z-index: 50;
+  background: color-mix(in srgb, var(--background) 88%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+.hdr { display:flex; align-items:center; justify-content:space-between; gap:1.5rem; padding-block:.75rem; }
+.hdr img { height: 62px; width:auto; object-fit: contain; display:block; }
+nav.main { display:flex; gap:.35rem; }
+nav.main a { padding:.5rem .9rem; font-size:.9rem; font-weight:500; color:color-mix(in srgb, var(--text-primary) 80%, transparent); border-radius:var(--radius-pill); }
+.btn {
+  display:inline-flex; align-items:center; gap:.5rem; white-space:nowrap;
+  border-radius: var(--radius-pill); font-weight:600; letter-spacing:.02em;
+  padding:.75rem 1.5rem; font-size:.9rem;
+  background: var(--accent); color: var(--text-on-accent); box-shadow: var(--shadow-sm);
+}
+.btn.lg { padding:1rem 2rem; font-size:.95rem; }
+.btn.ghost { background:transparent; color:var(--accent-contrast); border:1px solid var(--border-strong); box-shadow:none; }
+.burger { display:none; width:42px; height:42px; border-radius:999px; border:1px solid var(--border); align-items:center; justify-content:center; }
+.burger span { display:block; width:19px; height:2px; background:var(--text-primary); box-shadow:0 -6px 0 var(--text-primary), 0 6px 0 var(--text-primary); }
+
+/* --- Hero ----------------------------------------------------------------- */
+.hero { position:relative; overflow:hidden; padding-block: clamp(2.5rem,6vw,5rem) clamp(2.5rem,6vw,4.5rem); }
+.hero-grid { display:grid; gap:2.5rem; align-items:center; }
+@media (min-width:1024px){ .hero-grid { grid-template-columns:1.05fr .95fr; gap:4rem; } }
+.display { font-size: clamp(2.6rem, 6vw, 4.6rem); line-height:1.03; }
+.lead { font-size: clamp(1.05rem,1.4vw,1.3rem); line-height:1.6; color:var(--text-secondary); max-width:34rem; margin-top:1.25rem; }
+.hero-cta { display:flex; flex-wrap:wrap; gap:1rem; margin-top:2rem; }
+
+/* Emblem watermark — the client asked for the FULL emblem, not a lone dandelion */
+.watermark { position:absolute; pointer-events:none; opacity:.055; }
+.watermark img { width:100%; height:auto; display:block; }
+.wm-hero { width:min(46vw,540px); right:-6%; top:-8%; }
+.wm-footer { width:min(38vw,420px); right:4%; bottom:-12%; opacity:.05; }
+
+/* --- Image placeholder ---------------------------------------------------- */
+.frame {
+  position:relative; border:1px solid var(--border); border-radius:var(--radius-lg);
+  background: var(--surface-elevated);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.6rem;
+  text-align:center; box-shadow: var(--shadow-md); overflow:hidden;
+}
+.frame.arch { border-top-left-radius:999px; border-top-right-radius:999px; aspect-ratio:3/4; }
+.frame.land { aspect-ratio:3/2; box-shadow:none; }
+.frame .cap { font-size:.7rem; letter-spacing:.2em; text-transform:uppercase; color:var(--text-muted); font-weight:600; }
+.frame .sub { font-size:.7rem; color:color-mix(in srgb, var(--text-muted) 80%, transparent); }
+.frame img.mk { width:44px; opacity:.42; }
+
+/* --- Trust strip ---------------------------------------------------------- */
+.trust { background: var(--surface-elevated); border-block:1px solid var(--border); }
+.trust-grid { display:grid; grid-template-columns:repeat(2,1fr); }
+@media (min-width:768px){ .trust-grid { grid-template-columns:repeat(4,1fr); } }
+.trust-item { text-align:center; padding:1.6rem 1rem; }
+.trust-item b { display:block; font-family:'Cormorant Garamond',serif; font-weight:500; font-size:1.2rem; color:var(--accent-contrast); }
+.trust-item span { font-size:.78rem; color:var(--text-muted); }
+
+/* --- Cards ---------------------------------------------------------------- */
+section { padding-block: var(--section-y); }
+.cards { display:grid; gap:1.5rem; }
+@media (min-width:640px){ .cards { grid-template-columns:repeat(2,1fr); } }
+@media (min-width:1024px){ .cards { grid-template-columns:repeat(3,1fr); } }
+.card {
+  display:flex; flex-direction:column; height:100%;
+  border:1px solid var(--border); border-radius:var(--radius-xl);
+  background: var(--surface); padding:2rem; box-shadow: var(--shadow-xs);
+}
+.card h3 { font-size:1.6rem; margin-top:.6rem; }
+.card p { color:var(--text-secondary); font-size:.95rem; margin:.75rem 0 0; }
+.card .frame { margin-top:1.75rem; }
+.card .foot { margin-top:auto; padding-top:1.75rem; }
+.hl { list-style:none; margin:1.75rem 0 0; padding:1.5rem 0 0; border-top:1px solid var(--border); display:flex; flex-direction:column; gap:.75rem; }
+.hl li { display:flex; align-items:center; gap:.75rem; font-size:.95rem; color:var(--text-secondary); }
+.hl li::before { content:''; width:20px; height:1px; background:color-mix(in srgb,var(--accent) 60%, transparent); flex:none; }
+
+/* --- Editorial band ------------------------------------------------------- */
+.band { background: var(--surface-elevated); border-block:1px solid var(--border); }
+.split { display:grid; gap:2.5rem; align-items:center; }
+@media (min-width:768px){ .split { grid-template-columns:1fr 1fr; gap:4rem; } }
+.h2 { font-size: clamp(1.8rem,3.2vw,2.5rem); line-height:1.14; }
+
+/* --- Footer --------------------------------------------------------------- */
+footer { position:relative; overflow:hidden; background: var(--surface-sunken); border-top:1px solid var(--border); padding-block:3.5rem; }
+.foot-top { display:flex; flex-wrap:wrap; gap:2rem; justify-content:space-between; align-items:flex-end; border-bottom:1px solid var(--border); padding-bottom:2.25rem; }
+.foot-logo img { height:96px; width:auto; display:block; }
+.foot-opts { display:grid; gap:1.75rem; margin-top:2.25rem; }
+@media (min-width:768px){ .foot-opts { grid-template-columns:1fr 1fr; } }
+.opt { border:1px dashed var(--border-strong); border-radius:var(--radius-md); padding:1.5rem; background:var(--surface); }
+.opt .tag { font-size:.66rem; letter-spacing:.18em; text-transform:uppercase; font-weight:700; color:var(--accent-contrast); }
+.opt img { height:84px; width:auto; margin-top:1rem; display:block; }
+.legal { margin-top:2.25rem; font-size:.78rem; color:var(--text-muted); }
+
+/* --- Review annotation ---------------------------------------------------- */
+.note {
+  margin-top:1rem; font-size:.75rem; color:var(--text-muted);
+  border-left:2px solid var(--accent); padding-left:.75rem;
+}
+@media (max-width:1023px){ nav.main { display:none; } .burger { display:flex; } .hdr img { height:54px; } }
+</style>
+</head>
+<body>
+<div class="banner" id="banner">Palette</div>
+
+<header>
+  <div class="wrap hdr">
+    <!-- PRIMARY LOGO — circular version, shown in real sticky-header context -->
+    <img src="../logo/primary-circle-transparent.png" alt="Regenerate Skin &amp; Hair Clinic">
+    <nav class="main">
+      <a href="#">Home</a><a href="#">Skin</a><a href="#">Hair</a><a href="#">Pricing</a><a href="#">About</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:.75rem">
+      <a class="btn" href="#">Book Now →</a>
+      <div class="burger"><span></span></div>
+    </div>
+  </div>
+</header>
+
+<div class="hero">
+  <!-- FULL EMBLEM watermark (R + curved stems + dandelions), not a lone dandelion -->
+  <div class="watermark wm-hero"><img src="../logo/brand-emblem.png" alt=""></div>
+  <div class="wrap hero-grid">
+    <div>
+      <h1 class="display">Regenerate —<br>Forever in Your 20s</h1>
+      <p class="lead">A Melbourne clinic where medical credibility meets calm, luxury care. We design concern-led skin and hair programs — considered, personalised, and guided by qualified practitioners.</p>
+      <div class="hero-cta">
+        <a class="btn lg" href="#">Book Now →</a>
+        <a class="btn lg ghost" href="#">Explore Skin Treatments →</a>
+      </div>
+    </div>
+    <div class="frame arch">
+      <img class="mk" src="../logo/brand-emblem.png" alt="">
+      <div class="cap">Clinic hero photography</div>
+      <div class="sub">Image placeholder</div>
+    </div>
+  </div>
+</div>
+
+<div class="trust">
+  <div class="wrap trust-grid">
+    <div class="trust-item"><b>Practitioner-led</b><span>Dermal specialists &amp; therapist</span></div>
+    <div class="trust-item"><b>Concern-first</b><span>Plans tailored in consultation</span></div>
+    <div class="trust-item"><b>Breakthrough technologies</b><span>Skin and hair science applied with care</span></div>
+    <div class="trust-item"><b>Melbourne clinic</b><span>Pascoe Vale South, VIC</span></div>
+  </div>
+</div>
+
+<section>
+  <div class="wrap cards">
+    <article class="card">
+      <span class="eyebrow" style="color:var(--text-muted)">Skin</span>
+      <h3>Skin Treatments</h3>
+      <p>Support for acne and congestion, scarring and texture, hydration and rejuvenation — with technology selected to suit each concern.</p>
+      <div class="frame land"><img class="mk" src="../logo/brand-emblem.png" alt=""><div class="cap">Skin treatment room</div><div class="sub">Image placeholder</div></div>
+      <div class="foot"><a class="btn ghost" href="#">Explore Skin Treatments →</a></div>
+    </article>
+    <article class="card">
+      <span class="eyebrow" style="color:var(--text-muted)">Hair</span>
+      <h3>Hair Treatments</h3>
+      <p>Consultation-led support for thinning, scalp health, restorative recovery and considered grey-hair pathways.</p>
+      <div class="frame land"><img class="mk" src="../logo/brand-emblem.png" alt=""><div class="cap">Hair &amp; scalp treatment</div><div class="sub">Image placeholder</div></div>
+      <div class="foot"><a class="btn ghost" href="#">Explore Hair Treatments →</a></div>
+    </article>
+    <article class="card">
+      <span class="eyebrow" style="color:var(--text-muted)">Packages</span>
+      <h3>Treatment Packages</h3>
+      <p>Multi-session programs designed around a specific concern, alongside individual treatments. Pricing is indicative and confirmed in consultation.</p>
+      <ul class="hl"><li>Skin packages</li><li>Hair packages</li><li>Single treatments</li></ul>
+      <div class="foot"><a class="btn ghost" href="#">View All Pricing →</a></div>
+    </article>
+  </div>
+</section>
+
+<div class="band">
+  <section style="padding-block:var(--section-y)">
+    <div class="wrap split">
+      <div class="frame arch" style="max-width:26rem"><img class="mk" src="../logo/brand-emblem.png" alt=""><div class="cap">Practitioner portrait</div><div class="sub">Image placeholder</div></div>
+      <div>
+        <h2 class="h2">Care led by qualified hands</h2>
+        <p style="color:var(--text-secondary);margin-top:1rem">Our team brings a dermal specialist focus and a calm, methodical approach to every consultation and treatment.</p>
+        <div style="margin-top:1.75rem"><a class="btn ghost" href="#">Meet the team →</a></div>
+        <p class="note">Editorial band — this is the surface that changes most between the three palettes.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <div class="watermark wm-footer"><img src="../logo/brand-emblem.png" alt=""></div>
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-logo"><img src="../logo/brand-emblem-wordmark.png" alt="Regenerate"></div>
+      <div style="display:flex;gap:.75rem;flex-wrap:wrap">
+        <a class="btn" href="#">Book Now →</a><a class="btn ghost" href="#">Enquire Now →</a>
+      </div>
+    </div>
+
+    <!-- Footer branding is an open question — both treatments shown for the client to pick -->
+    <div class="foot-opts">
+      <div class="opt">
+        <span class="tag">Footer option 1 — emblem + regenerate</span>
+        <img src="../logo/brand-emblem-wordmark.png" alt="Regenerate">
+      </div>
+      <div class="opt">
+        <span class="tag">Footer option 2 — + SKIN &amp; HAIR CLINIC</span>
+        <img src="../logo/brand-emblem-wordmark-full.png" alt="Regenerate Skin &amp; Hair Clinic">
+      </div>
+    </div>
+
+    <p class="legal">443 Bell St · Pascoe Vale South VIC 3044 · Monday–Friday 8:30 am–7:00 pm · Saturday 9:00 am–6:00 pm</p>
+  </div>
+</footer>
+
+<script>
+  const names = {
+    a: 'Palette A — Clinical White',
+    b: 'Palette B — White + Warm Islands  (recommended starting point)',
+    c: 'Palette C — Gallery White / Outlined Panels'
+  };
+  const p = (new URLSearchParams(location.search).get('p') || 'b').toLowerCase();
+  document.documentElement.dataset.p = names[p] ? p : 'b';
+  document.getElementById('banner').textContent = names[document.documentElement.dataset.p];
+</script>
+</body>
+</html>
