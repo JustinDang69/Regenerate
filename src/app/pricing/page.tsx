@@ -7,7 +7,6 @@ import PackageCard from "@/components/cards/PackageCard";
 import TreatmentCard from "@/components/cards/TreatmentCard";
 import PricingNav from "@/components/sections/PricingNav";
 import CTABlock from "@/components/sections/CTABlock";
-import Motif from "@/components/brand/Motif";
 
 import { skinPackages, hairPackages, singleTreatments } from "@/content/packages";
 import { cta } from "@/lib/site";
@@ -22,7 +21,9 @@ export const metadata: Metadata = {
 function GroupHeading({ eyebrow, title }: { eyebrow: string; title: string }) {
   return (
     <Reveal className="mb-8 flex items-center gap-4">
-      <Motif className="h-6 w-6 text-accent/60" />
+      {/* ROUND 3: the small emblem was removed — it is illegible at this size,
+          and a lone dandelion is no longer used. A short olive rule marks the group. */}
+      <span aria-hidden className="h-px w-10 shrink-0 bg-accent/60" />
       <div>
         <span className="eyebrow text-muted">{eyebrow}</span>
         <h3 className="text-h3">{title}</h3>

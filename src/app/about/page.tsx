@@ -62,7 +62,7 @@ export default function AboutPage() {
       <Section tone="elevated">
         <Container size="narrow" className="text-center">
           <Reveal className="mx-auto flex flex-col items-center gap-6">
-            <Motif className="h-16 w-16 text-accent/70" />
+            <Motif className="h-16 text-accent/70" />
             <span className="eyebrow">Our motif</span>
             <h2 className="text-h2 text-balance">The meaning of the dandelion</h2>
             <p className="text-lead text-secondary text-pretty">

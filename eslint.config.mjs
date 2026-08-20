@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    /* Client-review artifacts are isolated from the app and include vendored
+       minified libraries. Excluded from linting for the same reason `docs` is
+       excluded from tsconfig — review material must never break a production check. */
+    "docs/**",
   ]),
   {
     rules: {

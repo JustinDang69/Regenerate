@@ -34,7 +34,10 @@ export default function CTABlock({
           : "border border-border bg-surface-elevated text-primary"
       }`}
     >
-      <Motif className={`absolute -right-6 -top-6 h-40 w-40 ${isAccent ? "text-on-accent/10" : "text-accent/10"}`}
+      {/* Full emblem behind the CTA copy — a text area, which is the only place
+          the emblem is permitted to sit. Height-only so its ratio is preserved. */}
+      <Motif
+        className={`absolute -right-8 -top-8 h-44 ${isAccent ? "text-on-accent/10" : "text-accent/[0.07]"}`}
       />
       <div className="relative mx-auto flex max-w-2xl flex-col items-center gap-5">
         {eyebrow && (
