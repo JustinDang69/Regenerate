@@ -1,29 +1,44 @@
 /* =============================================================================
-   Motif — the decorative dandelion, taken from the CLIENT'S OWN logo artwork.
+   Motif — the FULL brand emblem (R + curved stems + dandelions), used as
+   background artwork.
    -----------------------------------------------------------------------------
-   Used as a subtle ornament: dividers, section accents, background flourishes,
-   image placeholders. This replaces the earlier hand-drawn glyph so every
-   dandelion on the site matches the real logo exactly.
+   ROUND-3 BRAND RULES — read before changing anything here:
+
+     · This renders the COMPLETE emblem. The dandelion is never used on its own;
+       the client explicitly rejected standalone dandelion decoration.
+     · It belongs BEHIND TEXT — statements, editorial copy, the footer identity.
+       Never place it under an image or image placeholder: real photography will
+       cover it, which makes it pointless.
+     · Keep it extremely subtle. Low opacity, plenty of white space around it,
+       never repeated across a page, never competing with reading.
 
    The artwork is rendered as a CSS mask filled with `currentColor` rather than a
-   plain <img>. The silhouette comes straight from public/brand/motif-dandelion.png
-   (generated from the client original), while colour and opacity stay controllable
-   from the parent — which the light-on-olive CTA band needs. The motif is a single
-   flat ink colour, so masking loses nothing.
+   plain <img>, so the silhouette comes straight from the client's file while
+   colour and opacity stay controllable from the parent. The emblem is a single
+   flat ink, so masking loses nothing.
 
    Purely decorative: always aria-hidden, never announced to screen readers.
+
+   ⚠️ Do NOT pass display utilities (`hidden`, `lg:block`, …) via className. The
+   base `inline-block` below competes with them in the same CSS layer and wins,
+   so the motif would render at every breakpoint. Wrap Motif in a container and
+   control visibility there instead — see MotifLayer.
    ========================================================================== */
 
-const MOTIF_URL = "url('/brand/motif-dandelion.png')";
+import { logoAssets } from "@/lib/brand";
+
+const MASK = `url('${logoAssets.emblem}')`;
 
 export default function Motif({ className }: { className?: string }) {
   return (
     <span
       aria-hidden="true"
-      className={`inline-block shrink-0 bg-current ${className ?? ""}`}
+      /* Carries the emblem's own 562:417 ratio, so callers set ONE dimension
+         (usually height) and the other follows — no squashing, no letterboxing. */
+      className={`inline-block shrink-0 aspect-[562/417] bg-current ${className ?? ""}`}
       style={{
-        WebkitMaskImage: MOTIF_URL,
-        maskImage: MOTIF_URL,
+        WebkitMaskImage: MASK,
+        maskImage: MASK,
         WebkitMaskSize: "contain",
         maskSize: "contain",
         WebkitMaskRepeat: "no-repeat",

@@ -1,15 +1,22 @@
 /* =============================================================================
-   Hero — homepage hero. Soft layered fade/translate reveal + ambient motif
-   drift via GSAP. Falls back to a clean static hero under reduced-motion.
-   Strongest conversion moment: headline, supportive sub-line, dual CTA.
+   Hero — homepage hero.
+   -----------------------------------------------------------------------------
+   ROUND 3: rebuilt around a clinic film. The media slot is a real <video>
+   element, so when the client's footage arrives it drops in with no structural
+   change (see HeroMedia below).
+
+   Motion is cinematic but restrained: the media reveals with a slow clip-path
+   wipe, the headline rises line by line out of its own masks, then the lead and
+   CTAs follow. ~1.5s total, deliberately unhurried. Nothing loops decoratively.
+
+   Fully disabled under prefers-reduced-motion.
    ========================================================================== */
 "use client";
 
 import { useEffect, useRef } from "react";
-import Link from "next/link";
 import Button from "@/components/ui/Button";
 import MotifLayer from "@/components/brand/MotifLayer";
-import ImageFrame from "@/components/ui/ImageFrame";
+import HeroMedia from "@/components/sections/HeroMedia";
 import { gsap } from "@/lib/motion/gsap";
 import { cta } from "@/lib/site";
 
@@ -19,35 +26,24 @@ export default function Hero() {
   useEffect(() => {
     const el = root.current;
     if (!el) return;
-    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReduced) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const ctx = gsap.context(() => {
-      // Layered entrance — soft, unhurried, staggered.
-      gsap.from("[data-hero-stagger]", {
-        y: 26,
-        opacity: 0,
-        duration: 1.1,
-        ease: "power3.out",
-        stagger: 0.12,
-        delay: 0.15,
-      });
-      gsap.from("[data-hero-media]", {
-        y: 40,
-        opacity: 0,
-        scale: 0.98,
-        duration: 1.3,
-        ease: "power3.out",
-        delay: 0.35,
-      });
-      // Ambient, never-ending gentle drift on the decorative motif.
-      gsap.to("[data-hero-drift]", {
-        y: 16,
-        duration: 6,
-        ease: "sine.inOut",
-        yoyo: true,
-        repeat: -1,
-      });
+      const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+
+      tl.from("[data-hero-eyebrow]", { y: 14, opacity: 0, duration: 0.8 }, 0)
+        // Each headline line slides up out of its own overflow mask.
+        .from("[data-hero-line]", { yPercent: 115, duration: 1.15, stagger: 0.1 }, 0.1)
+        // Media wipes open from a slightly inset rectangle — the "curtain".
+        .fromTo(
+          "[data-hero-media]",
+          { clipPath: "inset(12% 12% 12% 12% round 22px)", opacity: 0 },
+          { clipPath: "inset(0% 0% 0% 0% round 22px)", opacity: 1, duration: 1.5 },
+          0.25
+        )
+        .from("[data-hero-lead]", { y: 18, opacity: 0, duration: 0.9 }, 0.75)
+        .from("[data-hero-cta]", { y: 18, opacity: 0, duration: 0.9 }, 0.88)
+        .from("[data-hero-cue]", { opacity: 0, duration: 0.8 }, 1.05);
     }, el);
 
     return () => ctx.revert();
@@ -56,54 +52,65 @@ export default function Hero() {
   return (
     <section
       ref={root}
-      className="relative overflow-hidden pt-32 pb-[clamp(3.5rem,8vw,7rem)] sm:pt-40"
+      className="relative overflow-hidden pt-28 pb-[clamp(3rem,7vw,5rem)] sm:pt-36"
       aria-label="Introduction"
     >
+      {/* Emblem sits behind the TEXT column, never behind the media. */}
       <MotifLayer variant="hero" />
-      <div data-hero-drift className="pointer-events-none absolute inset-0 -z-10" />
 
-      <div className="mx-auto grid max-w-[var(--container-max)] items-center gap-12 px-[var(--gutter)] lg:grid-cols-[1.1fr_0.9fr]">
+      <div className="mx-auto grid max-w-[var(--container-max)] items-center gap-12 px-[var(--gutter)] lg:grid-cols-[1.02fr_0.98fr] lg:gap-16">
         {/* Copy */}
-        <div className="flex flex-col items-start gap-6">
-          {/* COMPLIANCE: "Forever in Your 20s" is a client-approved tagline. It was
-              previously flagged for legal/advertising review before public use in
-              regulated advertising — confirm sign-off is on file. */}
-          <h1 data-hero-stagger className="text-display text-balance">
-            Regenerate — Forever in Your&nbsp;20s
+        <div className="flex flex-col items-start">
+          <span data-hero-eyebrow className="eyebrow">
+            Regenerate Skin &amp; Hair Clinic
+          </span>
+
+          {/* COMPLIANCE: "Forever in Your 20s" is the client-approved tagline.
+              It was flagged for advertising review before public use; the client
+              confirmed it. Lines are explicit so each mask holds exactly one. */}
+          <h1 className="mt-5 text-display tracking-[-0.02em]">
+            <span className="line">
+              <span data-hero-line>Regenerate —</span>
+            </span>
+            <span className="line">
+              <span data-hero-line>Forever in</span>
+            </span>
+            <span className="line">
+              <span data-hero-line>Your 20s</span>
+            </span>
           </h1>
 
-          <p data-hero-stagger className="max-w-xl text-lead text-secondary text-pretty">
-            A Melbourne clinic where medical credibility meets calm, luxury care.
-            We design concern-led skin and hair programs — considered, personalised,
-            and guided by qualified practitioners.
+          <p data-hero-lead className="mt-6 max-w-xl text-lead text-secondary text-pretty">
+            A Melbourne clinic where medical credibility meets calm, considered care.
+            Concern-led skin and hair programs, guided by qualified practitioners.
           </p>
 
-          <div data-hero-stagger className="mt-2 flex flex-wrap items-center gap-4">
-            <Button href={cta.bookHref} size="lg">{cta.book}</Button>
-            <Button href="/skin" variant="secondary" size="lg">{cta.exploreSkin}</Button>
+          <div data-hero-cta className="mt-9 flex flex-wrap items-center gap-4">
+            <Button href={cta.bookHref} size="lg">
+              {cta.book}
+            </Button>
+            <Button href="/skin" variant="secondary" size="lg">
+              {cta.exploreSkin}
+            </Button>
+          </div>
+
+          <div
+            data-hero-cue
+            className="mt-10 flex items-center gap-3 text-[0.72rem] uppercase tracking-[0.18em] text-muted"
+          >
+            <span
+              aria-hidden
+              className="relative block h-px w-11 overflow-hidden bg-border-strong"
+            >
+              <span className="absolute inset-0 animate-[cue_2.6s_var(--ease-in-out)_infinite] bg-accent" />
+            </span>
+            Scroll
           </div>
         </div>
 
         {/* Media */}
-        <div data-hero-media className="relative">
-          <ImageFrame
-            ratio="tall"
-            mask="arch"
-            priority
-            placeholderLabel="Clinic hero photography"
-            sizes="(max-width: 1024px) 100vw, 45vw"
-          />
-          {/* Floating credential card — quiet trust cue */}
-          <Link
-            href="/about#practitioners"
-            className="absolute -bottom-6 -left-4 hidden max-w-[13rem] flex-col gap-1 rounded-[var(--radius-md)] border border-border bg-surface/95 p-4 shadow-[var(--shadow-md)] backdrop-blur-sm transition-transform hover:-translate-y-1 sm:flex"
-          >
-            <span className="eyebrow text-muted">Cared for by</span>
-            <span className="font-serif text-[1.1rem] text-accent-contrast">
-              Dermal specialists &amp; therapist
-            </span>
-            <span className="text-[0.75rem] text-muted">Meet the team →</span>
-          </Link>
+        <div data-hero-media>
+          <HeroMedia />
         </div>
       </div>
     </section>

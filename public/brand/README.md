@@ -1,100 +1,71 @@
 # Regenerate — Brand Asset Package
 
-## The client's original logo is the ONLY source of truth
+## The client's original logo files are the ONLY source of truth
 
-The logo must **never** be recreated, traced, redrawn or reinterpreted in code.
-Everything in this folder is **derived** from the client's original PNG by a script
-that only trims, resizes and re-encodes — it never redraws the artwork.
+The logo is **never** recreated, traced, redrawn or reinterpreted. Everything here is
+**derived** from the client's originals by a script that only removes the flat white
+background, crops along bands detected in the artwork, resizes and re-encodes.
 
-Preserved exactly, by definition, because we only ever resize the original:
-
-- the capital **R**
-- the dandelion symbol
-- the curved line
-- the word **regenerate**
-- **SKIN & HAIR**
-- **CLINIC**
-- the logo's own lettering, spacing, proportions, alignment and olive-gold colour
-
-> The website's own fonts (Cormorant Garamond + Manrope) are unrelated to the
-> lettering *inside* the logo and remain unchanged.
-
-## Updating the logo
-
-```bash
-# 1. Replace the original at:
-#      public/brand/source/regenerate-logo-original.png
-# 2. Re-derive every web asset from it:
-node scripts/generate-logo-assets.mjs
-# 3. If the script reports a new trimmed size, update LOGO_ASPECT in src/lib/brand.ts
+```
+public/brand/source/regenerate-circle-original.jpg   circular lockup — MAIN logo
+public/brand/source/regenerate-lockup-original.jpg   stacked lockup — emblem source
 ```
 
-### Current status
+## Round-3 brand rules
 
-✅ **Live** — the client's original logo is in place and is used in the header,
-mobile navigation and footer, plus all favicons, app icons and the social preview.
+| Rule | Where |
+| --- | --- |
+| The **circular logo** is the main brand identity | Header (`Logo placement="header"`) |
+| The decorative mark is the **FULL EMBLEM** — R + curved stems + dandelions together | `Motif.tsx` |
+| **A dandelion on its own is never used anywhere** | — |
+| The emblem appears **behind text only**, never beneath an image or placeholder | `MotifLayer`, `CTABlock`, `HealthcareStatement`, `Footer` |
+| The **footer** uses an emblem + brand-name lockup as the clinic identity | `Logo placement="footer"` |
 
-### One production note
+The emblem is deliberately faint (4–7% opacity), never repeated on a page, and never
+competing with reading.
 
-The supplied original is a **flattened JPEG on a solid white background** (2000×2000,
-no alpha). Because the artwork is a single olive ink colour, the generator recovers a
-true alpha channel exactly — every non-white pixel is `alpha × ink + (1−alpha) × white`,
-so the inverse is lossless and anti-aliased edges stay smooth. Shape, proportions and
-colour are untouched.
+## Regenerating
 
-If the client can supply a **vector** (AI / EPS / PDF / SVG) or a transparent PNG
-master, drop it in and re-run the script — quality at large sizes would improve
-further. Not required; current output is clean.
+```bash
+node scripts/generate-logo-assets.mjs
+```
+Re-run whenever the client supplies new artwork. Update `LOGO_SIZES` in
+`src/lib/brand.ts` if the script reports different dimensions.
 
-## Generated outputs
+## Outputs
 
 | File | Use |
 | --- | --- |
-| `logo-full.png` / `.webp` | Full-resolution transparent master (whole lockup) |
-| `logo-header.png` / `.webp` | Optimised header lockup |
-| `logo-footer.png` / `.webp` | Optimised footer lockup |
-| `logo-mark.png` / `.webp` | The mark alone — R + curve + dandelions |
-| `motif-dandelion.png` / `.webp` | Decorative dandelion head (see below) |
-| `favicon-16/32/48.png` | Raster favicons |
-| `../favicon.ico` | Multi-use browser favicon |
-| `apple-touch-icon.png` | 180×180 iOS home-screen icon |
-| `icon-192.png`, `icon-512.png` | PWA / Android icons (see `src/app/manifest.ts`) |
-| `icon-512-transparent.png` | Transparent 512 variant |
-| `og-image.png` | 1200×630 social preview on brand ivory |
+| `logo-primary-circle.png` / `.webp` | Full-resolution circular logo |
+| `logo-header.png` / `.webp` | Header-optimised circular logo |
+| `logo-secondary-lockup.png` / `.webp` | Stacked lockup |
+| `logo-emblem.png` / `.webp` | **The emblem** — background artwork |
+| `logo-emblem-wordmark.png` / `.webp` | Emblem + "regenerate" |
+| `logo-emblem-wordmark-full.png` / `.webp` | Emblem + regenerate + SKIN & HAIR CLINIC |
+| `logo-footer.png` / `.webp` | Footer identity lockup |
+| `favicon-16/32/48.png`, `../favicon.ico` | Favicons |
+| `apple-touch-icon.png`, `icon-192.png`, `icon-512.png` | App icons |
+| `og-image.png` | 1200×630 social preview |
 
-### Icons simplify as they get smaller
+### Why icons step down in detail
 
-The lockup stacks four elements (mark / "regenerate" / "SKIN & HAIR" / "CLINIC"),
-which is an illegible smudge at icon sizes — so icons step down in detail:
+The full circular lockup carries small type that turns to mush at icon sizes, so:
 
-| Size | Artwork | Why |
-| --- | --- | --- |
-| 16 / 32 / 48 (favicons) | **R only**, ivory on an olive chip | The dandelion's hairline filaments anti-alias into pale beige at these sizes and the icon reads as an empty box. The R is a solid letterform with real mass, and reversing it out of olive keeps it visible on both light and dark browser tab bars. |
-| 180 / 192 / 512 (app icons) | **Full mark** on an ivory tile | Enough resolution for the dandelion detail to survive, so the icon keeps the brand's most distinctive element. |
+- **180 / 192 / 512** — the full emblem on an ivory tile.
+- **16 / 32 / 48** — the **R alone**, reversed out of an olive chip. The dandelion's
+  hairline filaments anti-alias into pale beige at those sizes and the icon reads as an
+  empty box.
 
-Both the mark band and the R glyph are **detected by measuring the artwork**, not
-hard-coded, so a re-exported logo still works. Nothing is ever cropped mid-shape or
-distorted — only scaled proportionally and padded.
+Both the emblem band and the R glyph are **detected by measuring the artwork**, not
+hard-coded, so a re-exported logo still works.
 
-> Browsers cache favicons aggressively. After a change, hard-refresh
-> (<kbd>Ctrl</kbd>+<kbd>F5</kbd>) or reopen the tab to see it.
-
-### The decorative dandelion
-
-`motif-dandelion.png` is the large seed head lifted from the client's own artwork,
-isolated with a circular mask centred on its hub (which cleanly drops the stem and the
-smaller head while keeping every filament). It is used site-wide for dividers, section
-accents, background flourishes and image placeholders via
-`src/components/brand/Motif.tsx`, which renders it as a CSS mask filled with
-`currentColor` so it can be tinted — light on the olive CTA band, faint elsewhere.
-
-This replaced an earlier hand-drawn glyph. **Every dandelion on the site now comes
-from the real logo**, so decoration and brand mark never diverge.
+> Browsers cache favicons aggressively. After a change, hard-refresh (Ctrl+F5) or
+> reopen the tab.
 
 ## Usage rules
 
 - Clear space ≥ the height of the dandelion head on all sides.
 - Minimum size: 24 px digital.
-- Never recolour, rotate, stretch, or add effects/shadows.
-- An SVG version should only ever be produced from a genuine vector supplied by the
-  client — do **not** auto-trace the PNG and present it as the exact logo.
+- Never recolour, rotate, stretch, or add effects.
+- Do **not** auto-trace a raster and present it as an exact vector. An SVG should only
+  come from a genuine vector supplied by the client.

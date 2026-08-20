@@ -30,7 +30,10 @@ export default function PathwayCard({
   highlights,
 }: Props) {
   return (
-    <article className="group relative flex h-full flex-col overflow-hidden rounded-[var(--radius-xl)] border border-border bg-surface p-8 shadow-[var(--shadow-xs)] transition-all duration-[var(--dur-base)] ease-[var(--ease-soft)] hover:-translate-y-1 hover:border-border-strong hover:shadow-[var(--shadow-md)] md:p-10">
+    // ROUND 3: hover warms the border to olive and lifts gently — restrained
+    // elevation and border motion rather than scaling, per the client's note that
+    // cards should not scale. The arrow movement lives on the CTA.
+    <article className="group relative flex h-full flex-col overflow-hidden rounded-[var(--radius-xl)] border border-border bg-surface p-8 transition-all duration-[var(--dur-base)] ease-[var(--ease-soft)] hover:-translate-y-1 hover:border-accent hover:shadow-[var(--shadow-md)] md:p-10">
       <span className="eyebrow text-muted">{eyebrow}</span>
       <h3 className="mt-3 text-h3 text-[1.7rem]">{title}</h3>
       <p className="mt-3 max-w-md text-secondary">{description}</p>

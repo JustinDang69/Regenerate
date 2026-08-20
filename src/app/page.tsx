@@ -10,6 +10,7 @@
    ========================================================================== */
 import Hero from "@/components/sections/Hero";
 import TrustStrip from "@/components/sections/TrustStrip";
+import HealthcareStatement from "@/components/sections/HealthcareStatement";
 import Section from "@/components/ui/Section";
 import Container from "@/components/ui/Container";
 import Divider from "@/components/brand/Divider";
@@ -54,6 +55,12 @@ export default function HomePage() {
     <>
       <Hero />
       <TrustStrip />
+
+      {/* --- Healthcare positioning ------------------------------------------
+          ROUND 3: the client's supplied statement, verbatim. Placed after the
+          hero and trust strip and before the treatment pathways, so a visitor
+          meets the clinic, then its position, then the treatments. */}
+      <HealthcareStatement />
 
       {/* --- Skin · Hair · Packages pathways -------------------------------- */}
       <Section id="pathways" tone="base">

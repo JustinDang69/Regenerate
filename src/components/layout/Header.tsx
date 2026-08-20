@@ -80,13 +80,22 @@ export default function Header() {
                   href={item.href}
                   aria-current={isActive(item.href) ? "page" : undefined}
                   aria-expanded={hasChildren ? openDropdown === item.label : undefined}
-                  className={`inline-flex items-center gap-1 rounded-[var(--radius-pill)] px-4 py-2 text-[0.9rem] font-medium transition-colors ${
+                  /* ROUND 3: an olive underline sweeps in from the left on hover
+                     and stays put for the active route — more intentional feedback
+                     than a colour change alone, and it keeps the header white. */
+                  className={`group/nav relative inline-flex items-center gap-1 px-4 py-2 text-[0.9rem] font-medium transition-colors duration-[var(--dur-fast)] ${
                     isActive(item.href)
                       ? "text-accent-contrast"
-                      : "text-primary/80 hover:text-accent-contrast"
+                      : "text-secondary hover:text-accent-contrast"
                   }`}
                 >
                   {item.label}
+                  <span
+                    aria-hidden
+                    className={`pointer-events-none absolute inset-x-4 bottom-1 h-px origin-right scale-x-0 bg-accent transition-transform duration-[var(--dur-base)] ease-[var(--ease-soft)] group-hover/nav:origin-left group-hover/nav:scale-x-100 ${
+                      isActive(item.href) ? "scale-x-100" : ""
+                    }`}
+                  />
                   {hasChildren && (
                     <svg viewBox="0 0 10 6" className="h-2 w-2 opacity-60" fill="none" stroke="currentColor" strokeWidth={1.5} aria-hidden>
                       <path d="M1 1l4 4 4-4" strokeLinecap="round" />
@@ -170,13 +179,26 @@ export default function Header() {
             <Logo />
           </div>
 
-          {primaryNav.map((item) => (
-            <div key={item.label} className="border-b border-border py-1">
+          {/* ROUND 3: items are numbered and stagger in behind the drawer's slide,
+              which reads more like a gallery index than a dropdown list. */}
+          {primaryNav.map((item, i) => (
+            <div
+              key={item.label}
+              className="border-b border-border py-1 transition-all duration-[var(--dur-slow)] ease-[var(--ease-soft)]"
+              style={{
+                transitionDelay: openMenu ? `${140 + i * 60}ms` : "0ms",
+                opacity: openMenu ? 1 : 0,
+                transform: openMenu ? "none" : "translateY(18px)",
+              }}
+            >
               <Link
                 href={item.href}
-                className="block py-3 font-serif text-[1.4rem] text-primary"
+                className="flex items-baseline justify-between py-3 font-serif text-[1.5rem] text-primary transition-colors hover:text-accent-contrast"
               >
                 {item.label}
+                <span className="font-sans text-[0.68rem] tracking-[0.2em] text-muted">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
               </Link>
               {item.children && (
                 <ul className="mb-2 flex flex-col gap-1 pl-1">

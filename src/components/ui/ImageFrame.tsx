@@ -9,7 +9,6 @@
    space, close-up skin/hair). Replace placeholders by passing `src` + `alt`.
    ========================================================================== */
 import Image from "next/image";
-import Motif from "@/components/brand/Motif";
 
 type Ratio = "portrait" | "landscape" | "square" | "wide" | "tall";
 type Mask = "none" | "arch" | "soft";
@@ -65,9 +64,12 @@ export default function ImageFrame({
           className="object-cover"
         />
       ) : (
-        // On-brand placeholder — never a broken image, always elegant.
-        <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-gradient-to-br from-surface-elevated via-surface to-[var(--accent-soft)] text-center">
-          <Motif className="h-12 w-12 text-accent/40" />
+        /* ROUND 3: placeholders are deliberately plain. The client confirmed these
+           blocks are all being replaced with real clinic photography/video, so no
+           brand artwork is invested here — and specifically NO emblem behind them,
+           since real media would simply cover it. Near-white fill, hairline border,
+           quiet label. */
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-surface-elevated text-center">
           <span className="eyebrow text-muted">{placeholderLabel}</span>
           <span className="text-[0.7rem] text-muted/80">Image placeholder</span>
         </div>

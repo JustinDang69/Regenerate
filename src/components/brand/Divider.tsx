@@ -1,26 +1,27 @@
 /* =============================================================================
-   Divider — elegant hairline section divider with an optional centred motif.
-   Uses the dandelion glyph sparingly (per brief: subtle, not overused).
+   Divider — a fine hairline between sections.
+   -----------------------------------------------------------------------------
+   ROUND 3: the small centred glyph was removed. The emblem is unreadable at
+   24px, and a lone dandelion is no longer permitted anywhere on the site. A
+   clean rule suits the clinical direction better — structure from line, not
+   ornament. The `accent` variant marks a more significant break.
    ========================================================================== */
-import Motif from "./Motif";
 
 type Props = {
-  motif?: boolean;
+  /** Tints the rule olive-gold for a more deliberate section break. */
+  accent?: boolean;
   className?: string;
 };
 
-export default function Divider({ motif = true, className }: Props) {
-  if (!motif) {
-    return <div className={`rule ${className ?? ""}`.trim()} aria-hidden="true" />;
-  }
+export default function Divider({ accent = false, className }: Props) {
   return (
     <div
-      className={`flex items-center gap-5 ${className ?? ""}`.trim()}
       aria-hidden="true"
-    >
-      <span className="h-px flex-1 bg-gradient-to-r from-transparent to-border-strong" />
-      <Motif className="h-6 w-6 text-accent/70" />
-      <span className="h-px flex-1 bg-gradient-to-l from-transparent to-border-strong" />
-    </div>
+      className={`h-px w-full ${
+        accent
+          ? "bg-gradient-to-r from-transparent via-accent/40 to-transparent"
+          : "bg-gradient-to-r from-transparent via-border-strong to-transparent"
+      } ${className ?? ""}`.trim()}
+    />
   );
 }

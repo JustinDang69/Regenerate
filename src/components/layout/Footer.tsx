@@ -32,7 +32,7 @@ export default function Footer() {
 
   return (
     <footer className="relative overflow-hidden border-t border-border bg-surface-elevated">
-      <Motif className="pointer-events-none absolute -bottom-10 right-[6%] h-56 w-56 text-accent/[0.06]" />
+      <Motif className="pointer-events-none absolute -bottom-16 right-[4%] h-64 text-accent/[0.05]" />
 
       <div className="mx-auto max-w-[var(--container-max)] px-[var(--gutter)] py-16">
         {/* Top: brand + closing CTA */}

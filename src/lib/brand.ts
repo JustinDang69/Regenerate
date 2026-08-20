@@ -1,29 +1,47 @@
 /* =============================================================================
    BRAND ASSET CONFIG
    -----------------------------------------------------------------------------
-   The client's ORIGINAL logo PNG is the single source of truth for the logo.
-   It must NOT be recreated, traced or reinterpreted in code.
+   The client's ORIGINAL logo files are the single source of truth. They are
+   never recreated, traced or reinterpreted in code.
 
-   ▸ TO UPDATE THE LOGO (if the client supplies new artwork):
-     1. Replace: public/brand/source/regenerate-logo-original.png
-     2. Run:     node scripts/generate-logo-assets.mjs
-        (re-derives header/footer/favicon/apple-touch/192/512/WebP/OG variants)
-     3. Update LOGO_ASPECT below if the script reports a new trimmed size.
+   ROUND-3 BRAND RULES (client-approved):
+     · The CIRCULAR logo is the main brand identity — used in the header.
+     · The decorative mark is the FULL EMBLEM: R + curved stems + dandelions
+       together. A dandelion on its own is never used anywhere on the site.
+     · The emblem appears as background artwork only BEHIND TEXT, never beneath
+       an image or image placeholder, where it would be covered and pointless.
+     · The footer uses an emblem + brand-name lockup as the clinic identity.
+
+   ▸ TO UPDATE (if the client supplies new artwork):
+     1. Replace the file(s) in public/brand/source/
+     2. Run:  node scripts/generate-logo-assets.mjs
+     3. Update the intrinsic sizes below if the script reports new dimensions.
    ========================================================================== */
 
-/** Derived, web-optimised logo assets (produced by generate-logo-assets.mjs). */
 export const logoAssets = {
-  /** Untouched client original — the source of truth. */
-  source: "/brand/source/regenerate-logo-original.png",
-  /** Optimised horizontal-friendly asset for the site header. */
+  /** Untouched client originals — the source of truth. */
+  sourceCircle: "/brand/source/regenerate-circle-original.jpg",
+  sourceLockup: "/brand/source/regenerate-lockup-original.jpg",
+
+  /** MAIN IDENTITY — circular logo, header-optimised. */
   header: "/brand/logo-header.png",
-  /** Optimised asset for the footer. */
+  /** Full-resolution circular logo for larger placements. */
+  primaryCircle: "/brand/logo-primary-circle.png",
+
+  /** FOOTER IDENTITY — emblem + regenerate + SKIN & HAIR CLINIC. */
   footer: "/brand/logo-footer.png",
-  /** Full-resolution transparent master, for any larger placement. */
-  full: "/brand/logo-full.png",
+
+  /** DECORATIVE MARK — the full emblem. Background artwork behind text only. */
+  emblem: "/brand/logo-emblem.png",
 } as const;
 
-/** Intrinsic dimensions of the trimmed client logo (R + dandelion + wordmark).
-    Matches public/brand/logo-full.png — keep in sync if the client supplies a
-    new original (the generator prints the trimmed size when it runs). */
-export const LOGO_ASPECT = { width: 1704, height: 1472 };
+/** Intrinsic dimensions, so the browser reserves correct space and nothing
+    shifts on load. Keep in sync with what generate-logo-assets.mjs reports. */
+export const LOGO_SIZES = {
+  /** Circular logo — square. */
+  circle: { width: 2555, height: 2546 },
+  /** Footer lockup — emblem above the wordmark. */
+  footer: { width: 975, height: 759 },
+  /** Emblem alone. */
+  emblem: { width: 562, height: 417 },
+} as const;
