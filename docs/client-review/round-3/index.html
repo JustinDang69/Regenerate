@@ -1,0 +1,663 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Regenerate — Round 3 review · Palette C, motion & healthcare positioning</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* =============================================================================
+   REGENERATE — ROUND 3 CLIENT REVIEW ARTIFACT
+   -----------------------------------------------------------------------------
+   ISOLATED FROM PRODUCTION. Nothing here is wired into the Next.js app.
+
+   Demonstrates:
+     · Palette C (client-approved) applied consistently
+     · Circular logo as the main identity
+     · R + dandelion emblem as background artwork — BEHIND TEXT, never under images
+     · Footer emblem + brand identity lockup
+     · The supplied healthcare statement, verbatim
+     · Video-based hero architecture with temporary placeholder media
+     · A restrained but more sophisticated motion language
+
+   Uses the project's real motion stack (GSAP + ScrollTrigger + Lenis) copied from
+   node_modules into ./vendor, so the motion the client approves is the motion that
+   ships.
+   ========================================================================== */
+
+*,*::before,*::after{ box-sizing:border-box; }
+body{ margin:0; }
+
+:root{
+  /* ---- PALETTE C — client-approved. White/clinical ground, olive used with intent. */
+  --background:#ffffff;
+  --surface:#ffffff;
+  --surface-elevated:#fdfcf9;   /* near-white, barely-there panels */
+  --surface-sunken:#fbf8f1;     /* the ONE deliberate warm surface */
+  --accent:#8c7a45;             /* olive-gold — buttons, small labels, accents */
+  --accent-soft:#f3ede0;
+  --muted-fill:#ffffff;
+  --border:#d8d3c9;
+  --border-strong:#bdb4a3;
+
+  --text-primary:#241f11;
+  --text-secondary:#574f40;
+  --text-muted:#7b7259;
+  --text-on-accent:#ffffff;
+  --accent-contrast:#56492a;
+
+  --shadow-tint:rgba(64,54,28,.10);
+  --radius-md:14px; --radius-lg:22px; --radius-xl:34px; --radius-pill:999px;
+
+  --container:78rem;
+  --gutter:clamp(1.25rem,5vw,3rem);
+  --section-y:clamp(4.5rem,10vw,9rem);
+
+  /* Museum pacing — slower, more deliberate than round 1/2. */
+  --ease-out:cubic-bezier(.16,1,.3,1);
+  --ease-io:cubic-bezier(.65,0,.35,1);
+}
+
+html{ -webkit-text-size-adjust:100%; }
+body{
+  background:var(--background); color:var(--text-primary);
+  font-family:'Manrope',system-ui,sans-serif; font-size:1.0625rem; line-height:1.7;
+  -webkit-font-smoothing:antialiased; overflow-x:hidden;
+}
+h1,h2,h3,h4{ font-family:'Cormorant Garamond',Georgia,serif; font-weight:400; letter-spacing:-.012em; margin:0; }
+a{ color:inherit; text-decoration:none; }
+img{ display:block; max-width:100%; }
+
+.wrap{ max-width:var(--container); margin:0 auto; padding-inline:var(--gutter); }
+.narrow{ max-width:56rem; }
+section{ padding-block:var(--section-y); position:relative; }
+
+.eyebrow{
+  font-size:.7rem; font-weight:600; letter-spacing:.26em; text-transform:uppercase;
+  color:var(--accent-contrast);
+}
+.rule{ height:1px; background:var(--border); transform-origin:left center; }
+
+/* --- Buttons — olive-gold retained ---------------------------------------- */
+.btn{
+  display:inline-flex; align-items:center; gap:.6rem; white-space:nowrap;
+  border-radius:var(--radius-pill); font-weight:600; letter-spacing:.01em;
+  padding:.85rem 1.7rem; font-size:.88rem;
+  background:var(--accent); color:var(--text-on-accent);
+  transition:background .4s var(--ease-out), transform .4s var(--ease-out);
+}
+.btn .arw{ transition:transform .4s var(--ease-out); }
+.btn:hover{ background:#7a6a3b; transform:translateY(-2px); }
+.btn:hover .arw{ transform:translateX(5px); }
+.btn.lg{ padding:1.05rem 2.1rem; font-size:.94rem; }
+.btn.ghost{
+  background:transparent; color:var(--accent-contrast);
+  border:1px solid var(--border-strong);
+}
+.btn.ghost:hover{ background:var(--surface-sunken); border-color:var(--accent); }
+:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; border-radius:3px; }
+
+/* --- Header ---------------------------------------------------------------- */
+header{
+  position:fixed; inset:0 0 auto 0; z-index:60;
+  background:rgba(255,255,255,.82); backdrop-filter:blur(14px);
+  border-bottom:1px solid transparent;
+  transition:border-color .5s var(--ease-out), background .5s var(--ease-out);
+}
+header.scrolled{ border-bottom-color:var(--border); background:rgba(255,255,255,.94); }
+.hdr{ display:flex; align-items:center; justify-content:space-between; gap:1.5rem; padding-block:.6rem; }
+.hdr .logo img{ height:58px; transition:height .5s var(--ease-out); }
+header.scrolled .hdr .logo img{ height:48px; }
+
+nav.main{ display:none; gap:.2rem; }
+@media(min-width:1024px){ nav.main{ display:flex; } }
+nav.main a{
+  position:relative; padding:.55rem .95rem; font-size:.88rem; font-weight:500;
+  color:var(--text-secondary); transition:color .35s var(--ease-out);
+}
+nav.main a::after{
+  content:''; position:absolute; left:.95rem; right:.95rem; bottom:.28rem; height:1px;
+  background:var(--accent); transform:scaleX(0); transform-origin:right center;
+  transition:transform .45s var(--ease-out);
+}
+nav.main a:hover{ color:var(--accent-contrast); }
+nav.main a:hover::after{ transform:scaleX(1); transform-origin:left center; }
+nav.main a.active{ color:var(--accent-contrast); }
+nav.main a.active::after{ transform:scaleX(1); }
+
+.hdr-right{ display:flex; align-items:center; gap:.8rem; }
+.hdr-right .btn{ display:none; }
+@media(min-width:640px){ .hdr-right .btn{ display:inline-flex; } }
+
+.burger{
+  width:44px; height:44px; border-radius:999px; border:1px solid var(--border);
+  background:transparent; display:flex; align-items:center; justify-content:center;
+  cursor:pointer; transition:border-color .4s var(--ease-out);
+}
+@media(min-width:1024px){ .burger{ display:none; } }
+.burger:hover{ border-color:var(--accent); }
+.burger i{ display:block; width:18px; height:1.5px; background:var(--text-primary); position:relative; transition:background .3s; }
+.burger i::before,.burger i::after{
+  content:''; position:absolute; left:0; width:18px; height:1.5px; background:var(--text-primary);
+  transition:transform .45s var(--ease-out), top .3s;
+}
+.burger i::before{ top:-6px; } .burger i::after{ top:6px; }
+.burger.open i{ background:transparent; }
+.burger.open i::before{ top:0; transform:rotate(45deg); }
+.burger.open i::after{ top:0; transform:rotate(-45deg); }
+
+/* --- Mobile menu — full-screen, staggered entrance ------------------------- */
+.menu{
+  position:fixed; inset:0; z-index:55; background:var(--background);
+  display:flex; flex-direction:column; justify-content:center; padding:6rem var(--gutter) 3rem;
+  clip-path:inset(0 0 100% 0); pointer-events:none;
+  transition:clip-path .8s var(--ease-out);
+}
+.menu.open{ clip-path:inset(0 0 0 0); pointer-events:auto; }
+.menu a.item{
+  font-family:'Cormorant Garamond',serif; font-size:clamp(2rem,9vw,3rem); font-weight:400;
+  padding:.5rem 0; border-bottom:1px solid var(--border);
+  display:flex; align-items:baseline; justify-content:space-between;
+  opacity:0; transform:translateY(22px);
+}
+.menu a.item .n{ font-family:'Manrope',sans-serif; font-size:.7rem; letter-spacing:.2em; color:var(--text-muted); }
+.menu .menu-foot{ margin-top:2.5rem; opacity:0; transform:translateY(18px); }
+.menu-emblem{ position:absolute; right:-8%; bottom:-6%; width:min(70vw,340px); opacity:.05; pointer-events:none; }
+
+/* --- Hero ------------------------------------------------------------------ */
+.hero{ padding-top:clamp(7rem,16vw,10rem); padding-bottom:clamp(3rem,7vw,5rem); }
+.hero-inner{ display:grid; gap:2.5rem; }
+@media(min-width:1024px){
+  .hero-inner{ grid-template-columns:1.02fr .98fr; gap:4.5rem; align-items:center; }
+}
+.hero h1{ font-size:clamp(2.9rem,7.4vw,5.1rem); line-height:1.06; letter-spacing:-.02em; }
+/* Line-reveal mask — used by the hero AND the healthcare statement. Each .line
+   is a one-line-tall window; its inner span is what slides up out of it. The
+   inner span must never wrap, or it would be clipped by its own mask. */
+.line{ display:block; overflow:hidden; padding-bottom:.05em; }
+.line > span{ display:block; white-space:nowrap; }
+.hero-lead{ margin-top:1.5rem; max-width:34rem; color:var(--text-secondary); font-size:clamp(1rem,1.35vw,1.18rem); }
+.hero-cta{ display:flex; flex-wrap:wrap; gap:.9rem; margin-top:2.2rem; }
+
+/* HERO MEDIA — real <video> architecture. The placeholder inside is temporary. */
+.media{
+  position:relative; overflow:hidden; border-radius:var(--radius-lg);
+  aspect-ratio:4/5; background:var(--surface-sunken); border:1px solid var(--border);
+}
+@media(min-width:1024px){ .media{ aspect-ratio:3/4; } }
+.media video{ width:100%; height:100%; object-fit:cover; display:block; }
+
+/* Temporary architectural stand-in: slow drifting light, museum-like. NOT stock
+   photography, and clearly labelled so it can never be mistaken for final media. */
+.mock{ position:absolute; inset:0; overflow:hidden; }
+.mock .l1,.mock .l2,.mock .l3{ position:absolute; border-radius:50%; filter:blur(42px); }
+.mock .l1{ width:78%; aspect-ratio:1; left:-14%; top:4%;  background:radial-gradient(circle at 40% 40%,#efe6d2,#ffffff 70%); opacity:.95; }
+.mock .l2{ width:66%; aspect-ratio:1; right:-16%; top:26%; background:radial-gradient(circle at 50% 50%,#e6dcc4,#ffffff 72%); opacity:.85; }
+.mock .l3{ width:88%; aspect-ratio:1; left:6%;  bottom:-26%; background:radial-gradient(circle at 50% 30%,#f5efe2,#ffffff 76%); opacity:.9; }
+/* A soft architectural edge — suggests a lit wall/aperture without being an image. */
+.mock .edge{
+  position:absolute; left:18%; right:18%; top:12%; bottom:-4%;
+  border-radius:999px 999px 0 0;
+  background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(255,255,255,.35));
+  box-shadow:0 40px 90px -50px rgba(64,54,28,.4);
+}
+.mock .grain{
+  position:absolute; inset:0; opacity:.05; mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.media-tag{
+  position:absolute; left:0; bottom:0; right:0; padding:1rem 1.15rem;
+  background:linear-gradient(0deg,rgba(255,255,255,.96),rgba(255,255,255,0));
+  font-size:.68rem; letter-spacing:.16em; text-transform:uppercase; font-weight:600;
+  color:var(--accent-contrast);
+}
+.media-tag em{ display:block; font-style:normal; letter-spacing:.02em; text-transform:none;
+  font-weight:400; color:var(--text-muted); font-size:.74rem; margin-top:.25rem; }
+
+.scrollcue{ display:flex; align-items:center; gap:.7rem; margin-top:2.5rem; color:var(--text-muted); font-size:.72rem; letter-spacing:.18em; text-transform:uppercase; }
+.scrollcue .bar{ width:46px; height:1px; background:var(--border-strong); position:relative; overflow:hidden; }
+.scrollcue .bar::after{ content:''; position:absolute; inset:0; background:var(--accent); transform:translateX(-100%); animation:cue 2.6s var(--ease-io) infinite; }
+@keyframes cue{ 0%{transform:translateX(-100%)} 55%{transform:translateX(0)} 100%{transform:translateX(100%)} }
+
+/* --- Value strip ----------------------------------------------------------- */
+.values{ border-block:1px solid var(--border); }
+.values .grid{ display:grid; grid-template-columns:repeat(2,1fr); }
+@media(min-width:900px){ .values .grid{ grid-template-columns:repeat(4,1fr); } }
+.value{ padding:2rem 1.2rem; text-align:center; border-right:1px solid var(--border); }
+.value:nth-child(2n){ border-right:none; }
+@media(min-width:900px){ .value{ border-right:1px solid var(--border);} .value:last-child{ border-right:none; } .value:nth-child(2n){ border-right:1px solid var(--border);} }
+.value b{ display:block; font-family:'Cormorant Garamond',serif; font-weight:400; font-size:1.3rem; color:var(--text-primary); }
+.value span{ font-size:.76rem; color:var(--text-muted); letter-spacing:.01em; }
+
+/* --- HEALTHCARE POSITIONING ------------------------------------------------
+   The client's supplied wording is reproduced VERBATIM. Only typography,
+   line breaks and spacing are designed. Background emblem sits BEHIND THIS TEXT
+   (client's explicit instruction), never under an image. */
+.healthcare{ background:var(--surface-sunken); overflow:hidden; }
+.healthcare .emblem-bg{
+  position:absolute; left:50%; top:50%; width:min(96vw,780px);
+  transform:translate(-50%,-50%); opacity:.06; pointer-events:none;
+}
+.healthcare .inner{ position:relative; z-index:1; text-align:center; }
+.healthcare .statement{
+  font-family:'Cormorant Garamond',serif; font-weight:400;
+  font-size:clamp(2.1rem,6vw,4rem); line-height:1.1; letter-spacing:-.02em;
+  max-width:20ch; margin-inline:auto;
+}
+.healthcare .body{
+  margin:2rem auto 0; max-width:46rem; color:var(--text-secondary);
+  font-size:clamp(1rem,1.4vw,1.16rem); line-height:1.85;
+}
+.healthcare .start{
+  display:inline-block; margin-top:.4rem; color:var(--accent-contrast); font-weight:600;
+}
+
+/* --- Pathway cards --------------------------------------------------------- */
+.cards{ display:grid; gap:1.25rem; }
+@media(min-width:700px){ .cards{ grid-template-columns:repeat(2,1fr);} }
+@media(min-width:1080px){ .cards{ grid-template-columns:repeat(3,1fr);} }
+.card{
+  display:flex; flex-direction:column; height:100%; padding:2rem 1.8rem 1.8rem;
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg);
+  transition:border-color .5s var(--ease-out), transform .5s var(--ease-out), box-shadow .5s var(--ease-out);
+}
+.card:hover{ border-color:var(--accent); transform:translateY(-4px); box-shadow:0 22px 50px -34px var(--shadow-tint); }
+.card h3{ font-size:1.7rem; margin-top:.7rem; }
+.card p{ color:var(--text-secondary); font-size:.94rem; margin:.8rem 0 0; }
+.card .go{
+  margin-top:auto; padding-top:1.8rem; display:inline-flex; align-items:center; gap:.55rem;
+  font-size:.78rem; font-weight:600; letter-spacing:.13em; text-transform:uppercase; color:var(--accent-contrast);
+}
+.card .go .arw{ transition:transform .45s var(--ease-out); }
+.card:hover .go .arw{ transform:translateX(6px); }
+.card ul{ list-style:none; margin:1.6rem 0 0; padding:1.4rem 0 0; border-top:1px solid var(--border); display:flex; flex-direction:column; gap:.7rem; }
+.card ul li{ display:flex; align-items:center; gap:.7rem; font-size:.92rem; color:var(--text-secondary); }
+.card ul li::before{ content:''; width:18px; height:1px; background:var(--accent); flex:none; }
+
+/* Clean, deliberately un-designed image placeholder — real media replaces it. */
+.ph{
+  margin-top:1.7rem; border:1px solid var(--border); border-radius:var(--radius-md);
+  background:var(--surface-elevated); aspect-ratio:3/2;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.3rem;
+}
+.ph b{ font-size:.66rem; letter-spacing:.2em; text-transform:uppercase; color:var(--text-muted); font-weight:600; }
+.ph span{ font-size:.68rem; color:var(--text-muted); opacity:.75; }
+
+/* --- Treatment architecture note ------------------------------------------ */
+.arch{ background:var(--surface-elevated); border-block:1px solid var(--border); }
+.flow{ display:grid; gap:.8rem; margin-top:2rem; }
+@media(min-width:820px){ .flow{ grid-template-columns:repeat(3,1fr); align-items:stretch; } }
+.flow .fs{ border:1px solid var(--border); border-radius:var(--radius-md); background:var(--surface); padding:1.4rem; position:relative; }
+.flow .fs .k{ font-size:.66rem; letter-spacing:.2em; text-transform:uppercase; color:var(--accent-contrast); font-weight:700; }
+.flow .fs p{ margin:.6rem 0 0; font-size:.9rem; color:var(--text-secondary); }
+.pending{
+  margin-top:1.6rem; border:1px dashed var(--border-strong); background:var(--surface);
+  border-radius:var(--radius-md); padding:1.1rem 1.2rem; font-size:.85rem; color:var(--text-secondary);
+}
+.pending b{ display:block; font-size:.66rem; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--accent-contrast); font-weight:700; margin-bottom:.35rem; }
+
+/* --- Footer ---------------------------------------------------------------- */
+footer{ position:relative; overflow:hidden; padding-block:clamp(3.5rem,8vw,6rem) 2.5rem; border-top:1px solid var(--border); }
+footer .emblem-bg{ position:absolute; left:50%; top:44%; width:min(90vw,620px); transform:translate(-50%,-50%); opacity:.045; pointer-events:none; }
+.foot-id{ position:relative; z-index:1; text-align:center; }
+.foot-id img{ margin-inline:auto; height:clamp(88px,16vw,124px); }
+.foot-id .tagline{ margin-top:1.3rem; color:var(--text-muted); font-size:.88rem; }
+.foot-cta{ display:flex; justify-content:center; gap:.8rem; flex-wrap:wrap; margin-top:2rem; }
+.foot-meta{ position:relative; z-index:1; margin-top:3rem; padding-top:1.8rem; border-top:1px solid var(--border);
+  display:flex; flex-wrap:wrap; gap:.6rem 2rem; justify-content:center; font-size:.78rem; color:var(--text-muted); text-align:center; }
+
+/* --- Review chrome (not part of the design) -------------------------------- */
+.review-bar{
+  position:fixed; left:0; right:0; bottom:0; z-index:80;
+  background:var(--text-primary); color:#fff; font-size:.68rem; letter-spacing:.14em;
+  text-transform:uppercase; font-weight:600; text-align:center; padding:.55rem .8rem;
+}
+.review-bar span{ opacity:.65; text-transform:none; letter-spacing:.02em; font-weight:400; }
+
+/* --- Motion base ----------------------------------------------------------- */
+[data-anim]{ will-change:transform,opacity; }
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{ animation-duration:.001ms !important; transition-duration:.001ms !important; }
+  [data-anim]{ opacity:1 !important; transform:none !important; clip-path:none !important; }
+}
+</style>
+</head>
+<body>
+
+<header id="hdr">
+  <div class="wrap hdr">
+    <a class="logo" href="#top" aria-label="Regenerate Skin &amp; Hair Clinic — home">
+      <img src="media/primary-circle-transparent.png" alt="Regenerate Skin &amp; Hair Clinic">
+    </a>
+    <nav class="main" aria-label="Primary">
+      <a href="#top" class="active">Home</a>
+      <a href="#pathways">Skin</a>
+      <a href="#pathways">Hair</a>
+      <a href="#pathways">Pricing</a>
+      <a href="#healthcare">About</a>
+    </nav>
+    <div class="hdr-right">
+      <a class="btn" href="#">Book Now <span class="arw">→</span></a>
+      <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="menu"><i></i></button>
+    </div>
+  </div>
+</header>
+
+<nav class="menu" id="menu" aria-label="Mobile" aria-hidden="true">
+  <img class="menu-emblem" src="media/brand-emblem.png" alt="">
+  <a class="item" href="#top"><span>Home</span><span class="n">01</span></a>
+  <a class="item" href="#pathways"><span>Skin</span><span class="n">02</span></a>
+  <a class="item" href="#pathways"><span>Hair</span><span class="n">03</span></a>
+  <a class="item" href="#pathways"><span>Pricing</span><span class="n">04</span></a>
+  <a class="item" href="#healthcare"><span>About</span><span class="n">05</span></a>
+  <div class="menu-foot">
+    <a class="btn lg" href="#">Book Now <span class="arw">→</span></a>
+  </div>
+</nav>
+
+<main id="top">
+
+  <!-- ============================== HERO ============================== -->
+  <section class="hero">
+    <div class="wrap hero-inner">
+      <div>
+        <div class="eyebrow" data-anim="fade">Regenerate Skin &amp; Hair Clinic</div>
+        <!-- Explicit lines: each masked span holds exactly ONE line, so the
+             reveal mask and the line-height stay uniform. Relying on natural
+             wrapping made a span two lines tall and opened an uneven gap. -->
+        <h1 style="margin-top:1.1rem">
+          <span class="line"><span data-anim="line">Regenerate —</span></span>
+          <span class="line"><span data-anim="line">Forever in</span></span>
+          <span class="line"><span data-anim="line">Your 20s</span></span>
+        </h1>
+        <p class="hero-lead" data-anim="fade">
+          A Melbourne clinic where medical credibility meets calm, considered care.
+          Concern-led skin and hair programs, guided by qualified practitioners.
+        </p>
+        <div class="hero-cta" data-anim="fade">
+          <a class="btn lg" href="#">Book Now <span class="arw">→</span></a>
+          <a class="btn lg ghost" href="#pathways">Explore Treatments <span class="arw">→</span></a>
+        </div>
+        <div class="scrollcue" data-anim="fade"><span class="bar"></span> Scroll</div>
+      </div>
+
+      <!-- Real <video> architecture. Drop the 10s 4K loop in as the <source> and
+           delete .mock — no structural change required. -->
+      <div class="media" data-anim="media">
+        <video autoplay muted loop playsinline poster="" aria-hidden="true" style="display:none">
+          <!-- <source src="media/clinic-hero-10s.mp4" type="video/mp4"> -->
+        </video>
+        <div class="mock" id="mock" aria-hidden="true">
+          <div class="l1"></div><div class="l2"></div><div class="l3"></div>
+          <div class="edge"></div><div class="grain"></div>
+        </div>
+        <div class="media-tag">
+          Clinic film — placeholder
+          <em>Final: ~10s seamless loop, gimbal, 4K source · compressed for fast load</em>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ VALUE STRIP ============================ -->
+  <div class="values">
+    <div class="wrap grid">
+      <div class="value" data-anim="stagger"><b>Practitioner-led</b><span>Dermal specialists &amp; therapist</span></div>
+      <div class="value" data-anim="stagger"><b>Concern-first</b><span>Plans tailored in consultation</span></div>
+      <div class="value" data-anim="stagger"><b>Breakthrough technologies</b><span>Skin and hair science applied with care</span></div>
+      <div class="value" data-anim="stagger"><b>Melbourne clinic</b><span>Pascoe Vale South, VIC</span></div>
+    </div>
+  </div>
+
+  <!-- ===================== HEALTHCARE POSITIONING =====================
+       Client-supplied copy, reproduced word-for-word. Emblem sits behind the
+       TEXT here — the placement the client asked for. -->
+  <section class="healthcare" id="healthcare">
+    <img class="emblem-bg" id="emblemHealth" src="media/brand-emblem.png" alt="">
+    <div class="wrap narrow inner">
+      <div class="eyebrow" data-anim="fade">Our position</div>
+      <h2 class="statement" style="margin-top:1.4rem">
+        <span class="line"><span data-anim="line">Skincare and haircare</span></span>
+        <span class="line"><span data-anim="line">are healthcare.</span></span>
+      </h2>
+      <p class="body" data-anim="fade">
+        When your skin and your hair need attention, it means they are hurt, damaged or
+        harmed for some reasons. They require to be healed and cared for. You can heal,
+        improve and regenerate your skin and hair with our help and treatment.
+        <span class="start">Start today!</span>
+      </p>
+      <div class="hero-cta" style="justify-content:center" data-anim="fade">
+        <a class="btn" href="#">Book Now <span class="arw">→</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================= PATHWAYS ============================= -->
+  <section id="pathways">
+    <div class="wrap">
+      <div class="eyebrow" data-anim="fade">Treatments</div>
+      <h2 style="font-size:clamp(1.9rem,4vw,2.9rem);margin-top:.9rem;max-width:18ch" data-anim="fade">
+        Concern-led care for skin and hair
+      </h2>
+      <div class="rule" style="margin:2.6rem 0 2.4rem" data-anim="rule"></div>
+
+      <div class="cards">
+        <article class="card" data-anim="stagger">
+          <div class="eyebrow" style="color:var(--text-muted)">Skin</div>
+          <h3>Skin Treatments</h3>
+          <p>Support for acne and congestion, scarring and texture, hydration and rejuvenation — with technology selected to suit each concern.</p>
+          <div class="ph"><b>Clinic photography</b><span>Placeholder — real media to follow</span></div>
+          <span class="go">Explore skin <span class="arw">→</span></span>
+        </article>
+
+        <article class="card" data-anim="stagger">
+          <div class="eyebrow" style="color:var(--text-muted)">Hair</div>
+          <h3>Hair Treatments</h3>
+          <p>Consultation-led support for thinning, scalp health, restorative recovery and considered grey-hair pathways.</p>
+          <div class="ph"><b>Clinic photography</b><span>Placeholder — real media to follow</span></div>
+          <span class="go">Explore hair <span class="arw">→</span></span>
+        </article>
+
+        <article class="card" data-anim="stagger">
+          <div class="eyebrow" style="color:var(--text-muted)">Packages</div>
+          <h3>Treatment Packages</h3>
+          <p>Multi-session programs designed around a specific concern, alongside individual treatments. Pricing is indicative and confirmed in consultation.</p>
+          <ul><li>Skin packages</li><li>Hair packages</li><li>Single treatments</li></ul>
+          <span class="go">View all pricing <span class="arw">→</span></span>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== TREATMENT ARCHITECTURE ==================== -->
+  <section class="arch">
+    <div class="wrap">
+      <div class="eyebrow" data-anim="fade">Approved architecture · not yet built</div>
+      <h2 style="font-size:clamp(1.7rem,3.4vw,2.4rem);margin-top:.9rem;max-width:22ch" data-anim="fade">
+        Each treatment opens its own page
+      </h2>
+      <div class="flow">
+        <div class="fs" data-anim="stagger"><div class="k">01 · Skin or Hair page</div><p>Treatment cards, concern-led, exactly as above.</p></div>
+        <div class="fs" data-anim="stagger"><div class="k">02 · Click a treatment</div><p>Refined transition into the detail page.</p></div>
+        <div class="fs" data-anim="stagger"><div class="k">03 · Treatment detail</div><p>Concern → technology → benefit, then before / during / after, aftercare and schedule.</p></div>
+      </div>
+      <div class="pending" data-anim="fade">
+        <b>Waiting on the client</b>
+        These pages are <strong>not built</strong>. The template and the two supplied Word documents are held
+        ready, and production routes will only be created once the finalised treatment list arrives.
+        No treatments, prices, durations or clinical wording have been invented or altered.
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <img class="emblem-bg" id="emblemFoot" src="media/brand-emblem.png" alt="">
+  <div class="wrap">
+    <div class="foot-id" data-anim="fade">
+      <!-- Emblem + brand identity lockup — the clinic identity at the bottom of the site. -->
+      <img src="media/brand-emblem-wordmark-full.png" alt="Regenerate Skin &amp; Hair Clinic">
+      <p class="tagline">Restoring and reviving, with calm confidence.</p>
+      <div class="foot-cta">
+        <a class="btn" href="#">Book Now <span class="arw">→</span></a>
+        <a class="btn ghost" href="#">Enquire Now <span class="arw">→</span></a>
+      </div>
+    </div>
+    <div class="foot-meta">
+      <span>443 Bell St, Pascoe Vale South VIC 3044</span>
+      <span>Mon–Fri 8:30 am–7:00 pm · Sat 9:00 am–6:00 pm</span>
+      <span>hello@regenerateskinhairclinic.com.au</span>
+    </div>
+  </div>
+</footer>
+
+<div class="review-bar">Round 3 review artifact — Palette C · motion concept &nbsp;<span>Not deployed. Isolated from production.</span></div>
+
+<script src="vendor/gsap.min.js"></script>
+<script src="vendor/ScrollTrigger.min.js"></script>
+<script src="vendor/lenis.min.js"></script>
+<script>
+/* =============================================================================
+   MOTION — the project's real stack (GSAP + ScrollTrigger + Lenis).
+   Principle: motion directs attention. Nothing loops decoratively, nothing
+   scales aggressively, nothing blocks reading.
+   ========================================================================== */
+(function () {
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  gsap.registerPlugin(ScrollTrigger);
+
+  /* --- Smooth scroll (skipped entirely under reduced-motion) --------------- */
+  if (!reduced && window.Lenis) {
+    const lenis = new Lenis({ duration: 1.15, easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add(t => lenis.raf(t * 1000));
+    gsap.ticker.lagSmoothing(0);
+  }
+
+  /* --- Header state -------------------------------------------------------- */
+  const hdr = document.getElementById('hdr');
+  const onScroll = () => hdr.classList.toggle('scrolled', window.scrollY > 24);
+  onScroll(); window.addEventListener('scroll', onScroll, { passive: true });
+
+  /* --- Mobile menu: clip-path wipe + staggered items ----------------------- */
+  const burger = document.getElementById('burger');
+  const menu = document.getElementById('menu');
+  const items = menu.querySelectorAll('.item, .menu-foot');
+  let open = false;
+  const setMenu = (state) => {
+    open = state;
+    menu.classList.toggle('open', open);
+    burger.classList.toggle('open', open);
+    burger.setAttribute('aria-expanded', String(open));
+    burger.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    menu.setAttribute('aria-hidden', String(!open));
+    document.body.style.overflow = open ? 'hidden' : '';
+    if (open) {
+      gsap.fromTo(items, { y: 22, opacity: 0 },
+        { y: 0, opacity: 1, duration: reduced ? 0 : .7, ease: 'power3.out', stagger: reduced ? 0 : .07, delay: reduced ? 0 : .18 });
+    } else {
+      gsap.set(items, { clearProps: 'all' });
+    }
+  };
+  burger.addEventListener('click', () => setMenu(!open));
+  menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setMenu(false)));
+  window.addEventListener('keydown', e => { if (e.key === 'Escape' && open) setMenu(false); });
+
+  if (reduced) return; // Everything below is enhancement only.
+
+  /* --- Hero entrance -------------------------------------------------------
+     Media reveals with a slow clip-path wipe; headline lines rise from their
+     own overflow mask; supporting copy follows. Deliberately unhurried. */
+  const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+  tl.from('.hero [data-anim="fade"]:first-of-type', { y: 14, opacity: 0, duration: .8 }, 0)
+    .from('.hero [data-anim="line"]', { yPercent: 115, duration: 1.15, stagger: .1 }, .1)
+    .fromTo('.media',
+      { clipPath: 'inset(12% 12% 12% 12% round 22px)', opacity: 0 },
+      { clipPath: 'inset(0% 0% 0% 0% round 22px)', opacity: 1, duration: 1.5 }, .25)
+    .from('.hero-lead', { y: 18, opacity: 0, duration: .9 }, .75)
+    .from('.hero-cta', { y: 18, opacity: 0, duration: .9 }, .88)
+    .from('.scrollcue', { opacity: 0, duration: .8 }, 1.05);
+
+  /* Slow drift on the placeholder light forms — this is what the real footage's
+     gimbal movement will replace. Very slow, never attention-grabbing. */
+  gsap.to('#mock .l1', { xPercent: 6, yPercent: -5, duration: 18, ease: 'sine.inOut', yoyo: true, repeat: -1 });
+  gsap.to('#mock .l2', { xPercent: -7, yPercent: 6, duration: 22, ease: 'sine.inOut', yoyo: true, repeat: -1 });
+  gsap.to('#mock .edge', { yPercent: -3, scale: 1.04, duration: 20, ease: 'sine.inOut', yoyo: true, repeat: -1 });
+
+  /* Gentle hero media parallax — subtle, stops at the section edge. */
+  gsap.to('.media', {
+    yPercent: -6, ease: 'none',
+    scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: .6 }
+  });
+
+  /* --- Scroll reveals ------------------------------------------------------ */
+  const rise = (el, vars = {}) => gsap.from(el, {
+    y: 26, opacity: 0, duration: 1, ease: 'power3.out',
+    scrollTrigger: { trigger: el, start: 'top 86%' }, ...vars
+  });
+
+  document.querySelectorAll('section:not(.hero) [data-anim="fade"]').forEach(el => rise(el));
+
+  /* Masked line reveal for the healthcare statement — staged, one line at a time. */
+  document.querySelectorAll('.healthcare [data-anim="line"]').forEach((el, i) => {
+    gsap.from(el, {
+      yPercent: 115, duration: 1.15, ease: 'power3.out', delay: i * .08,
+      scrollTrigger: { trigger: '.healthcare .statement', start: 'top 82%' }
+    });
+  });
+
+  /* Hairline dividers draw in rather than appearing. */
+  document.querySelectorAll('[data-anim="rule"]').forEach(el => {
+    gsap.from(el, { scaleX: 0, duration: 1.3, ease: 'power3.inOut',
+      scrollTrigger: { trigger: el, start: 'top 90%' } });
+  });
+
+  /* Grouped stagger — cards, value strip, flow steps. */
+  const groups = [
+    ['.values .grid', '.value'],
+    ['.cards', '.card'],
+    ['.flow', '.fs'],
+  ];
+  groups.forEach(([parent, child]) => {
+    const p = document.querySelector(parent);
+    if (!p) return;
+    gsap.from(p.querySelectorAll(child), {
+      y: 30, opacity: 0, duration: 1, ease: 'power3.out', stagger: .1,
+      scrollTrigger: { trigger: p, start: 'top 84%' }
+    });
+  });
+
+  /* --- Background emblem ---------------------------------------------------
+     Extremely subtle scroll-linked drift. No loop, no attention pull — it only
+     keeps the composition from feeling static as you pass through. */
+  [['#emblemHealth', '.healthcare'], ['#emblemFoot', 'footer']].forEach(([sel, trg]) => {
+    const el = document.querySelector(sel);
+    if (!el) return;
+    gsap.fromTo(el, { yPercent: -52, scale: .97 }, {
+      yPercent: -48, scale: 1, ease: 'none',
+      scrollTrigger: { trigger: trg, start: 'top bottom', end: 'bottom top', scrub: 1.2 }
+    });
+  });
+
+  /* --- Active nav feedback ------------------------------------------------- */
+  const links = [...document.querySelectorAll('nav.main a')];
+  ['#healthcare', '#pathways'].forEach(id => {
+    const sec = document.querySelector(id);
+    if (!sec) return;
+    ScrollTrigger.create({
+      trigger: sec, start: 'top 45%', end: 'bottom 45%',
+      onToggle: self => {
+        links.forEach(l => l.classList.toggle('active', self.isActive && l.getAttribute('href') === id));
+        if (!self.isActive && window.scrollY < 200) links[0].classList.add('active');
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>
