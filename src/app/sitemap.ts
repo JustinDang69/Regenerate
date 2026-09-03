@@ -1,14 +1,17 @@
 import type { MetadataRoute } from "next";
 import { site } from "@/lib/site";
+import { treatments, skinTechnologies } from "@/content/treatments";
 
 /* Static sitemap for phase-one routes. Extend when blog/articles ship (phase two). */
 export default function sitemap(): MetadataRoute.Sitemap {
-  const routes = ["", "/skin", "/hair", "/pricing", "/about", "/contact", "/products"];
+  const routes = ["", "/skin", "/hair", "/treatments", "/pricing", "/about", "/contact", "/products"];
+  const treatmentRoutes = treatments.map((t) => `/treatments/${t.slug}`);
+  const technologyRoutes = skinTechnologies.map((t) => `/treatments/technologies/${t.slug}`);
   const now = new Date();
-  return routes.map((path) => ({
+  return [...routes, ...treatmentRoutes, ...technologyRoutes].map((path) => ({
     url: `${site.url}${path}`,
     lastModified: now,
     changeFrequency: "monthly",
-    priority: path === "" ? 1 : 0.7,
+    priority: path === "" ? 1 : path === "/treatments" ? 0.9 : 0.7,
   }));
 }

@@ -11,6 +11,10 @@ export const site = {
      brand note ("Regenerate refers to restoring and reviving beauty") and is kept
      distinct from the hero tagline to avoid repetition. */
   tagline: "Restoring and reviving, with calm confidence.",
+  /* CLIENT REVISION (Sep 2026): exact wording from the client's business card.
+     Single source of truth for the homepage hero headline — see Hero.tsx.
+     Do not rewrite, do not change "Your" to "the", do not append other copy. */
+  heroTagline: "Forever Celebrating Your 20s",
   // NOTE(compliance): keep the top-line descriptor supportive, non-guaranteeing.
   description:
     "A Melbourne clinic blending medical credibility with luxury care — concern-led skin and hair programs, guided by qualified practitioners.",
@@ -140,6 +144,7 @@ export const footerNav = {
   treatments: [
     { label: "Skin Treatments", href: "/skin" },
     { label: "Hair Treatments", href: "/hair" },
+    { label: "Treatment Guide", href: "/treatments" },
     { label: "Packages", href: "/pricing#packages" },
     { label: "Single Treatments", href: "/pricing#single" },
     { label: "Products", href: "/products" },

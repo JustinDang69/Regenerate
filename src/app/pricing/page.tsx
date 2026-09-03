@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import PageHero from "@/components/sections/PageHero";
 import Section from "@/components/ui/Section";
 import Container from "@/components/ui/Container";
@@ -88,6 +89,13 @@ export default function PricingPage() {
                 terms & conditions. Prices indicative and subject to change. */}
             All prices are in AUD and indicative only. Treatment durations are approximate
             and confirmed at booking. Package suitability is determined in consultation.
+          </p>
+          <p className="mt-3 text-[0.82rem] text-secondary">
+            For what each treatment involves —{" "}
+            <Link href="/treatments" className="font-semibold text-accent-contrast underline underline-offset-2 hover:text-accent-hover">
+              see the full Treatments guide
+            </Link>
+            .
           </p>
         </Container>
       </Section>

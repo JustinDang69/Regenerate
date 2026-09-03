@@ -71,20 +71,19 @@ export const skinPackages: Package[] = [
     name: "Forever Twenty",
     price: 1390,
     category: "skin",
-    // NOTE(compliance): client likes the line "Forever in your 20s". It is OPTIONAL
-    // and must be reviewed before public regulated advertising. See positioning below.
+    // NOTE: package name draws on the same idea as the site's hero tagline.
+    // The tagline itself is confirmed — see site.heroTagline in src/lib/site.ts
+    // ("Forever Celebrating Your 20s", from the client's business card).
     concern: "Rejuvenation & vitality",
     positioning: "A layered rejuvenation program designed to support radiance and skin vitality.",
     sessions: "7 sessions across 3 modalities",
     includes: [
       "Micro-needling × 3 sessions",
       "Mesotherapy × 3 sessions",
-      "Hydra × 1 session",
+      "HydraFacial × 1 session",
       "Skin rejuvenation treatment",
     ],
     featured: true,
-    reviewFlag:
-      'Optional tagline "Forever in your 20s" must be legal/compliance reviewed before any public advertising use.',
   },
 ];
 
@@ -193,11 +192,15 @@ export const singleTreatments: SingleTreatment[] = [
   },
   {
     slug: "hydra",
-    name: "Hydra",
+    // NAMING (client decision, round 4/5): "Hydra" and "HydraFacial" are the
+    // same treatment. Public naming is unified to "HydraFacial" — see
+    // src/content/treatments.ts, which uses this name throughout. Slug kept
+    // as "hydra" so existing links are unaffected.
+    name: "HydraFacial",
     price: 139,
     category: "skin",
     description:
-      "A deep-cleansing hydra treatment designed to refresh, decongest and support a hydrated, luminous look.",
+      "A deep-cleansing HydraFacial treatment designed to refresh, decongest and support a hydrated, luminous look.",
     duration: "≈ 45 min",
   },
   {

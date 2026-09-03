@@ -18,7 +18,14 @@ import Button from "@/components/ui/Button";
 import MotifLayer from "@/components/brand/MotifLayer";
 import HeroMedia from "@/components/sections/HeroMedia";
 import { gsap } from "@/lib/motion/gsap";
-import { cta } from "@/lib/site";
+import { cta, site } from "@/lib/site";
+
+/* Split site.heroTagline into two mask-reveal lines without altering the
+   words themselves — "Forever Celebrating" / "Your 20s". If the confirmed
+   tagline ever changes, update site.heroTagline only; this derives from it. */
+const heroWords = site.heroTagline.split(" ");
+const heroLine1 = heroWords.slice(0, 2).join(" ");
+const heroLine2 = heroWords.slice(2).join(" ");
 
 export default function Hero() {
   const root = useRef<HTMLDivElement>(null);
@@ -65,18 +72,20 @@ export default function Hero() {
             Regenerate Skin &amp; Hair Clinic
           </span>
 
-          {/* COMPLIANCE: "Forever in Your 20s" is the client-approved tagline.
-              It was flagged for advertising review before public use; the client
-              confirmed it. Lines are explicit so each mask holds exactly one. */}
+          {/* CLIENT REVISION (Sep 2026): "Forever Celebrating Your 20s" is the
+              exact tagline from the client's business card — see site.heroTagline
+              in src/lib/site.ts, the single source of truth. It replaces the
+              earlier "Regenerate — Forever in Your 20s" headline. The two-line
+              split below is presentation only (mask-reveal, one line per span);
+              the words themselves come from site.heroTagline unmodified. The
+              brand name already appears in the eyebrow above, so it is not
+              repeated inside the tagline itself. */}
           <h1 className="mt-5 text-display tracking-[-0.02em]">
             <span className="line">
-              <span data-hero-line>Regenerate —</span>
+              <span data-hero-line>{heroLine1}</span>
             </span>
             <span className="line">
-              <span data-hero-line>Forever in</span>
-            </span>
-            <span className="line">
-              <span data-hero-line>Your 20s</span>
+              <span data-hero-line>{heroLine2}</span>
             </span>
           </h1>
 

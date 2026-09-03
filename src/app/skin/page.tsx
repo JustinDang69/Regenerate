@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import PageHero from "@/components/sections/PageHero";
 import Section from "@/components/ui/Section";
 import Container from "@/components/ui/Container";
@@ -62,6 +63,14 @@ export default function SkinPage() {
           {/* COMPLIANCE: careful, non-guaranteeing language. Confirm with clinical team. */}
           Most treatments run for approximately 45–90 minutes. Suitability and expected
           experience are confirmed in your consultation. Results vary by individual.
+        </p>
+        <p className="mt-4 text-[0.85rem] text-secondary">
+          For full treatment-by-treatment detail — how each works, what to expect and
+          aftercare —{" "}
+          <Link href="/treatments#skin-treatments" className="font-semibold text-accent-contrast underline underline-offset-2 hover:text-accent-hover">
+            see our Skin Treatments guide
+          </Link>
+          .
         </p>
       </Section>
 
