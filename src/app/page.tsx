@@ -22,14 +22,19 @@ import PathwayCard from "@/components/cards/PathwayCard";
 
 import { cta } from "@/lib/site";
 
-/* Top-level entry points. Data-driven so cards stay consistent and easy to edit. */
+/* Top-level entry points. Data-driven so cards stay consistent and easy to edit.
+
+   ROUTING (client-confirmed): the homepage treatment journey is BY SERVICE and
+   points at /treatments, which carries the approved treatment presentation.
+   The concern-led /skin and /hair pages are the BY CONCERN journey and stay
+   reachable from the main navigation — they are not linked from here. */
 const pathways = [
   {
     eyebrow: "Skin",
     title: "Skin Treatments",
     description:
       "Support for acne and congestion, scarring and texture, hydration and rejuvenation — with technology selected to suit each concern.",
-    cta: { label: cta.exploreSkin, href: "/skin" },
+    cta: { label: cta.exploreSkin, href: "/treatments#skin-treatments" },
     image: { label: "Skin treatment room" },
   },
   {
@@ -37,7 +42,7 @@ const pathways = [
     title: "Hair Treatments",
     description:
       "Consultation-led support for thinning, scalp health, restorative recovery and considered grey-hair pathways.",
-    cta: { label: cta.exploreHair, href: "/hair" },
+    cta: { label: cta.exploreHair, href: "/treatments#hair-scalp-treatments" },
     image: { label: "Hair & scalp treatment" },
   },
   {

@@ -50,11 +50,16 @@ export default async function TreatmentDetailPage(
   if (!treatment) notFound();
 
   const groupLabel = treatment.group === "skin" ? "Skin" : "Hair & Scalp";
+  /* Signature treatments carry the designation in the eyebrow, alongside their
+     normal group label — they remain part of that group, not a separate tier. */
+  const eyebrow = treatment.signature
+    ? `${groupLabel} treatment · Signature Treatment`
+    : `${groupLabel} treatment`;
 
   return (
     <>
       <PageHero
-        eyebrow={`${groupLabel} treatment`}
+        eyebrow={eyebrow}
         title={treatment.name}
         lead={treatment.overview}
         primary={{ label: cta.book, href: cta.bookHref }}
@@ -100,7 +105,9 @@ export default async function TreatmentDetailPage(
         <Container>
           <SectionHeader eyebrow="Your appointment" title="What to expect" />
           <div className="mt-12 grid gap-10 lg:mt-14 lg:grid-cols-3 lg:gap-12">
-            <ExpectationBlock title="Before" body={treatment.preProcedure} />
+            {/* Client wording: "Pre-Treatment" rather than "Before". Set here in
+                the shared template so every treatment inherits it. */}
+            <ExpectationBlock title="Pre-Treatment" body={treatment.preProcedure} />
             <ExpectationBlock title="During" body={treatment.during} />
             <ExpectationBlock title="After" body={treatment.postProcedure} />
           </div>

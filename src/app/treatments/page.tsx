@@ -23,7 +23,7 @@ import { cta } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Treatments",
   description:
-    "Skin and hair treatments at Regenerate Skin & Hair Clinic, Melbourne — facial and scalp microneedling, mesotherapy, HydraFacial, HydraScalp Therapy, and the skin and scalp technologies used within them.",
+    "Skin and hair treatments at Regenerate Skin & Hair Clinic, Melbourne — facial and scalp microneedling, mesotherapy, HydraFacial, HydraScalp, and the skin and scalp technologies used within them.",
   alternates: { canonical: "/treatments" },
 };
 

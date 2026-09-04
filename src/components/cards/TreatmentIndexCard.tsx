@@ -9,7 +9,26 @@ import type { Treatment } from "@/content/treatments";
 export default function TreatmentIndexCard({ treatment }: { treatment: Treatment }) {
   return (
     <article className="group flex h-full flex-col rounded-[var(--radius-lg)] border border-border bg-surface p-8 sm:p-9 transition-all duration-[var(--dur-base)] ease-[var(--ease-soft)] hover:-translate-y-1 hover:border-accent hover:shadow-[var(--shadow-md)]">
-      <span className="eyebrow text-muted">{treatment.group === "skin" ? "Skin" : "Hair & Scalp"}</span>
+      {/* A signature treatment keeps its normal group label and card size —
+          the designation is an added quiet line, not a promotional badge. */}
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
+        <span className="eyebrow text-muted">
+          {treatment.group === "skin" ? "Skin" : "Hair & Scalp"}
+        </span>
+        {treatment.signature && (
+          <>
+            <span aria-hidden className="h-3 w-px bg-border-strong" />
+            {/* "Signature" rather than the full "Signature Treatment" used on
+                the detail page: the card's inner width is ~246px and the full
+                pair needs ~275px, so spelling it out wraps to a second line and
+                makes a signature card visibly taller than its siblings. The
+                word reads unambiguously inside a Treatments section. */}
+            <span className="text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-accent-contrast">
+              Signature
+            </span>
+          </>
+        )}
+      </div>
       <h3 className="mt-4 text-h3 text-[1.5rem]">{treatment.name}</h3>
       <p className="mt-2.5 font-serif text-[1.02rem] italic text-accent-contrast">{treatment.tagline}</p>
       <p className="mt-5 text-[0.94rem] leading-relaxed text-secondary text-pretty">{treatment.summary}</p>

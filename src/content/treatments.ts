@@ -32,6 +32,11 @@ export type Treatment = {
   slug: string;
   group: TreatmentGroup;
   name: string;
+  /** Marks a clinic signature offering. Surfaces a restrained "Signature
+   *  Treatment" designation on the index card and detail page. It does NOT
+   *  change the treatment's group — a signature treatment still sits inside
+   *  its normal Skin or Hair & Scalp section. */
+  signature?: boolean;
   tagline: string;
   /** Shortened card-preview copy. */
   summary: string;
@@ -221,9 +226,13 @@ export const treatments: Treatment[] = [
       "A personalised series is recommended for cumulative results. Session number and spacing are selected according to the formulation, treatment area, response and goals.",
   },
   {
+    /* NOTE: the slug intentionally still reads "hydrascalp-therapy". The
+       PUBLIC NAME dropped "Therapy" (client request), but the route is kept so
+       existing internal links and any indexed URLs continue to resolve. */
     slug: "hydrascalp-therapy",
     group: "scalp",
-    name: "HydraScalp Therapy",
+    name: "HydraScalp",
+    signature: true,
     tagline: "A multi-step scalp ritual combining cleansing, technology and relaxation",
     summary:
       "A comprehensive, multi-step scalp treatment combining deep cleansing, scalp conditioning, massage, professional topical ingredients and selected device-based technologies.",
