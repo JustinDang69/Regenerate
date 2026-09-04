@@ -78,6 +78,22 @@ export type NavItem = {
 
 export const primaryNav: NavItem[] = [
   { label: "Home", href: "/" },
+  /* Browse BY SERVICE. Skin/Hair below remain the BY CONCERN entry points —
+     the two serve different journeys and both are kept deliberately. */
+  {
+    label: "Treatments",
+    href: "/treatments",
+    children: [
+      { label: "All Treatments", href: "/treatments", hint: "The full treatment guide" },
+      { label: "Skin Treatments", href: "/treatments#skin-treatments" },
+      { label: "Hair & Scalp Treatments", href: "/treatments#hair-scalp-treatments" },
+      {
+        label: "Skin and Scalp Technologies",
+        href: "/treatments#technologies",
+        hint: "Applied within treatments",
+      },
+    ],
+  },
   {
     label: "Skin",
     href: "/skin",
@@ -131,7 +147,10 @@ export const addressInline = addressLines.join(", ");
    NOTE: `book` is the BUTTON label only. Body copy that describes the consultation
    process still says "consultation" — do not swap that wording. */
 export const cta = {
-  book: "Book Now",
+  /* CLIENT REVISION (Sep 2026): booking CTA wording is "Book Appointment"
+     everywhere it appears publicly. Changing it here changes it site-wide —
+     header, hero, cards, treatment pages and the mobile drawer all read this. */
+  book: "Book Appointment",
   enquire: "Enquire Now",
   exploreSkin: "Explore Skin Treatments",
   exploreHair: "Explore Hair Treatments",

@@ -15,7 +15,7 @@ export type Concern = {
   problem: string;        // plain-language description of the concern
   approach: string;       // technologies / methods that may be used
   benefits: string;       // careful benefit framing
-  technologies: string[]; // references technologies[].slug
+  technologies: string[]; // references skinTechnologies[].slug in content/treatments.ts
   relatedPackages: string[]; // references package slugs
   category: "skin" | "hair";
 };
@@ -35,7 +35,7 @@ export const skinConcerns: Concern[] = [
       "Programs may combine hydra-dermabrasion, high-frequency application and therapeutic LED, layered with targeted active ingredients.",
     benefits:
       "Designed to support a clearer, more balanced complexion over a considered course, with home-care guidance along the way.",
-    technologies: ["hf", "led", "actives"],
+    technologies: ["high-frequency", "led"],
     relatedPackages: ["clear-skin-ground-zero"],
   },
   {
@@ -49,7 +49,7 @@ export const skinConcerns: Concern[] = [
       "Micro-needling courses may be paired with scar-support protocols and nourishing actives to encourage skin renewal.",
     benefits:
       "Designed to support smoother-looking, more refined skin texture over time. Results vary by individual.",
-    technologies: ["actives", "led"],
+    technologies: ["led", "electroporation"],
     relatedPackages: ["skin-reclaim"],
   },
   {
@@ -63,7 +63,7 @@ export const skinConcerns: Concern[] = [
       "Hydra treatments, ultrasound-assisted delivery and mesotherapy may be used to cleanse, replenish and support hydration.",
     benefits:
       "Designed to support a hydrated, luminous look and a refreshed, healthy-looking glow.",
-    technologies: ["ultrasound", "actives"],
+    technologies: ["ultrasound", "electroporation"],
     relatedPackages: ["forever-twenty"],
   },
   {
@@ -78,7 +78,7 @@ export const skinConcerns: Concern[] = [
       "Layered programs may combine micro-needling, mesotherapy, radio frequency and hydra to support renewal.",
     benefits:
       "Designed to support firmer-looking, revitalised skin. Suitability and expectations are confirmed in consultation.",
-    technologies: ["rf", "ems", "actives"],
+    technologies: ["radiofrequency", "ems"],
     relatedPackages: ["forever-twenty", "skin-reclaim"],
   },
 ];
@@ -98,7 +98,7 @@ export const hairConcerns: Concern[] = [
       "A consultation-led plan may combine scalp mesotherapy and restorative recovery sessions, tailored to you.",
     benefits:
       "Designed to support the scalp environment as part of an individualised hair-support plan. Results vary.",
-    technologies: ["actives", "essential-oils"],
+    technologies: ["electroporation", "ultrasound"],
     relatedPackages: ["lift-camp-2", "lift-camp-1"],
   },
   {
@@ -112,7 +112,7 @@ export const hairConcerns: Concern[] = [
       "Head-spa rituals and recovery sessions use nourishing essential oils, such as rosemary oil, to cleanse and calm.",
     benefits:
       "Designed to support a comfortable, well-conditioned scalp and a sense of everyday wellbeing.",
-    technologies: ["essential-oils", "led"],
+    technologies: ["led", "high-frequency"],
     relatedPackages: ["ultimate-warrior", "happy-hair-happy-life"],
   },
   {
@@ -126,7 +126,7 @@ export const hairConcerns: Concern[] = [
       "Basic restorative recovery packages provide regular, gentle support, and can complement mesotherapy programs.",
     benefits:
       "Designed to support hair vitality and scalp condition as part of an ongoing routine.",
-    technologies: ["essential-oils", "actives"],
+    technologies: ["ultrasound", "radiofrequency"],
     relatedPackages: ["ultimate-warrior", "lift-camp-1"],
   },
   {
@@ -141,7 +141,7 @@ export const hairConcerns: Concern[] = [
       "Programs may pair mesotherapy and recovery with head-spa rituals, planned with you in consultation.",
     benefits:
       "Designed as a considered, supportive experience. Suitability is confirmed in consultation and results vary.",
-    technologies: ["essential-oils", "actives"],
+    technologies: ["ultrasound", "radiofrequency"],
     relatedPackages: ["return-of-a-hero", "happy-hair-happy-life"],
   },
 ];

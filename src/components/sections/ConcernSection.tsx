@@ -6,13 +6,14 @@
 import Reveal from "@/components/motion/Reveal";
 import ImageFrame from "@/components/ui/ImageFrame";
 import Button from "@/components/ui/Button";
+import Link from "next/link";
 import type { Concern } from "@/content/concerns";
-import { technologies } from "@/content/technologies";
+import { skinTechnologies } from "@/content/treatments";
 import { allPackages, formatPrice } from "@/content/packages";
 import { cta } from "@/lib/site";
 
 function techBySlug(slug: string) {
-  return technologies.find((t) => t.slug === slug);
+  return skinTechnologies.find((t) => t.slug === slug);
 }
 function pkgBySlug(slug: string) {
   return allPackages.find((p) => p.slug === slug);
@@ -80,17 +81,24 @@ export default function ConcernSection({
             </div>
           </Reveal>
 
-          {/* Technology chips */}
+          {/* Inline technology chips — contextual tags within the concern
+              narrative, deliberately NOT the main technology showcase (that is
+              the TechnologyCard grid further down the page). They now read from
+              the approved technology set and link through to the detail page.
+              Wording stays capability-led: these MAY be used, selected by
+              suitability, not applied to every treatment by default. */}
           {techs.length > 0 && (
-            <Reveal delay={120} className="flex flex-wrap gap-2">
+            <Reveal delay={120} className="flex flex-wrap items-center gap-2">
+              <span className="text-[0.75rem] text-muted">May involve:</span>
               {techs.map((t) => (
-                <span
+                <Link
                   key={t!.slug}
-                  title={t!.what}
-                  className="rounded-[var(--radius-pill)] border border-border bg-fill px-3 py-1 text-[0.75rem] font-medium text-accent-contrast"
+                  href={`/treatments/technologies/${t!.slug}`}
+                  title={t!.tagline}
+                  className="rounded-[var(--radius-pill)] border border-border bg-fill px-3 py-1 text-[0.75rem] font-medium text-accent-contrast transition-colors hover:border-accent hover:bg-surface"
                 >
-                  {t!.abbr} · {t!.name}
-                </span>
+                  {t!.name}
+                </Link>
               ))}
             </Reveal>
           )}

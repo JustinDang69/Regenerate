@@ -5,13 +5,13 @@ import Section from "@/components/ui/Section";
 import Container from "@/components/ui/Container";
 import SectionHeader from "@/components/ui/SectionHeader";
 import ConcernSection from "@/components/sections/ConcernSection";
-import TechBlock from "@/components/cards/TechBlock";
+import TechnologyCard from "@/components/cards/TechnologyCard";
 import CTABlock from "@/components/sections/CTABlock";
 import Reveal from "@/components/motion/Reveal";
 import Divider from "@/components/brand/Divider";
 
 import { hairConcerns } from "@/content/concerns";
-import { technologies } from "@/content/technologies";
+import { skinTechnologies } from "@/content/treatments";
 import { cta } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -21,9 +21,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/hair" },
 };
 
-const hairTech = technologies.filter((t) =>
-  ["essential-oils", "actives", "led", "ems"].includes(t.slug)
-);
+/* All six approved technologies are shown — they are clinic capabilities, and
+   which apply to a given hair or scalp plan is a consultation decision. */
 
 export default function HairPage() {
   return (
@@ -43,16 +42,18 @@ export default function HairPage() {
         </Container>
       </Section>
 
+      {/* Skin and Scalp Technologies — identical showcase to /skin and
+          /treatments, from the one approved technology set. */}
       <Section tone="elevated" id="technology">
         <SectionHeader
-          eyebrow="The science, explained"
-          title="What supports our hair pathways"
-          lead="From nourishing essential oils such as rosemary oil to targeted actives, each element is selected to suit your plan."
+          eyebrow="Our capability"
+          title="Skin and Scalp Technologies"
+          lead="Our clinic technologies are capabilities, not add-ons. Which are used within a hair or scalp plan — and whether they are used at all — is selected in consultation according to your concern and suitability."
         />
-        <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {hairTech.map((tech, i) => (
-            <Reveal key={tech.slug} delay={(i % 3) * 70}>
-              <TechBlock tech={tech} />
+        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {skinTechnologies.map((tech, i) => (
+            <Reveal key={tech.slug} delay={(i % 3) * 70} className="h-full">
+              <TechnologyCard tech={tech} />
             </Reveal>
           ))}
         </div>

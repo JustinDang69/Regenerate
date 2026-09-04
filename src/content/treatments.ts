@@ -356,6 +356,11 @@ export type SkinTechnology = {
   slug: string;
   name: string;
   fullName: string;
+  /** Short italic serif line on the showcase card (Artifact B LED-card style). */
+  tagline: string;
+  /** Concise card-preview copy. The long clinical `overview` stays on the
+   *  detail page — showcase cards must not carry a dense paragraph. */
+  summary: string;
   overview: string;
   howItWorks: string;
   modes?: TechMode[];
@@ -379,6 +384,9 @@ export const skinTechnologies: SkinTechnology[] = [
     slug: "ems",
     name: "EMS",
     fullName: "EMS — Electrical Muscle Stimulation",
+    tagline: "Non-invasive facial toning and muscle engagement",
+    summary:
+      "Controlled low-level electrical impulses activate selected facial muscles for a more lifted, defined appearance.",
     overview:
       "Electrical Muscle Stimulation uses controlled low-level electrical impulses to activate selected facial muscles. It is a non-invasive technology for facial toning, improved muscle engagement and a more lifted, defined appearance.",
     howItWorks:
@@ -416,6 +424,9 @@ export const skinTechnologies: SkinTechnology[] = [
     slug: "electroporation",
     name: "Electroporation",
     fullName: "Electroporation — Needle-Free Product Infusion",
+    tagline: "Needle-free infusion of selected active ingredients",
+    summary:
+      "Increases movement of selected actives through the outer skin barrier — intensive hydration without injections or mechanical puncture.",
     overview:
       "Electroporation is a needle-free infusion technology that increases the movement of selected active ingredients through the outer skin barrier. It delivers intensive hydration and skin-conditioning actives without injections or mechanical puncture.",
     howItWorks:
@@ -454,6 +465,9 @@ export const skinTechnologies: SkinTechnology[] = [
     slug: "radiofrequency",
     name: "Radiofrequency",
     fullName: "Radiofrequency (RF) Skin Firming",
+    tagline: "Controlled warming for firmer-looking skin",
+    summary:
+      "Non-surgical skin firming that uses controlled electromagnetic energy to support collagen contraction and gradual remodelling.",
     overview:
       "Radiofrequency is a non-surgical skin-firming technology that uses controlled electromagnetic energy to heat targeted tissue. It supports collagen contraction, new collagen formation and gradual remodelling for smoother, firmer-looking skin.",
     howItWorks:
@@ -493,6 +507,9 @@ export const skinTechnologies: SkinTechnology[] = [
     slug: "high-frequency",
     name: "High Frequency",
     fullName: "High Frequency (HF) Facial Therapy",
+    tagline: "A traditional finishing step for congested skin",
+    summary:
+      "Used after cleansing or extraction to refresh, condition and temporarily energise the skin. Popular in oily and blemish-prone protocols.",
     overview:
       "High Frequency facial therapy is a traditional non-invasive technology used after cleansing or extraction to refresh, condition and temporarily energise the skin. It is especially popular in professional protocols for oily, congested and blemish-prone skin.",
     howItWorks:
@@ -530,6 +547,9 @@ export const skinTechnologies: SkinTechnology[] = [
     slug: "ultrasound",
     name: "Ultrasound / Sonophoresis",
     fullName: "Ultrasound and Sonophoresis",
+    tagline: "Sound-wave conditioning and product infusion",
+    summary:
+      "Uses sound-wave energy to condition the skin and improve delivery of selected topical ingredients.",
     overview:
       "Cosmetic ultrasound uses sound-wave energy to condition the skin and improve delivery of selected topical ingredients. Sonophoresis is the product-infusion application of ultrasound and is used for hydration, radiance and skin-support protocols.",
     howItWorks:
@@ -568,6 +588,9 @@ export const skinTechnologies: SkinTechnology[] = [
     slug: "led",
     name: "LED Light Therapy",
     fullName: "LED Light Therapy for Facial Skin",
+    tagline: "Non-invasive photobiomodulation for targeted skin support",
+    summary:
+      "Selected wavelengths of visible or near-infrared light support biological activity within the skin, with little to no downtime.",
     overview:
       "Light-emitting diode phototherapy, also known as photobiomodulation, is a non-invasive treatment that uses selected wavelengths of visible or near-infrared light to support biological activity within the skin. It does not remove or damage the skin surface and requires little to no downtime.",
     bestFor: ["Acne", "Redness", "Rejuvenation", "Recovery", "Pigmentation", "Skin radiance"],

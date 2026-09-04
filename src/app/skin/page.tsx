@@ -5,13 +5,13 @@ import Section from "@/components/ui/Section";
 import Container from "@/components/ui/Container";
 import SectionHeader from "@/components/ui/SectionHeader";
 import ConcernSection from "@/components/sections/ConcernSection";
-import TechBlock from "@/components/cards/TechBlock";
+import TechnologyCard from "@/components/cards/TechnologyCard";
 import CTABlock from "@/components/sections/CTABlock";
 import Reveal from "@/components/motion/Reveal";
 import Divider from "@/components/brand/Divider";
 
 import { skinConcerns } from "@/content/concerns";
-import { technologies } from "@/content/technologies";
+import { skinTechnologies } from "@/content/treatments";
 import { cta } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -21,10 +21,9 @@ export const metadata: Metadata = {
   alternates: { canonical: "/skin" },
 };
 
-// Technologies most relevant to skin pathways.
-const skinTech = technologies.filter((t) =>
-  ["hf", "rf", "led", "ultrasound", "actives"].includes(t.slug)
-);
+/* All six approved technologies are shown. They are clinic capabilities rather
+   than a per-page subset — which ones apply to a given plan is a consultation
+   decision, so the page does not pre-filter them. */
 
 export default function SkinPage() {
   return (
@@ -45,17 +44,19 @@ export default function SkinPage() {
         </Container>
       </Section>
 
-      {/* Technology explained (inside the skin page, per IA) */}
+      {/* Skin and Scalp Technologies — the SAME TechnologyCard showcase used on
+          /treatments and /hair, reading from the one approved technology set, so
+          the three pages stay visually and factually consistent. */}
       <Section tone="elevated" id="technology">
         <SectionHeader
-          eyebrow="The science, explained"
-          title="Technologies we may use"
-          lead="Devices and actives are chosen to suit your concern — never applied by default. Here's what they are and what they're designed to support."
+          eyebrow="Our capability"
+          title="Skin and Scalp Technologies"
+          lead="Our clinic technologies are capabilities, not add-ons. Which are used — and whether they are used at all — is selected in consultation according to your concern and suitability."
         />
-        <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {skinTech.map((tech, i) => (
-            <Reveal key={tech.slug} delay={(i % 3) * 70}>
-              <TechBlock tech={tech} />
+        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {skinTechnologies.map((tech, i) => (
+            <Reveal key={tech.slug} delay={(i % 3) * 70} className="h-full">
+              <TechnologyCard tech={tech} />
             </Reveal>
           ))}
         </div>

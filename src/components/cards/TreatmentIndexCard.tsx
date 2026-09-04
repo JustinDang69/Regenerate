@@ -1,6 +1,6 @@
 /* TreatmentIndexCard — Skin / Hair & Scalp treatment card on /treatments.
-   Bookable: shows both Book Now and Learn More. Distinct from TechnologyCard,
-   which never carries a Book Now CTA. */
+   Bookable: shows both the booking CTA and Learn More. Distinct from
+   TechnologyCard, which never carries a booking CTA. */
 import Link from "next/link";
 import Button from "@/components/ui/Button";
 import { cta } from "@/lib/site";

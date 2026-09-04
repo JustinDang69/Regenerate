@@ -1,6 +1,7 @@
 /* =============================================================================
    Header — sticky, scroll-aware navigation with dropdowns + mobile drawer.
-   Concern-led nav (Home · Skin · Hair · Pricing · About) + persistent Book CTA.
+   Nav: Home · Treatments (by service) · Skin · Hair (by concern) · Pricing ·
+   About, plus a persistent booking CTA.
    Accessible: keyboard-operable dropdowns, focus-visible, aria-expanded, ESC to
    close the mobile drawer, body scroll lock while open.
    ========================================================================== */

@@ -87,7 +87,7 @@ export default function TreatmentsPage() {
       {/* --- C. SKIN AND SCALP TECHNOLOGIES ----------------------------------
           Showcased as real cards, comparable in prominence to the treatment
           cards above (client requirement) — not a row of pills. Clearly a
-          different commercial tier: no Book Now anywhere in this section. */}
+          different commercial tier: no booking CTA anywhere in this section. */}
       <Section id="technologies" tone="base" className="scroll-mt-28">
         <Container>
           <div className="flex flex-wrap items-center justify-between gap-4">
