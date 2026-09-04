@@ -28,11 +28,19 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
     }
 
     const lenis = new Lenis({
-      duration: 1.05,
+      /* Slightly slower and heavier than the previous 1.05 — one wheel gesture
+         travels a little less and settles more gracefully. Deliberately kept
+         under ~1.3: beyond that it starts to read as scroll-jacking rather
+         than pacing, and navigation gets frustrating. */
+      duration: 1.25,
       // Premium, unhurried easing — never a jarring snap.
       easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
-      touchMultiplier: 1.6,
+      /* Slightly under 1 so a wheel notch covers a little less ground. */
+      wheelMultiplier: 0.88,
+      /* Touch was 1.6, which overshot on mobile. 1.2 is calmer without feeling
+         sticky — a finger flick still tracks naturally. */
+      touchMultiplier: 1.2,
     });
 
     root.classList.add("lenis", "lenis-smooth");

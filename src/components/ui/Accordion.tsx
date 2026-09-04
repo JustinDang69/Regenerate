@@ -33,7 +33,7 @@ export default function Accordion({
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
-        className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left transition-colors hover:bg-surface-elevated sm:px-6"
+        className="flex w-full items-center justify-between gap-4 px-5 py-5 text-left transition-colors hover:bg-surface-elevated sm:px-7"
       >
         <span className="flex items-center gap-3">
           {meta}
@@ -55,7 +55,9 @@ export default function Accordion({
         style={{ gridTemplateRows: open ? "1fr" : "0fr" }}
       >
         <div className="overflow-hidden">
-          <div className="px-5 pb-5 text-[0.95rem] text-secondary sm:px-6">{children}</div>
+          <div className="max-w-prose px-5 pb-6 text-[0.95rem] leading-relaxed text-secondary text-pretty sm:px-7">
+            {children}
+          </div>
         </div>
       </div>
     </div>

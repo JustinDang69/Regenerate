@@ -51,13 +51,13 @@ export default function TreatmentsPage() {
       />
 
       {/* --- A. SKIN TREATMENTS --------------------------------------------- */}
-      <Section id="skin-treatments" tone="base" className="scroll-mt-28">
+      <Section id="skin-treatments" tone="base" space="spacious" className="scroll-mt-28">
         <Container>
           <div className="flex flex-wrap items-center justify-between gap-4">
             <SectionHeader eyebrow="Skin" title="Skin Treatments" />
             <Kind>Bookable treatments</Kind>
           </div>
-          <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3 lg:mt-14 lg:gap-8">
             {skinTreatments.map((t, i) => (
               <Reveal key={t.slug} delay={(i % 3) * 70} className="h-full">
                 <TreatmentIndexCard treatment={t} />
@@ -68,13 +68,13 @@ export default function TreatmentsPage() {
       </Section>
 
       {/* --- B. HAIR & SCALP TREATMENTS -------------------------------------- */}
-      <Section id="hair-scalp-treatments" tone="elevated" className="scroll-mt-28">
+      <Section id="hair-scalp-treatments" tone="elevated" space="spacious" className="scroll-mt-28">
         <Container>
           <div className="flex flex-wrap items-center justify-between gap-4">
             <SectionHeader eyebrow="Hair & Scalp" title="Hair & Scalp Treatments" />
             <Kind>Bookable treatments</Kind>
           </div>
-          <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3 lg:mt-14 lg:gap-8">
             {scalpTreatments.map((t, i) => (
               <Reveal key={t.slug} delay={(i % 3) * 70} className="h-full">
                 <TreatmentIndexCard treatment={t} />
@@ -88,7 +88,7 @@ export default function TreatmentsPage() {
           Showcased as real cards, comparable in prominence to the treatment
           cards above (client requirement) — not a row of pills. Clearly a
           different commercial tier: no booking CTA anywhere in this section. */}
-      <Section id="technologies" tone="base" className="scroll-mt-28">
+      <Section id="technologies" tone="base" space="spacious" className="scroll-mt-28">
         <Container>
           <div className="flex flex-wrap items-center justify-between gap-4">
             <SectionHeader
@@ -99,7 +99,7 @@ export default function TreatmentsPage() {
             />
             <Kind>Applied within treatments</Kind>
           </div>
-          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:mt-14 lg:gap-8">
             {skinTechnologies.map((t, i) => (
               <Reveal key={t.slug} delay={(i % 3) * 70} className="h-full">
                 <TechnologyCard tech={t} />
@@ -112,7 +112,7 @@ export default function TreatmentsPage() {
       {/* --- D. ADVANCED COMPOUNDS & MEDICINAL COSMETICS ---------------------
           Reference only. Visually distinct: tinted ground, accordion rows,
           no cards, no CTA. */}
-      <Section id="advanced-compounds" tone="sunken" className="scroll-mt-28">
+      <Section id="advanced-compounds" tone="sunken" space="spacious" className="scroll-mt-28">
         <Container size="narrow">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <SectionHeader
@@ -123,7 +123,7 @@ export default function TreatmentsPage() {
             />
             <Kind>Reference · not bookable</Kind>
           </div>
-          <div className="mt-10 flex flex-col gap-3">
+          <div className="mt-12 flex flex-col gap-4 lg:mt-14">
             {compounds.map((c) => (
               <Accordion key={c.slug} title={c.name}>
                 <p>{c.body}</p>
@@ -136,13 +136,13 @@ export default function TreatmentsPage() {
       {/* --- E. SHARED TREATMENT / CLINIC INFORMATION ------------------------
           Written once here; individual treatment pages link back to this
           section rather than repeating consultation/scanning/aftercare text. */}
-      <Section id="shared-information" tone="base" className="scroll-mt-28">
+      <Section id="shared-information" tone="base" space="spacious" className="scroll-mt-28">
         <Container size="narrow">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <SectionHeader eyebrow="Before you begin" title="Shared Treatment Information" />
             <Kind>Applies to every treatment</Kind>
           </div>
-          <div className="mt-10 flex flex-col gap-3">
+          <div className="mt-12 flex flex-col gap-4 lg:mt-14">
             {sharedInfo.map((s, i) => (
               <Accordion key={s.slug} title={s.name} defaultOpen={i === 0}>
                 {s.list ? (

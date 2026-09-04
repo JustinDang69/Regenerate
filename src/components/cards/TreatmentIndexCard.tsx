@@ -8,13 +8,13 @@ import type { Treatment } from "@/content/treatments";
 
 export default function TreatmentIndexCard({ treatment }: { treatment: Treatment }) {
   return (
-    <article className="group flex h-full flex-col rounded-[var(--radius-lg)] border border-border bg-surface p-8 transition-all duration-[var(--dur-base)] ease-[var(--ease-soft)] hover:-translate-y-1 hover:border-accent hover:shadow-[var(--shadow-md)]">
+    <article className="group flex h-full flex-col rounded-[var(--radius-lg)] border border-border bg-surface p-8 sm:p-9 transition-all duration-[var(--dur-base)] ease-[var(--ease-soft)] hover:-translate-y-1 hover:border-accent hover:shadow-[var(--shadow-md)]">
       <span className="eyebrow text-muted">{treatment.group === "skin" ? "Skin" : "Hair & Scalp"}</span>
-      <h3 className="mt-3 text-h3 text-[1.5rem]">{treatment.name}</h3>
-      <p className="mt-2 font-serif text-[1.02rem] italic text-accent-contrast">{treatment.tagline}</p>
-      <p className="mt-4 text-[0.94rem] text-secondary">{treatment.summary}</p>
+      <h3 className="mt-4 text-h3 text-[1.5rem]">{treatment.name}</h3>
+      <p className="mt-2.5 font-serif text-[1.02rem] italic text-accent-contrast">{treatment.tagline}</p>
+      <p className="mt-5 text-[0.94rem] leading-relaxed text-secondary text-pretty">{treatment.summary}</p>
 
-      <div className="mt-auto flex items-center gap-5 pt-8">
+      <div className="mt-auto flex items-center gap-5 pt-9">
         <Button href={cta.bookHref} size="sm">
           {cta.book}
         </Button>

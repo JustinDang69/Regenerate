@@ -33,10 +33,10 @@ export default function ConcernSection({
   return (
     <section
       id={concern.slug}
-      className="scroll-mt-28 border-t border-border py-[clamp(3.5rem,7vw,6rem)] first:border-t-0"
+      className="scroll-mt-28 border-t border-border py-[clamp(4.5rem,8vw,7.5rem)] first:border-t-0"
       aria-labelledby={`${concern.slug}-title`}
     >
-      <div className="grid gap-10 md:grid-cols-12 md:gap-14">
+      <div className="grid gap-12 md:grid-cols-12 md:gap-16 lg:gap-20">
         {/* Imagery */}
         <Reveal className={`md:col-span-5 ${reverse ? "md:order-2" : ""}`}>
           <ImageFrame
@@ -47,7 +47,7 @@ export default function ConcernSection({
         </Reveal>
 
         {/* Narrative */}
-        <div className={`flex flex-col gap-6 md:col-span-7 ${reverse ? "md:order-1" : ""}`}>
+        <div className={`flex flex-col gap-7 md:col-span-7 ${reverse ? "md:order-1" : ""}`}>
           <Reveal className="flex items-center gap-3">
             <span className="eyebrow text-muted">
               {String(index + 1).padStart(2, "0")}
@@ -60,24 +60,24 @@ export default function ConcernSection({
             {concern.title}
           </Reveal>
 
-          <Reveal delay={80} className="flex flex-col gap-5">
+          <Reveal delay={80} className="flex flex-col gap-7">
             <div>
               <h3 className="text-[0.8rem] font-semibold uppercase tracking-[0.16em] text-accent-contrast">
                 The concern
               </h3>
-              <p className="mt-1.5 text-secondary text-pretty">{concern.problem}</p>
+              <p className="mt-2.5 max-w-prose text-secondary text-pretty">{concern.problem}</p>
             </div>
             <div>
               <h3 className="text-[0.8rem] font-semibold uppercase tracking-[0.16em] text-accent-contrast">
                 Our approach
               </h3>
-              <p className="mt-1.5 text-secondary text-pretty">{concern.approach}</p>
+              <p className="mt-2.5 max-w-prose text-secondary text-pretty">{concern.approach}</p>
             </div>
             <div>
               <h3 className="text-[0.8rem] font-semibold uppercase tracking-[0.16em] text-accent-contrast">
                 What it supports
               </h3>
-              <p className="mt-1.5 text-secondary text-pretty">{concern.benefits}</p>
+              <p className="mt-2.5 max-w-prose text-secondary text-pretty">{concern.benefits}</p>
             </div>
           </Reveal>
 
@@ -88,7 +88,7 @@ export default function ConcernSection({
               Wording stays capability-led: these MAY be used, selected by
               suitability, not applied to every treatment by default. */}
           {techs.length > 0 && (
-            <Reveal delay={120} className="flex flex-wrap items-center gap-2">
+            <Reveal delay={120} className="mt-1 flex flex-wrap items-center gap-2.5">
               <span className="text-[0.75rem] text-muted">May involve:</span>
               {techs.map((t) => (
                 <Link
@@ -104,7 +104,7 @@ export default function ConcernSection({
           )}
 
           {/* Related programs + CTA */}
-          <Reveal delay={160} className="mt-1 flex flex-col gap-4 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
+          <Reveal delay={160} className="mt-3 flex flex-col gap-4 border-t border-border pt-8 sm:flex-row sm:items-center sm:justify-between">
             {pkgs.length > 0 && (
               <p className="text-[0.85rem] text-muted">
                 Related program:{" "}

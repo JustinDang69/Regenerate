@@ -20,15 +20,15 @@ import type { SkinTechnology } from "@/content/treatments";
 
 export default function TechnologyCard({ tech }: { tech: SkinTechnology }) {
   return (
-    <article className="group flex h-full flex-col rounded-[var(--radius-lg)] border border-border bg-surface p-8 transition-all duration-[var(--dur-base)] ease-[var(--ease-soft)] hover:-translate-y-1 hover:border-accent hover:shadow-[var(--shadow-md)]">
+    <article className="group flex h-full flex-col rounded-[var(--radius-lg)] border border-border bg-surface p-8 sm:p-9 transition-all duration-[var(--dur-base)] ease-[var(--ease-soft)] hover:-translate-y-1 hover:border-accent hover:shadow-[var(--shadow-md)]">
       <span className="eyebrow text-muted">Technology</span>
-      <h3 className="mt-3 text-h3 text-[1.5rem]">{tech.name}</h3>
-      <p className="mt-2 font-serif text-[1.02rem] italic text-accent-contrast">
+      <h3 className="mt-4 text-h3 text-[1.5rem]">{tech.name}</h3>
+      <p className="mt-2.5 font-serif text-[1.02rem] italic text-accent-contrast">
         {tech.tagline}
       </p>
-      <p className="mt-4 text-[0.94rem] text-secondary">{tech.summary}</p>
+      <p className="mt-5 text-[0.94rem] leading-relaxed text-secondary text-pretty">{tech.summary}</p>
 
-      <div className="mt-auto pt-8">
+      <div className="mt-auto pt-9">
         <Link
           href={`/treatments/technologies/${tech.slug}`}
           className="inline-flex items-center gap-1 text-[0.85rem] font-semibold text-accent-contrast hover:text-accent-hover"

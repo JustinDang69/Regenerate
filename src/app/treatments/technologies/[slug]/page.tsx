@@ -48,13 +48,13 @@ export default async function TechnologyDetailPage(
         primary={{ label: "See Treatments", href: "/treatments#skin-treatments" }}
       />
 
-      <Section tone="base">
+      <Section tone="base" space="spacious">
         <Container>
           {/* SHORT information — direct panels. */}
-          <div className="grid gap-6 md:grid-cols-2">
-            <div className="rounded-[var(--radius-md)] border border-border bg-surface p-6">
+          <div className="grid gap-6 md:grid-cols-2 lg:gap-8">
+            <div className="rounded-[var(--radius-md)] border border-border bg-surface p-7 sm:p-8">
               <span className="eyebrow text-muted">Best suited for</span>
-              <ul className="mt-3 flex flex-col gap-2">
+              <ul className="mt-4 flex flex-col gap-2.5">
                 {tech.bestFor.map((item) => (
                   <li key={item} className="text-[0.94rem] text-secondary">
                     {item}
@@ -62,9 +62,9 @@ export default async function TechnologyDetailPage(
                 ))}
               </ul>
             </div>
-            <div className="rounded-[var(--radius-md)] border border-border bg-surface p-6">
+            <div className="rounded-[var(--radius-md)] border border-border bg-surface p-7 sm:p-8">
               <span className="eyebrow text-muted">Treatment benefits</span>
-              <ul className="mt-3 flex flex-col gap-2">
+              <ul className="mt-4 flex flex-col gap-2.5">
                 {tech.benefits.map((item) => (
                   <li key={item} className="text-[0.94rem] text-secondary">
                     {item}
@@ -76,16 +76,16 @@ export default async function TechnologyDetailPage(
 
           {/* LED: selectable light colours, swapped in place. */}
           {isLed && tech.lights && tech.wavelengths && (
-            <div className="mt-10">
+            <div className="mt-16 lg:mt-20">
               <SectionHeader eyebrow="Choose the light" title="Five wavelengths, five purposes" />
-              <div className="mt-8">
+              <div className="mt-10">
                 <LedLightSelector lights={tech.lights} wavelengths={tech.wavelengths} />
               </div>
             </div>
           )}
 
           {/* LONG information — accordions. */}
-          <div className="mt-10 flex flex-col gap-3">
+          <div className="mt-16 flex flex-col gap-4 lg:mt-20">
             <Accordion title="How the technology works" defaultOpen>
               <p>{tech.howItWorks}</p>
             </Accordion>
@@ -139,7 +139,7 @@ export default async function TechnologyDetailPage(
             </Accordion>
           </div>
 
-          <div className="mt-8 rounded-[var(--radius-md)] border border-dashed border-border-strong bg-surface-elevated p-5">
+          <div className="mt-12 rounded-[var(--radius-md)] border border-dashed border-border-strong bg-surface-elevated p-6 sm:p-7">
             <span className="eyebrow text-muted">Note</span>
             <p className="mt-2 text-[0.9rem] text-secondary">
               {tech.name} is a technology applied within a treatment, selected in consultation —
@@ -155,7 +155,7 @@ export default async function TechnologyDetailPage(
 
       <Divider className="mx-auto max-w-[var(--container-max)] px-[var(--gutter)]" />
 
-      <Section tone="base">
+      <Section tone="base" space="spacious">
         <Container>
           <CTABlock
             title="Curious whether this suits you?"

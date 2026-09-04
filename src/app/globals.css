@@ -99,6 +99,12 @@
   --container-narrow: 52rem;
   --gutter: clamp(1.25rem, 5vw, 2.75rem);
   --section-y: clamp(4.5rem, 9vw, 9rem);   /* modular vertical section spacing */
+  /* Content-heavy routes (Treatments, Skin, Hair, detail pages) use a slower
+     editorial rhythm so dense clinical copy reads as a sequence of exhibits
+     rather than one continuous document. The homepage keeps --section-y so its
+     deliberate composition is not stretched. Mobile deliberately gains less
+     than desktop — the 5.5rem floor is only ~1rem above the default. */
+  --section-y-spacious: clamp(5.5rem, 10vw, 10.5rem);
 
   /* --- Motion timing (single source for GSAP + CSS) -----------------------
      ROUND 3: pacing slowed to a museum tempo. Motion directs attention; it is

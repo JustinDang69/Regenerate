@@ -36,7 +36,7 @@ export default function SkinPage() {
       />
 
       {/* Concern narratives */}
-      <Section tone="base" innerClassName="!max-w-[var(--container-max)]">
+      <Section tone="base" space="spacious" innerClassName="!max-w-[var(--container-max)]">
         <Container>
           {skinConcerns.map((concern, i) => (
             <ConcernSection key={concern.slug} concern={concern} index={i} />
@@ -47,25 +47,25 @@ export default function SkinPage() {
       {/* Skin and Scalp Technologies — the SAME TechnologyCard showcase used on
           /treatments and /hair, reading from the one approved technology set, so
           the three pages stay visually and factually consistent. */}
-      <Section tone="elevated" id="technology">
+      <Section tone="elevated" space="spacious" id="technology">
         <SectionHeader
           eyebrow="Our capability"
           title="Skin and Scalp Technologies"
           lead="Our clinic technologies are capabilities, not add-ons. Which are used — and whether they are used at all — is selected in consultation according to your concern and suitability."
         />
-        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:mt-16 lg:grid-cols-3 lg:gap-8">
           {skinTechnologies.map((tech, i) => (
             <Reveal key={tech.slug} delay={(i % 3) * 70} className="h-full">
               <TechnologyCard tech={tech} />
             </Reveal>
           ))}
         </div>
-        <p className="mt-8 text-[0.85rem] text-muted">
+        <p className="mt-12 max-w-2xl text-[0.85rem] text-muted text-pretty">
           {/* COMPLIANCE: careful, non-guaranteeing language. Confirm with clinical team. */}
           Most treatments run for approximately 45–90 minutes. Suitability and expected
           experience are confirmed in your consultation. Results vary by individual.
         </p>
-        <p className="mt-4 text-[0.85rem] text-secondary">
+        <p className="mt-5 max-w-2xl text-[0.85rem] text-secondary text-pretty">
           For full treatment-by-treatment detail — how each works, what to expect and
           aftercare —{" "}
           <Link href="/treatments#skin-treatments" className="font-semibold text-accent-contrast underline underline-offset-2 hover:text-accent-hover">

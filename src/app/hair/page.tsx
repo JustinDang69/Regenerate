@@ -34,7 +34,7 @@ export default function HairPage() {
         primary={{ label: cta.book, href: cta.bookHref }}
       />
 
-      <Section tone="base">
+      <Section tone="base" space="spacious">
         <Container>
           {hairConcerns.map((concern, i) => (
             <ConcernSection key={concern.slug} concern={concern} index={i} />
@@ -44,25 +44,25 @@ export default function HairPage() {
 
       {/* Skin and Scalp Technologies — identical showcase to /skin and
           /treatments, from the one approved technology set. */}
-      <Section tone="elevated" id="technology">
+      <Section tone="elevated" space="spacious" id="technology">
         <SectionHeader
           eyebrow="Our capability"
           title="Skin and Scalp Technologies"
           lead="Our clinic technologies are capabilities, not add-ons. Which are used within a hair or scalp plan — and whether they are used at all — is selected in consultation according to your concern and suitability."
         />
-        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:mt-16 lg:grid-cols-3 lg:gap-8">
           {skinTechnologies.map((tech, i) => (
             <Reveal key={tech.slug} delay={(i % 3) * 70} className="h-full">
               <TechnologyCard tech={tech} />
             </Reveal>
           ))}
         </div>
-        <p className="mt-8 text-[0.85rem] text-muted">
+        <p className="mt-12 max-w-2xl text-[0.85rem] text-muted text-pretty">
           {/* COMPLIANCE: grey-hair and hair-growth claims to be clinically/legally confirmed. */}
           Recovery packages provide basic restorative support. Suitability, expected
           experience and any grey-hair pathways are confirmed in consultation. Results vary.
         </p>
-        <p className="mt-4 text-[0.85rem] text-secondary">
+        <p className="mt-5 max-w-2xl text-[0.85rem] text-secondary text-pretty">
           For full treatment-by-treatment detail — including HydraScalp Therapy —{" "}
           <Link href="/treatments#hair-scalp-treatments" className="font-semibold text-accent-contrast underline underline-offset-2 hover:text-accent-hover">
             see our Hair &amp; Scalp Treatments guide

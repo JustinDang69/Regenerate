@@ -34,7 +34,7 @@ function ExpectationBlock({ title, body }: { title: string; body: string }) {
     <article>
       <h3 className="text-h3 text-[1.25rem]">{title}</h3>
       {body.split("\n\n").map((para, i) => (
-        <p key={i} className="mt-3 text-secondary">
+        <p key={i} className="mt-4 max-w-prose text-secondary text-pretty">
           {para}
         </p>
       ))}
@@ -62,27 +62,27 @@ export default async function TreatmentDetailPage(
       />
 
       {/* How it works / process */}
-      <Section tone="base">
+      <Section tone="base" space="spacious">
         <Container>
           <SectionHeader
             eyebrow="How it works"
             title={treatment.process ? "How the treatment works" : "The treatment"}
           />
-          <div className="mt-10">
+          <div className="mt-12 lg:mt-16">
             {treatment.process ? (
               <ProcessSteps process={treatment.process} />
             ) : (
-              <p className="max-w-3xl text-secondary text-pretty">{treatment.howItWorks}</p>
+              <p className="max-w-2xl text-secondary text-pretty">{treatment.howItWorks}</p>
             )}
           </div>
         </Container>
       </Section>
 
       {/* Benefits */}
-      <Section tone="elevated">
+      <Section tone="elevated" space="spacious">
         <Container>
           <SectionHeader eyebrow="Benefits" title="What it's designed to support" />
-          <ul className="mt-10 grid gap-x-8 gap-y-3 sm:grid-cols-2">
+          <ul className="mt-12 grid gap-x-12 gap-y-4 sm:grid-cols-2 lg:mt-14">
             {treatment.benefits.map((b) => (
               <li key={b} className="flex items-start gap-2.5 border-t border-border pt-3 text-[0.95rem] text-secondary">
                 <svg viewBox="0 0 16 16" className="mt-1 h-3.5 w-3.5 shrink-0 text-accent" fill="none" stroke="currentColor" strokeWidth={1.6} aria-hidden>
@@ -96,10 +96,10 @@ export default async function TreatmentDetailPage(
       </Section>
 
       {/* Before / During / After */}
-      <Section tone="base">
+      <Section tone="base" space="spacious">
         <Container>
           <SectionHeader eyebrow="Your appointment" title="What to expect" />
-          <div className="mt-10 grid gap-8 lg:grid-cols-3">
+          <div className="mt-12 grid gap-10 lg:mt-14 lg:grid-cols-3 lg:gap-12">
             <ExpectationBlock title="Before" body={treatment.preProcedure} />
             <ExpectationBlock title="During" body={treatment.during} />
             <ExpectationBlock title="After" body={treatment.postProcedure} />
@@ -108,10 +108,10 @@ export default async function TreatmentDetailPage(
       </Section>
 
       {/* Aftercare + recommendation */}
-      <Section tone="elevated">
-        <Container>
+      <Section tone="elevated" space="spacious">
+        <Container size="narrow">
           <SectionHeader eyebrow="Aftercare" title="Looking after yourself afterwards" />
-          <Reveal className="mt-10 rounded-[var(--radius-lg)] border border-border bg-surface p-7 sm:p-8">
+          <Reveal className="mt-12 rounded-[var(--radius-lg)] border border-border bg-surface p-7 sm:p-9 lg:mt-14">
             <ul className="flex flex-col gap-3">
               {treatment.aftercare.map((item) => (
                 <li key={item} className="border-t border-border pt-3 text-secondary first:border-t-0 first:pt-0">
@@ -120,11 +120,11 @@ export default async function TreatmentDetailPage(
               ))}
             </ul>
           </Reveal>
-          <Reveal delay={80} className="mt-6 rounded-[var(--radius-lg)] border border-border bg-surface p-7 sm:p-8">
+          <Reveal delay={80} className="mt-8 rounded-[var(--radius-lg)] border border-border bg-surface p-7 sm:p-9">
             <span className="eyebrow text-muted">Recommended schedule</span>
             <p className="mt-3 text-secondary">{treatment.recommendation}</p>
           </Reveal>
-          <p className="mt-6 text-[0.85rem] text-muted">
+          <p className="mt-8 text-[0.85rem] text-muted">
             Consultation, scanning and general aftercare principles that apply to every
             treatment are covered once in{" "}
             <Link href="/treatments#shared-information" className="underline underline-offset-2 hover:text-accent-contrast">
@@ -137,7 +137,7 @@ export default async function TreatmentDetailPage(
 
       <Divider className="mx-auto max-w-[var(--container-max)] px-[var(--gutter)]" />
 
-      <Section tone="base">
+      <Section tone="base" space="spacious">
         <Container>
           <CTABlock
             title={`Is ${treatment.name} right for you?`}
