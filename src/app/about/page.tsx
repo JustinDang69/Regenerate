@@ -42,7 +42,16 @@ export default function AboutPage() {
         <SplitEditorial
           eyebrow="Our story"
           title="Why we exist"
-          image={{ label: "Clinic space", mask: "arch", ratio: "portrait" }}
+          /* Client mapping: the flower table / floral stand image. The holder
+             is 3:4 ("tall") to match the photograph exactly rather than crop
+             it into the previous 4:5 frame. */
+          image={{
+            src: "/media/clinic/clinic-space-flower-table.jpg",
+            alt: "The Regenerate clinic interior, with a floral arrangement on a gold stand and the kitchen beyond",
+            label: "Clinic space",
+            mask: "arch",
+            ratio: "tall",
+          }}
         >
           <p>
             The name <em>Regenerate</em> speaks to renewal — restoring and reviving natural
@@ -97,7 +106,14 @@ export default function AboutPage() {
           CLIENT REVISION: moved here from the homepage. Copy trimmed to avoid
           duplicating the "Why we exist" story and the Values section above —
           this block now covers only the physical environment and what a visit
-          feels like. Three distinct images, not repeated placeholders. */}
+          feels like.
+
+          PHOTOGRAPHY (client mapping, 16 Sep 2026): the previous 3-tile grid
+          had a tall portrait tile for the waiting area, which would have
+          cropped the client's landscape sofa photograph and hidden the seating
+          — the client explicitly asked for the full sofa arrangement. The grid
+          is now two landscape tiles, one per confirmed photograph; the
+          unassigned "interior detail" tile was removed rather than guessed. */}
       <Section id="space" tone="elevated" className="scroll-mt-28">
         <Container>
           <SectionHeader
@@ -105,15 +121,30 @@ export default function AboutPage() {
             title="A calm, considered space"
             lead="Our Pascoe Vale South clinic is designed to feel unhurried — private treatment rooms, soft natural light, and time to talk things through properly."
           />
-          <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            <Reveal className="sm:col-span-2 lg:col-span-1 lg:row-span-2">
-              <ImageFrame ratio="tall" placeholderLabel="Reception & waiting area" />
+          <div className="mt-12 grid gap-5 md:grid-cols-2 lg:gap-6">
+            <Reveal>
+              <ImageFrame
+                src="/media/clinic/waiting-room-sofa.jpg"
+                alt="The clinic waiting room, with a full sofa and armchair, the Regenerate wall logo and a floral display"
+                ratio="landscape"
+                placeholderLabel="Waiting room"
+                sizes="(max-width: 768px) 100vw, 50vw"
+              />
+              <p className="mt-3 text-[0.8rem] font-semibold uppercase tracking-[0.14em] text-muted">
+                Waiting room
+              </p>
             </Reveal>
             <Reveal delay={80}>
-              <ImageFrame ratio="landscape" placeholderLabel="Private treatment room" />
-            </Reveal>
-            <Reveal delay={160}>
-              <ImageFrame ratio="landscape" placeholderLabel="Considered interior detail" />
+              <ImageFrame
+                src="/media/clinic/treatment-room-one-bed.jpg"
+                alt="A private treatment room with a single treatment bed, basin and stool"
+                ratio="landscape"
+                placeholderLabel="Private treatment room"
+                sizes="(max-width: 768px) 100vw, 50vw"
+              />
+              <p className="mt-3 text-[0.8rem] font-semibold uppercase tracking-[0.14em] text-muted">
+                Private treatment room
+              </p>
             </Reveal>
           </div>
         </Container>
@@ -128,17 +159,21 @@ export default function AboutPage() {
           title="Meet the practitioners"
           lead="You should always know who is treating you. Full profiles — including qualifications and registration details — are being finalised."
         />
-        <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {/* Two columns: with the confirmed Medical Director added to the three
+            pending roles there are four cards, and a 3-column grid would
+            strand one on its own row. */}
+        <div className="mt-12 grid gap-6 md:grid-cols-2">
           {practitioners.map((p, i) => (
-            <Reveal key={p.slug} delay={(i % 3) * 80}>
+            <Reveal key={p.slug} delay={(i % 2) * 80}>
               <PractitionerCard p={p} />
             </Reveal>
           ))}
         </div>
         <p className="mt-8 text-[0.82rem] text-muted">
-          {/* TODO(client): provide names, portraits, qualifications, AHPRA registration,
-              languages, specialties. The card structure already supports each field. */}
-          Practitioner details are placeholders pending confirmation from the clinic.
+          {/* TODO(client): remaining names, portraits, qualifications, AHPRA
+              registration, languages, specialties. The card structure already
+              supports each field. */}
+          Further practitioner profiles are pending confirmation from the clinic.
         </p>
       </Section>
 

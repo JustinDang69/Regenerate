@@ -15,8 +15,10 @@ type Props = {
   title: string;
   description: string;
   cta: { label: string; href: string };
-  /** Photographic variant (Skin / Hair). Omit for a text-led card. */
-  image?: { label: string };
+  /** Photographic variant (Skin / Hair). Omit for a text-led card.
+   *  `src`/`alt` render real photography; without them the labelled
+   *  placeholder is shown. */
+  image?: { label: string; src?: string; alt?: string };
   /** Text-led variant (Packages) — shown when no image is supplied. */
   highlights?: string[];
 };
@@ -40,7 +42,14 @@ export default function PathwayCard({
 
       {image ? (
         <div className="mt-8">
-          <ImageFrame ratio="landscape" mask="soft" placeholderLabel={image.label} />
+          <ImageFrame
+            src={image.src}
+            alt={image.alt ?? ""}
+            ratio="landscape"
+            mask="soft"
+            placeholderLabel={image.label}
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          />
         </div>
       ) : (
         highlights && (

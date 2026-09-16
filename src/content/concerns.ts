@@ -18,6 +18,14 @@ export type Concern = {
   technologies: string[]; // references skinTechnologies[].slug in content/treatments.ts
   relatedPackages: string[]; // references package slugs
   category: "skin" | "hair";
+  /** Client-assigned photograph for this concern. When omitted, the labelled
+   *  placeholder renders. `ratio` lets the holder suit the photo (a landscape
+   *  room photo should not be forced into the default portrait arch). */
+  image?: {
+    src: string;
+    alt: string;
+    ratio?: "portrait" | "landscape" | "square" | "wide" | "tall";
+  };
 };
 
 /* --------------------------------------------------------------------------
@@ -37,6 +45,14 @@ export const skinConcerns: Concern[] = [
       "Designed to support a clearer, more balanced complexion over a considered course, with home-care guidance along the way.",
     technologies: ["high-frequency", "led"],
     relatedPackages: ["clear-skin-ground-zero"],
+    /* Client mapping (explicit): the TWO-bed treatment room. This photograph is
+       used here only — it is NOT the homepage Skin Treatment Room image.
+       Source: reclinicphotos/original-2A0A4231-…jpeg */
+    image: {
+      src: "/media/clinic/treatment-room-two-bed.jpg",
+      alt: "A treatment room with two treatment beds and stools beneath a gold pendant light",
+      ratio: "landscape",
+    },
   },
   {
     slug: "scarring",

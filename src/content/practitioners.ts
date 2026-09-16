@@ -22,6 +22,24 @@ export type Practitioner = {
 };
 
 export const practitioners: Practitioner[] = [
+  /* CLIENT-CONFIRMED (16 Sep 2026): photograph and role supplied by the client.
+     Only the name and public role are shown. Qualifications, registration,
+     specialties, languages and biography are deliberately empty — none were
+     supplied, and none may be invented. PractitionerCard omits empty fields.
+     Source: reclinicphotoss/original-148414D9-…jpeg */
+  {
+    slug: "ken",
+    name: "Ken",
+    role: "Medical Director / Head of Practice",
+    qualifications: [],
+    registration: undefined,
+    specialties: [],
+    languages: [],
+    bio: "",
+    treatments: [],
+    image: "/media/clinic/practitioner-ken.jpg",
+    isPlaceholder: false,
+  },
   {
     slug: "dermal-specialist-1",
     name: "Dermal Specialist",

@@ -35,7 +35,14 @@ const pathways = [
     description:
       "Support for acne and congestion, scarring and texture, hydration and rejuvenation — with technology selected to suit each concern.",
     cta: { label: cta.exploreSkin, href: "/treatments#skin-treatments" },
-    image: { label: "Skin treatment room" },
+    /* Client mapping: the ONE-bed room. Intentionally the same photograph as
+       About → Private Treatment Room (client-confirmed reuse). Not the two-bed
+       room — that is reserved for Skin → Acne & Congestion. */
+    image: {
+      label: "Skin treatment room",
+      src: "/media/clinic/treatment-room-one-bed.jpg",
+      alt: "Skin treatment room with a single treatment bed, basin and stool",
+    },
   },
   {
     eyebrow: "Hair",
@@ -43,7 +50,12 @@ const pathways = [
     description:
       "Consultation-led support for thinning, scalp health, restorative recovery and considered grey-hair pathways.",
     cta: { label: cta.exploreHair, href: "/treatments#hair-scalp-treatments" },
-    image: { label: "Hair & scalp treatment" },
+    /* Client mapping: the THREE-bed room. */
+    image: {
+      label: "Hair & scalp treatment",
+      src: "/media/clinic/treatment-room-three-bed.jpg",
+      alt: "Hair and scalp treatment room with three treatment beds",
+    },
   },
   {
     eyebrow: "Packages",
@@ -82,17 +94,21 @@ export default function HomePage() {
       <Section tone="elevated">
         <SplitEditorial
           title="Care led by qualified hands"
-          image={{ label: "Practitioner portrait", mask: "arch", ratio: "portrait" }}
+          image={{
+            src: "/media/clinic/practitioner-ken.jpg",
+            alt: "Ken, Medical Director and Head of Practice at Regenerate Skin & Hair Clinic",
+            label: "Practitioner portrait",
+            mask: "arch",
+            ratio: "portrait",
+          }}
           imageCaption={
-            /* TODO(client): replace with the practitioner's real name and role.
-               Names, portraits, qualifications and AHPRA registration are still
-               pending — the structure below is ready for the confirmed details. */
+            /* Client-confirmed practitioner and role. Name and title only —
+               qualifications, registration and biography are not shown until
+               the client supplies them. */
             <div className="flex flex-col gap-0.5">
-              <span className="font-serif text-[1.25rem] text-primary">
-                Practitioner name to be confirmed
-              </span>
+              <span className="font-serif text-[1.25rem] text-primary">Ken</span>
               <span className="text-[0.85rem] font-semibold uppercase tracking-[0.14em] text-accent-contrast">
-                Dermal Therapist
+                Medical Director / Head of Practice
               </span>
             </div>
           }

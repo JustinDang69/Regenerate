@@ -38,11 +38,17 @@ export default function ConcernSection({
     >
       <div className="grid gap-12 md:grid-cols-12 md:gap-16 lg:gap-20">
         {/* Imagery */}
+        {/* A client-assigned photo uses its own ratio (a landscape room shot
+            is not forced into the portrait arch); unassigned concerns keep the
+            labelled portrait placeholder. */}
         <Reveal className={`md:col-span-5 ${reverse ? "md:order-2" : ""}`}>
           <ImageFrame
-            ratio="portrait"
-            mask="arch"
+            src={concern.image?.src}
+            alt={concern.image?.alt ?? ""}
+            ratio={concern.image?.ratio ?? "portrait"}
+            mask={concern.image ? "soft" : "arch"}
             placeholderLabel={`${concern.title} imagery`}
+            sizes="(max-width: 768px) 100vw, 42vw"
           />
         </Reveal>
 

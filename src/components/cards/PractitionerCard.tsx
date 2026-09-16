@@ -30,29 +30,43 @@ export default function PractitionerCard({ p }: { p: Practitioner }) {
         </p>
       )}
 
-      <p className="text-[0.9rem] text-secondary">{p.bio}</p>
+      {p.bio && <p className="text-[0.9rem] text-secondary">{p.bio}</p>}
 
-      <dl className="flex flex-col gap-3 border-t border-border pt-4 text-[0.82rem]">
-        <div>
-          <dt className="eyebrow text-muted">Specialties</dt>
-          <dd className="mt-1 text-secondary">{p.specialties.join(" · ")}</dd>
-        </div>
-        <div>
-          <dt className="eyebrow text-muted">Languages</dt>
-          <dd className="mt-1 text-secondary">{p.languages.join(", ")}</dd>
-        </div>
-        <div>
-          <dt className="eyebrow text-muted">Qualifications</dt>
-          <dd className="mt-1 text-secondary">{p.qualifications.join(", ")}</dd>
-        </div>
-        {/* Registration renders only when supplied (AHPRA etc.). */}
-        {p.registration && (
-          <div>
-            <dt className="eyebrow text-muted">Registration</dt>
-            <dd className="mt-1 text-secondary">{p.registration}</dd>
-          </div>
-        )}
-      </dl>
+      {/* Every field renders only when supplied. A confirmed practitioner with
+          only a name and role (e.g. Ken) shows exactly that — nothing is
+          filled in on their behalf. */}
+      {(p.specialties.length > 0 ||
+        p.languages.length > 0 ||
+        p.qualifications.length > 0 ||
+        p.registration) && (
+        <dl className="flex flex-col gap-3 border-t border-border pt-4 text-[0.82rem]">
+          {p.specialties.length > 0 && (
+            <div>
+              <dt className="eyebrow text-muted">Specialties</dt>
+              <dd className="mt-1 text-secondary">{p.specialties.join(" · ")}</dd>
+            </div>
+          )}
+          {p.languages.length > 0 && (
+            <div>
+              <dt className="eyebrow text-muted">Languages</dt>
+              <dd className="mt-1 text-secondary">{p.languages.join(", ")}</dd>
+            </div>
+          )}
+          {p.qualifications.length > 0 && (
+            <div>
+              <dt className="eyebrow text-muted">Qualifications</dt>
+              <dd className="mt-1 text-secondary">{p.qualifications.join(", ")}</dd>
+            </div>
+          )}
+          {/* Registration renders only when supplied (AHPRA etc.). */}
+          {p.registration && (
+            <div>
+              <dt className="eyebrow text-muted">Registration</dt>
+              <dd className="mt-1 text-secondary">{p.registration}</dd>
+            </div>
+          )}
+        </dl>
+      )}
     </article>
   );
 }
