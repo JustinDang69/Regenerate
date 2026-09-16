@@ -26,10 +26,20 @@ type Props = {
    *  large-enough derivative. Callers whose layout is narrower than 50vw
    *  should pass a tighter value. */
   sizes?: string;
-  /** Real photography defaults to 90 — see next.config.ts `qualities`. At the
-   *  default 75, AVIF smoothed away fine texture and rooms read as blurry. */
+  /** Quality for OPTIMISED images only. Ignored for the approved clinic
+   *  photography, which is served unoptimised (see below). */
   quality?: 75 | 90;
+  /** Serve the original file as-is, bypassing Next/Vercel recompression.
+   *  Defaults to true for the approved clinic photography under
+   *  /media/clinic/ — the client confirmed the raw JPEGs are sharp and the
+   *  AVIF/WebP derivatives visibly softer, so fidelity wins over bytes for
+   *  those seven files. Everything else (logos, icons, future media) keeps
+   *  normal optimisation unless a caller opts in explicitly. */
+  unoptimized?: boolean;
 };
+
+/** The client-approved clinic photography lives here and is always served raw. */
+const CLINIC_PHOTO_PREFIX = "/media/clinic/";
 
 const ratios: Record<Ratio, string> = {
   portrait: "aspect-[4/5]",
@@ -56,7 +66,13 @@ export default function ImageFrame({
   className,
   sizes = "(max-width: 768px) 100vw, 50vw",
   quality = 90,
+  unoptimized,
 }: Props) {
+  /* Raw delivery for the approved clinic set unless a caller says otherwise.
+     With `unoptimized`, Next emits the original URL with no srcset, so the
+     browser receives the untouched JPEG (≈240–340KB each). `sizes`/`quality`
+     are then inert but kept so optimisation can be re-enabled per image. */
+  const raw = unoptimized ?? (!!src && src.startsWith(CLINIC_PHOTO_PREFIX));
   return (
     <div
       className={`relative overflow-hidden bg-surface-elevated shadow-[var(--shadow-md)] ${ratios[ratio]} ${masks[mask]} ${className ?? ""}`.trim()}
@@ -68,6 +84,7 @@ export default function ImageFrame({
           fill
           sizes={sizes}
           quality={quality}
+          unoptimized={raw}
           priority={priority}
           className="object-cover"
         />

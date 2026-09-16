@@ -47,15 +47,17 @@ export default function HeroMedia() {
           <source src="/media/clinic-hero.mp4" type="video/mp4" />
         </video>
       ) : (
-        /* sizes: the media column is ~537px at the 1248px container cap (49% of
-           the usable width minus the grid gap), so "540px" rather than "50vw"
-           — 50vw over-described the slot at wide viewports. quality 90: at
-           the default 75, AVIF smoothed the room texture. */
+        /* `unoptimized`: the client confirmed the raw JPEG is visibly sharper
+           than any AVIF/WebP derivative, so the approved clinic photography is
+           served untouched (see ImageFrame for the same rule). `priority` is
+           kept — the hero is the one above-the-fold photo that should preload.
+           `sizes`/`quality` are inert while unoptimized but left in place. */
         <Image
           src={HERO_IMAGE.src}
           alt={HERO_IMAGE.alt}
           fill
           priority
+          unoptimized
           quality={90}
           sizes="(max-width: 1023px) 100vw, 540px"
           className="object-cover"
