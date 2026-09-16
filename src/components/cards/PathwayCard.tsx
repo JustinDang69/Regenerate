@@ -48,7 +48,9 @@ export default function PathwayCard({
             ratio="landscape"
             mask="soft"
             placeholderLabel={image.label}
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            /* Card is ~370px in the lg 3-column grid, image sits inside 40px
+               padding → ~290px. "33vw" over-described it. */
+            sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 300px"
           />
         </div>
       ) : (

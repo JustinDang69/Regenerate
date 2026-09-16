@@ -49,7 +49,7 @@ export default async function TreatmentDetailPage(
   const treatment = treatmentBySlug(slug);
   if (!treatment) notFound();
 
-  const groupLabel = treatment.group === "skin" ? "Skin" : "Hair & Scalp";
+  const groupLabel = treatment.group === "skin" ? "Skin" : "Hair";
   /* Signature treatments carry the designation in the eyebrow, alongside their
      normal group label — they remain part of that group, not a separate tier. */
   const eyebrow = treatment.signature

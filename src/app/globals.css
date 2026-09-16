@@ -73,15 +73,18 @@
      conversion band). --accent is deliberately untouched and still carries
      the logo, eyebrows, rules, chips and italic taglines.
 
-     Direction: muted stone-olive / taupe, desaturated, lighter, quiet. The
-     fill is light, so text is DARK for contrast:
-       --cta-text on --cta-fill        ≈ 8.6:1 (AAA)
-       --cta-text on --cta-fill-hover  ≈ 7.4:1 (AAA)
-       --cta-text on --cta-panel       ≈ 11:1 (AAA) */
-  --cta-fill: #cfcbbc;
-  --cta-fill-hover: #c0bba9;
+     ROUND 2 (client: "nó xám quá" — the stone-taupe read too grey; asked for
+     "nhũ vàng", a soft champagne / antique gold). Now a restrained champagne
+     gold: muted, slightly warm, clearly gold but never mustard, orange or
+     glossy. Still light enough that text stays DARK for contrast:
+       --cta-text on --cta-fill        7.14:1 (AAA)
+       --cta-text on --cta-fill-hover  5.76:1 (AA)
+       --cta-text on --cta-panel       11.9:1 (AAA)
+     White text on this fill would be ~2:1, which is why it stays dark. */
+  --cta-fill: #c4b585;
+  --cta-fill-hover: #b3a26c;
   --cta-text: #2a2924;
-  --cta-panel: #ece9e0;
+  --cta-panel: #efe8d6;
 
   --secondary: #d3ac6b;           /* warm amber highlight */
   --secondary-soft: #f4e8d0;      /* amber wash for glows */

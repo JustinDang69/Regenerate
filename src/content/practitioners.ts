@@ -34,7 +34,7 @@ export const practitioners: Practitioner[] = [
      Source: reclinicphotoss/original-148414D9-…jpeg */
   {
     slug: "ken",
-    name: "Ken",
+    name: "Kenneth Romero",
     role: "Medical Director / Head of Practice",
     qualifications: [],
     registration: undefined,

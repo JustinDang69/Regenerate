@@ -8,7 +8,7 @@
    than a footnote.
 
    It stays distinguishable from a treatment in the ways that matter
-   commercially: a TECHNOLOGY label instead of Skin / Hair & Scalp, and no
+   commercially: a TECHNOLOGY label instead of Skin / Hair, and no
    Book Appointment CTA. Technologies are applied within treatments and
    selected by suitability — they are not booked directly.
 

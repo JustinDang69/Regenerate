@@ -15,6 +15,7 @@ export default function PractitionerCard({ p }: { p: Practitioner }) {
         ratio="portrait"
         mask="arch"
         placeholderLabel="Practitioner portrait"
+        sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 330px"
       />
 
       <div className="flex flex-col gap-1">

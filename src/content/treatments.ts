@@ -8,7 +8,7 @@
 
    HIERARCHY (client-approved, round 4/5):
      A. Skin Treatments        — bookable
-     B. Hair & Scalp Treatments — bookable
+     B. Hair Treatments (public label; group "scalp") — bookable
      C. Skin and Scalp Technologies — NOT bookable; applied within treatments
      D. Advanced Compounds & Medicinal Cosmetics — reference only, not bookable
      E. Shared Treatment / Clinic Information — written once, referenced everywhere
@@ -35,7 +35,7 @@ export type Treatment = {
   /** Marks a clinic signature offering. Surfaces a restrained "Signature
    *  Treatment" designation on the index card and detail page. It does NOT
    *  change the treatment's group — a signature treatment still sits inside
-   *  its normal Skin or Hair & Scalp section. */
+   *  its normal Skin or Hair section. */
   signature?: boolean;
   tagline: string;
   /** Shortened card-preview copy. */

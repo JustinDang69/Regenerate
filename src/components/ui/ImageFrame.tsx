@@ -22,7 +22,13 @@ type Props = {
   placeholderLabel?: string;
   priority?: boolean;
   className?: string;
+  /** Must describe the image's real rendered width so the browser picks a
+   *  large-enough derivative. Callers whose layout is narrower than 50vw
+   *  should pass a tighter value. */
   sizes?: string;
+  /** Real photography defaults to 90 — see next.config.ts `qualities`. At the
+   *  default 75, AVIF smoothed away fine texture and rooms read as blurry. */
+  quality?: 75 | 90;
 };
 
 const ratios: Record<Ratio, string> = {
@@ -49,6 +55,7 @@ export default function ImageFrame({
   priority,
   className,
   sizes = "(max-width: 768px) 100vw, 50vw",
+  quality = 90,
 }: Props) {
   return (
     <div
@@ -60,6 +67,7 @@ export default function ImageFrame({
           alt={alt}
           fill
           sizes={sizes}
+          quality={quality}
           priority={priority}
           className="object-cover"
         />

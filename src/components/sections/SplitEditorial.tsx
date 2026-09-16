@@ -37,6 +37,8 @@ export default function SplitEditorial({
           ratio={image?.ratio ?? "portrait"}
           mask={image?.mask ?? "soft"}
           placeholderLabel={image?.label ?? "Clinic photography"}
+          /* Two equal columns at the 1248px cap → ~548px; "550px" beats "50vw". */
+          sizes="(max-width: 767px) 100vw, 550px"
         />
         {imageCaption && <div className="mt-4">{imageCaption}</div>}
       </Reveal>

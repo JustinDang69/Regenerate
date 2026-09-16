@@ -118,7 +118,7 @@ export default function AboutPage() {
                 alt="The clinic waiting room, with a full sofa and armchair, the Regenerate wall logo and a floral display"
                 ratio="landscape"
                 placeholderLabel="Waiting room"
-                sizes="(max-width: 768px) 100vw, 50vw"
+                sizes="(max-width: 767px) 100vw, 570px"
               />
               <p className="mt-3 text-[0.8rem] font-semibold uppercase tracking-[0.14em] text-muted">
                 Waiting room
@@ -130,7 +130,7 @@ export default function AboutPage() {
                 alt="A private treatment room with a single treatment bed, basin and stool"
                 ratio="landscape"
                 placeholderLabel="Private treatment room"
-                sizes="(max-width: 768px) 100vw, 50vw"
+                sizes="(max-width: 767px) 100vw, 570px"
               />
               <p className="mt-3 text-[0.8rem] font-semibold uppercase tracking-[0.14em] text-muted">
                 Private treatment room

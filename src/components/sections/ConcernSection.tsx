@@ -48,7 +48,7 @@ export default function ConcernSection({
             ratio={concern.image?.ratio ?? "portrait"}
             mask={concern.image ? "soft" : "arch"}
             placeholderLabel={`${concern.title} imagery`}
-            sizes="(max-width: 768px) 100vw, 42vw"
+            sizes="(max-width: 767px) 100vw, 460px"
           />
         </Reveal>
 

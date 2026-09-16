@@ -96,7 +96,7 @@ export default function HomePage() {
           title="Care led by qualified hands"
           image={{
             src: "/media/clinic/practitioner-ken.jpg",
-            alt: "Ken, Medical Director and Head of Practice at Regenerate Skin & Hair Clinic",
+            alt: "Kenneth Romero, Medical Director and Head of Practice at Regenerate Skin & Hair Clinic",
             label: "Practitioner portrait",
             mask: "arch",
             ratio: "portrait",
@@ -106,7 +106,7 @@ export default function HomePage() {
                qualifications, registration and biography are not shown until
                the client supplies them. */
             <div className="flex flex-col gap-0.5">
-              <span className="font-serif text-[1.25rem] text-primary">Ken</span>
+              <span className="font-serif text-[1.25rem] text-primary">Kenneth Romero</span>
               <span className="text-[0.85rem] font-semibold uppercase tracking-[0.14em] text-accent-contrast">
                 Medical Director / Head of Practice
               </span>

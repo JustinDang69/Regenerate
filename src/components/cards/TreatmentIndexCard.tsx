@@ -1,4 +1,4 @@
-/* TreatmentIndexCard — Skin / Hair & Scalp treatment card on /treatments.
+/* TreatmentIndexCard — Skin / Hair treatment card on /treatments.
    Bookable: shows both the booking CTA and Learn More. Distinct from
    TechnologyCard, which never carries a booking CTA. */
 import Link from "next/link";
@@ -13,7 +13,7 @@ export default function TreatmentIndexCard({ treatment }: { treatment: Treatment
           the designation is an added quiet line, not a promotional badge. */}
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
         <span className="eyebrow text-muted">
-          {treatment.group === "skin" ? "Skin" : "Hair & Scalp"}
+          {treatment.group === "skin" ? "Skin" : "Hair"}
         </span>
         {treatment.signature && (
           <>

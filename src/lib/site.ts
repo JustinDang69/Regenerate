@@ -95,7 +95,7 @@ export const primaryNav: NavItem[] = [
     children: [
       { label: "All Treatments", href: "/treatments", hint: "The full treatment guide" },
       { label: "Skin Treatments", href: "/treatments#skin-treatments" },
-      { label: "Hair & Scalp Treatments", href: "/treatments#hair-scalp-treatments" },
+      { label: "Hair Treatments", href: "/treatments#hair-scalp-treatments" },
       {
         label: "Skin and Scalp Technologies",
         href: "/treatments#technologies",

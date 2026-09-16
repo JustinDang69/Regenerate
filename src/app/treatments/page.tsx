@@ -71,7 +71,7 @@ export default function TreatmentsPage() {
       <Section id="hair-scalp-treatments" tone="elevated" space="spacious" className="scroll-mt-28">
         <Container>
           <div className="flex flex-wrap items-center justify-between gap-4">
-            <SectionHeader eyebrow="Hair & Scalp" title="Hair & Scalp Treatments" />
+            <SectionHeader eyebrow="Hair" title="Hair Treatments" />
             <Kind>Bookable treatments</Kind>
           </div>
           <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3 lg:mt-14 lg:gap-8">
