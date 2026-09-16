@@ -31,7 +31,7 @@ export default function ContactPage() {
         <Container>
           <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
             {/* Booking column */}
-            <Reveal id="book" className="scroll-mt-28 flex flex-col gap-6">
+            <Reveal id="book" className="min-w-0 scroll-mt-28 flex flex-col gap-6">
               <span className="eyebrow">Book a consultation</span>
               <h2 className="text-h2">Ready when you are</h2>
               <p className="text-secondary text-pretty">
@@ -42,14 +42,13 @@ export default function ContactPage() {
               <div className="flex flex-col gap-4 rounded-[var(--radius-lg)] border border-border bg-surface-elevated p-6">
                 <div>
                   <span className="eyebrow text-muted">Call the clinic</span>
-                  {/* TODO(client): confirm public phone number */}
                   <a href={`tel:${site.contact.phone}`} className="mt-1 block font-serif text-[1.4rem] text-accent-contrast">
                     {site.contact.phoneDisplay}
                   </a>
                 </div>
                 <div>
                   <span className="eyebrow text-muted">Email us</span>
-                  <a href={`mailto:${site.contact.email}`} className="mt-1 block text-secondary hover:text-accent-contrast">
+                  <a href={`mailto:${site.contact.email}`} className="mt-1 block break-all text-secondary hover:text-accent-contrast">
                     {site.contact.email}
                   </a>
                 </div>
@@ -63,9 +62,12 @@ export default function ContactPage() {
                 </div>
               </div>
 
-              {/* TODO(client/dev): embed real online-booking platform here when available. */}
+              {/* Microsoft Bookings: once the client supplies the official
+                  public Bookings URL, /book is created and cta.bookHref points
+                  there. Until then booking is by phone or enquiry — stated
+                  plainly, with no "coming soon" language. */}
               <p className="text-[0.8rem] text-muted">
-                Online booking integration can be added here in a future phase.
+                To book, call the clinic or send an enquiry and we&apos;ll arrange a time with you.
               </p>
             </Reveal>
 

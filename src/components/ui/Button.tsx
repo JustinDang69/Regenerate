@@ -38,14 +38,19 @@ const sizes: Record<Size, string> = {
 };
 
 const variants: Record<Variant, string> = {
+  /* CLIENT FEEDBACK (Sep 2026): the primary action fill is the dedicated,
+     desaturated --cta-* palette with dark text — not the gold --accent, which
+     the client found too warm and vibrant on buttons. */
   primary:
-    "bg-accent text-on-accent shadow-[var(--shadow-sm)] hover:bg-accent-hover hover:-translate-y-0.5 hover:shadow-[var(--shadow-md)]",
+    "bg-cta-fill text-cta-text shadow-[var(--shadow-sm)] hover:bg-cta-fill-hover hover:-translate-y-0.5 hover:shadow-[var(--shadow-md)]",
   secondary:
     "border border-border-strong bg-surface/60 text-accent-contrast hover:border-accent hover:bg-surface hover:-translate-y-0.5",
   ghost:
     "text-accent-contrast hover:text-accent-hover underline-offset-4 hover:underline",
+  /* Sits on the pale --cta-panel conversion band: a white button with dark
+     text keeps the band quiet and minimal. */
   "on-accent":
-    "bg-on-accent text-accent-contrast hover:-translate-y-0.5 hover:shadow-[var(--shadow-md)]",
+    "bg-surface text-cta-text border border-border-strong hover:-translate-y-0.5 hover:shadow-[var(--shadow-md)]",
 };
 
 function Arrow() {

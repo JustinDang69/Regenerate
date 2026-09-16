@@ -59,10 +59,9 @@ export default function Footer() {
               ))}
               <span className="text-muted">{a.precinct}</span>
             </address>
-            <a href={`mailto:${site.contact.email}`} className="text-[0.9rem] text-secondary hover:text-accent-contrast">
+            <a href={`mailto:${site.contact.email}`} className="break-all text-[0.9rem] text-secondary hover:text-accent-contrast">
               {site.contact.email}
             </a>
-            {/* TODO(client): confirm public phone number */}
             <a href={`tel:${site.contact.phone}`} className="text-[0.9rem] text-secondary hover:text-accent-contrast">
               {site.contact.phoneDisplay}
             </a>

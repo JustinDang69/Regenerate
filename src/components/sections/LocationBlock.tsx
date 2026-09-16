@@ -53,7 +53,6 @@ export default function LocationBlock({ showMap = true }: { showMap?: boolean })
             </a>
           </InfoRow>
           <InfoRow label="Phone">
-            {/* TODO(client): confirm public phone number */}
             <a className="underline-offset-2 hover:underline" href={`tel:${site.contact.phone}`}>
               {site.contact.phoneDisplay}
             </a>

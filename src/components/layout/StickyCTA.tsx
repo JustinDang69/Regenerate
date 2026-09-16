@@ -35,7 +35,7 @@ export default function StickyCTA() {
         </span>
         <Link
           href={cta.bookHref}
-          className="ml-auto rounded-[var(--radius-pill)] bg-accent px-5 py-2.5 text-[0.85rem] font-semibold text-on-accent"
+          className="ml-auto rounded-[var(--radius-pill)] bg-cta-fill px-5 py-2.5 text-[0.85rem] font-semibold text-cta-text transition-colors hover:bg-cta-fill-hover"
         >
           {cta.book}
         </Link>

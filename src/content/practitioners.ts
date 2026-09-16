@@ -1,10 +1,15 @@
 /* =============================================================================
    PRACTITIONERS — premium staff module data structure.
    -----------------------------------------------------------------------------
-   The clinic team (per brief): ONE DERMAL THERAPIST + TWO DERMAL SPECIALISTS.
-   Exact names, photos, qualifications and AHPRA details are PENDING.
-   These are elegant PLACEHOLDERS — swap fields as real details arrive.
-   TODO(client): provide names, portraits, qualifications, AHPRA registration.
+   PUBLIC RENDERING RULE (client feedback, Sep 2026): only entries with
+   `isPlaceholder: false` are shown on the website. The clinic is recruiting
+   and prospective practitioners may visit, so unfinished profiles must never
+   appear publicly. The placeholder entries below are kept privately as the
+   structure for future confirmed people — flip `isPlaceholder` to false ONLY
+   once the client has supplied that person's real details.
+
+   The clinic team (per brief): ONE DERMAL THERAPIST + TWO DERMAL SPECIALISTS,
+   details PENDING. TODO(client): names, portraits, qualifications, AHPRA.
    ========================================================================== */
 
 export type Practitioner = {

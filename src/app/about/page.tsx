@@ -9,7 +9,6 @@ import ImageFrame from "@/components/ui/ImageFrame";
 import CTABlock from "@/components/sections/CTABlock";
 import Reveal from "@/components/motion/Reveal";
 import Divider from "@/components/brand/Divider";
-import Motif from "@/components/brand/Motif";
 
 import { practitioners } from "@/content/practitioners";
 import { cta } from "@/lib/site";
@@ -17,9 +16,12 @@ import { cta } from "@/lib/site";
 export const metadata: Metadata = {
   title: "About the Clinic & Practitioners",
   description:
-    "The story behind Regenerate — our philosophy, the meaning of the dandelion, and the qualified practitioners who care for you.",
+    "About Regenerate Skin & Hair Clinic in Pascoe Vale South — our philosophy, the clinic space, and the practitioner who leads your care.",
   alternates: { canonical: "/about" },
 };
+
+/* Only confirmed practitioners are rendered publicly. */
+const publicPractitioners = practitioners.filter((p) => !p.isPlaceholder);
 
 const values = [
   { title: "Restore", body: "We're here to help restore and revive — never to make anyone feel less than they are." },
@@ -67,25 +69,13 @@ export default function AboutPage() {
         </SplitEditorial>
       </Section>
 
-      {/* --- The dandelion meaning ----------------------------------------- */}
-      <Section tone="elevated">
-        <Container size="narrow" className="text-center">
-          <Reveal className="mx-auto flex flex-col items-center gap-6">
-            <Motif className="h-16 text-accent/70" />
-            <span className="eyebrow">Our motif</span>
-            <h2 className="text-h2 text-balance">The meaning of the dandelion</h2>
-            <p className="text-lead text-secondary text-pretty">
-              A dandelion releases its seeds to begin again elsewhere — a quiet emblem of
-              regeneration, resilience and renewal. It carries the idea that beauty, like
-              nature, can be restored and can flourish anew. You&apos;ll find it woven gently
-              throughout the clinic and this website.
-            </p>
-          </Reveal>
-        </Container>
-      </Section>
+      {/* CLIENT FEEDBACK (Sep 2026): the "meaning of the dandelion" section was
+          removed — its explanation was not supplied by the client and must not
+          be presented as brand story. The dandelion remains as the visual
+          emblem only. Nothing has been put in its place. */}
 
       {/* --- Values -------------------------------------------------------- */}
-      <Section tone="base">
+      <Section tone="elevated">
         <SectionHeader
           eyebrow="Our philosophy"
           title="What guides our care"
@@ -153,28 +143,24 @@ export default function AboutPage() {
       <Divider className="mx-auto max-w-[var(--container-max)] px-[var(--gutter)]" />
 
       {/* --- Practitioners ------------------------------------------------- */}
+      {/* CLIENT FEEDBACK (Sep 2026): the clinic is recruiting and prospective
+          practitioners may visit, so only CONFIRMED people are shown publicly.
+          Placeholder profiles stay in the data file (privately useful as the
+          structure for future entries) but are filtered out here. No "pending"
+          copy is shown. */}
       <Section id="practitioners" tone="base" className="scroll-mt-28">
         <SectionHeader
           eyebrow="The team"
           title="Meet the practitioners"
-          lead="You should always know who is treating you. Full profiles — including qualifications and registration details — are being finalised."
+          lead="You should always know who is treating you."
         />
-        {/* Two columns: with the confirmed Medical Director added to the three
-            pending roles there are four cards, and a 3-column grid would
-            strand one on its own row. */}
-        <div className="mt-12 grid gap-6 md:grid-cols-2">
-          {practitioners.map((p, i) => (
-            <Reveal key={p.slug} delay={(i % 2) * 80}>
+        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {publicPractitioners.map((p, i) => (
+            <Reveal key={p.slug} delay={(i % 3) * 80}>
               <PractitionerCard p={p} />
             </Reveal>
           ))}
         </div>
-        <p className="mt-8 text-[0.82rem] text-muted">
-          {/* TODO(client): remaining names, portraits, qualifications, AHPRA
-              registration, languages, specialties. The card structure already
-              supports each field. */}
-          Further practitioner profiles are pending confirmation from the clinic.
-        </p>
       </Section>
 
       <Section tone="elevated">

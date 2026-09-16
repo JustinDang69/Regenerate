@@ -22,10 +22,19 @@ export const site = {
   url: "https://www.regenerateskinhairclinic.com.au", // TODO(client): confirm final domain.
 
   contact: {
+    /* PUBLIC email — shown in the footer, contact page and structured data.
+       Not to be replaced with the reception mailbox. */
     email: "hello@regenerateskinhairclinic.com.au",
-    // TODO(client): confirm public phone number. Placeholder shown until provided.
-    phone: "+61 3 0000 0000",
-    phoneDisplay: "(03) 0000 0000",
+    /* Enquiry-PROCESSING mailbox — the destination for the website enquiry
+       form (and its direct-email fallback). Not displayed as the public
+       contact address. Mirrors ENQUIRY_MAILBOX on the server. */
+    enquiryEmail: "reception@regenerateskinhairclinic.com.au",
+    /* CLIENT-CONFIRMED public number (Sep 2026). `phone` is the tel: href
+       value (digits only so every dialler accepts it); `phoneDisplay` is the
+       human-readable form. Header, footer, contact page and the JSON-LD
+       structured data all read these two values. */
+    phone: "1800866888",
+    phoneDisplay: "1800 866 888",
     address: {
       line1: "443 Bell St",
       // Displayed as "Pascoe Vale South VIC 3044" — no comma between suburb and state.

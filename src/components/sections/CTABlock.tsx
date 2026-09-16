@@ -26,40 +26,32 @@ export default function CTABlock({
   secondary = { label: cta.enquire, href: cta.enquireHref },
 }: Props) {
   const isAccent = tone === "accent";
+  /* CLIENT FEEDBACK (Sep 2026): the deep gold band was too warm and saturated.
+     The "accent" tone is now the pale --cta-panel with dark text — quiet and
+     minimal — and the button on it is white with dark text. */
   return (
     <Reveal
       className={`relative overflow-hidden rounded-[var(--radius-xl)] px-8 py-14 text-center sm:px-16 ${
         isAccent
-          ? "bg-accent text-on-accent"
+          ? "bg-cta-panel text-cta-text"
           : "border border-border bg-surface-elevated text-primary"
       }`}
     >
       {/* Full emblem behind the CTA copy — a text area, which is the only place
           the emblem is permitted to sit. Height-only so its ratio is preserved. */}
       <Motif
-        className={`absolute -right-8 -top-8 h-44 ${isAccent ? "text-on-accent/10" : "text-accent/[0.07]"}`}
+        className={`absolute -right-8 -top-8 h-44 ${isAccent ? "text-accent/[0.09]" : "text-accent/[0.07]"}`}
       />
       <div className="relative mx-auto flex max-w-2xl flex-col items-center gap-5">
-        {eyebrow && (
-          <span className={`eyebrow ${isAccent ? "text-on-accent/70" : ""}`}>{eyebrow}</span>
-        )}
-        <h2 className={`text-h2 text-balance ${isAccent ? "text-on-accent" : ""}`}>{title}</h2>
-        {body && (
-          <p className={`text-lead text-pretty ${isAccent ? "text-on-accent/85" : "text-secondary"}`}>
-            {body}
-          </p>
-        )}
+        {eyebrow && <span className="eyebrow">{eyebrow}</span>}
+        <h2 className="text-h2 text-balance">{title}</h2>
+        {body && <p className="text-lead text-secondary text-pretty">{body}</p>}
         <div className="mt-2 flex flex-wrap items-center justify-center gap-4">
           <Button href={primary.href} variant={isAccent ? "on-accent" : "primary"} size="lg">
             {primary.label}
           </Button>
           {secondary && (
-            <Button
-              href={secondary.href}
-              variant={isAccent ? "ghost" : "secondary"}
-              size="lg"
-              className={isAccent ? "text-on-accent hover:text-on-accent/80" : ""}
-            >
+            <Button href={secondary.href} variant={isAccent ? "ghost" : "secondary"} size="lg">
               {secondary.label}
             </Button>
           )}

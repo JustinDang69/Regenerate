@@ -66,6 +66,23 @@
   --accent-soft: #f3ede0;         /* tinted accent wash / chips */
   --accent-contrast: #56492a;     /* accent text on light grounds (AA-safe) */
 
+  /* --- Action (booking CTA) tokens ---------------------------------------
+     CLIENT FEEDBACK (Sep 2026): the gold/olive booking button read as too
+     warm, vibrant and saturated. These tokens are used ONLY for the primary
+     conversion controls (Book Appointment buttons, sticky mobile CTA, the
+     conversion band). --accent is deliberately untouched and still carries
+     the logo, eyebrows, rules, chips and italic taglines.
+
+     Direction: muted stone-olive / taupe, desaturated, lighter, quiet. The
+     fill is light, so text is DARK for contrast:
+       --cta-text on --cta-fill        ≈ 8.6:1 (AAA)
+       --cta-text on --cta-fill-hover  ≈ 7.4:1 (AAA)
+       --cta-text on --cta-panel       ≈ 11:1 (AAA) */
+  --cta-fill: #cfcbbc;
+  --cta-fill-hover: #c0bba9;
+  --cta-text: #2a2924;
+  --cta-panel: #ece9e0;
+
   --secondary: #d3ac6b;           /* warm amber highlight */
   --secondary-soft: #f4e8d0;      /* amber wash for glows */
 
@@ -137,6 +154,10 @@
   --color-accent-hover: var(--accent-hover);
   --color-accent-soft: var(--accent-soft);
   --color-accent-contrast: var(--accent-contrast);
+  --color-cta-fill: var(--cta-fill);
+  --color-cta-fill-hover: var(--cta-fill-hover);
+  --color-cta-text: var(--cta-text);
+  --color-cta-panel: var(--cta-panel);
 
   --color-gold: var(--secondary);
   --color-gold-soft: var(--secondary-soft);

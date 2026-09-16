@@ -1,19 +1,23 @@
 /* =============================================================================
-   ContactForm — enquiry / booking form (client component).
+   ContactForm — enquiry form (client component).
    -----------------------------------------------------------------------------
-   FOUNDATION ONLY: this validates and simulates submission on the client.
-   TODO(client/dev): wire to a real handler — a Next.js Route Handler + email
-   service (e.g. Resend), a CRM, or the clinic's booking platform. Add spam
-   protection (honeypot present below + server-side check) before going live.
+   Submits to POST /api/enquiry, which delivers to the reception mailbox via
+   Microsoft Graph. Success is shown ONLY when the server confirms delivery.
+
+   If delivery is not yet configured (503) or fails, the form does not pretend:
+   it shows an honest fallback with a ready-made email to reception — the
+   visitor's message is preserved in the mailto body so nothing is lost.
 
    Accessible: labelled inputs, required hints, aria-live status region.
+   Honeypot field present here AND validated server-side.
    ========================================================================== */
 "use client";
 
 import { useState, type FormEvent } from "react";
 import Button from "@/components/ui/Button";
+import { site } from "@/lib/site";
 
-type Status = "idle" | "submitting" | "success" | "error";
+type Status = "idle" | "submitting" | "success" | "unconfigured" | "error";
 
 const interests = [
   "Skin consultation",
@@ -23,24 +27,60 @@ const interests = [
   "General enquiry",
 ];
 
+/* Builds a mailto: to the enquiry mailbox carrying the visitor's details, so
+   the fallback path still delivers their message intact. */
+function buildMailto(fields: Record<string, string>) {
+  const subject = `Website enquiry — ${fields.firstName} ${fields.lastName}`.trim();
+  const body = [
+    `Name: ${fields.firstName} ${fields.lastName}`,
+    `Email: ${fields.email}`,
+    fields.phone ? `Phone: ${fields.phone}` : "",
+    fields.interest ? `Interested in: ${fields.interest}` : "",
+    "",
+    fields.message || "",
+  ]
+    .filter((l, i, a) => !(l === "" && a[i - 1] === ""))
+    .join("\n");
+  return `mailto:${site.contact.enquiryEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
 export default function ContactForm() {
   const [status, setStatus] = useState<Status>("idle");
+  const [mailto, setMailto] = useState<string>(`mailto:${site.contact.enquiryEmail}`);
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.currentTarget;
+    const fd = new FormData(form);
+    const fields = Object.fromEntries(
+      [...fd.entries()].map(([k, v]) => [k, typeof v === "string" ? v.trim() : ""])
+    ) as Record<string, string>;
 
     // Honeypot: real users never fill this hidden field.
-    if ((form.elements.namedItem("company") as HTMLInputElement)?.value) {
+    if (fields.company) return;
+
+    // Client-side sanity check (the server validates again).
+    if (!fields.firstName || !fields.lastName || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.email)) {
+      form.reportValidity();
       return;
     }
 
+    setMailto(buildMailto(fields));
     setStatus("submitting");
     try {
-      // TODO(dev): replace with real POST to /api/enquiry (or booking platform).
-      await new Promise((r) => setTimeout(r, 900));
-      setStatus("success");
-      form.reset();
+      const res = await fetch("/api/enquiry", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(fields),
+      });
+      if (res.ok) {
+        setStatus("success");
+        form.reset();
+      } else if (res.status === 503) {
+        setStatus("unconfigured");
+      } else {
+        setStatus("error");
+      }
     } catch {
       setStatus("error");
     }
@@ -61,13 +101,50 @@ export default function ContactForm() {
             <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </span>
-        <h3 className="text-h3">Thank you — your enquiry is on its way</h3>
+        <h3 className="text-h3">Thank you — your enquiry has been sent</h3>
         <p className="max-w-sm text-secondary">
-          A member of the Regenerate team will be in touch shortly to help arrange your consultation.
+          It has reached our reception team, who will be in touch to help arrange your consultation.
         </p>
         <Button variant="secondary" onClick={() => setStatus("idle")}>
           Send another enquiry
         </Button>
+      </div>
+    );
+  }
+
+  /* Honest fallback: delivery isn't connected (or failed). The visitor's
+     message is carried into a pre-filled email so it is never lost. */
+  if (status === "unconfigured" || status === "error") {
+    const failed = status === "error";
+    return (
+      <div
+        role="status"
+        className="flex flex-col items-center gap-4 rounded-[var(--radius-lg)] border border-border bg-surface-elevated px-8 py-12 text-center"
+      >
+        <span className="eyebrow text-muted">
+          {failed ? "We couldn't send that just now" : "Email us directly"}
+        </span>
+        <h3 className="text-h3">Your message is ready to send</h3>
+        <p className="max-w-md text-secondary text-pretty">
+          {failed
+            ? "Something went wrong on our side. Your enquiry has not been sent — please use the button below to email it to us directly, or call the clinic."
+            : "Online enquiries aren't connected yet. Your enquiry has not been sent — please use the button below to email it to us directly, or call the clinic."}
+        </p>
+        <div className="mt-1 flex flex-wrap items-center justify-center gap-3">
+          <Button href={mailto}>
+            Email your enquiry
+          </Button>
+          <Button href={`tel:${site.contact.phone}`} variant="secondary">
+            Call {site.contact.phoneDisplay}
+          </Button>
+        </div>
+        <button
+          type="button"
+          onClick={() => setStatus("idle")}
+          className="text-[0.82rem] text-muted underline underline-offset-2 hover:text-accent-contrast"
+        >
+          Back to the form
+        </button>
       </div>
     );
   }
@@ -136,8 +213,8 @@ export default function ContactForm() {
         <Button variant="primary" size="lg" disabled={status === "submitting"}>
           {status === "submitting" ? "Sending…" : "Send enquiry"}
         </Button>
-        <span aria-live="polite" className="text-[0.85rem] text-secondary">
-          {status === "error" && "Something went wrong — please try again or email us."}
+        <span aria-live="polite" className="sr-only">
+          {status === "submitting" ? "Sending your enquiry" : ""}
         </span>
       </div>
     </form>
