@@ -28,24 +28,35 @@ export default function ProcessSteps({ process }: { process: Process }) {
     );
   }
 
+  const badge = (n: number) => (
+    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-accent-soft font-serif text-[0.85rem] text-accent-contrast">
+      {n}
+    </span>
+  );
+
   return (
-    /* HydraScalp's 15 stages. A slightly wider gap keeps a long sequence
-       reading as discrete stages rather than one dense stack. */
+    /* Long sequences (HydraScalp's 15 stages, FaceSpa/ScalpSpa's 12). A
+       slightly wider gap keeps them reading as discrete stages rather than one
+       dense stack. A step WITH a description is an accordion; a step whose
+       source supplied only a title (FaceSpa, ScalpSpa) renders as a static
+       numbered row in the same style — no chevron, nothing to expand, and no
+       description manufactured to fill it. */
     <div className="flex flex-col gap-4">
-      {process.steps.map((step, i) => (
-        <Accordion
-          key={step.title}
-          defaultOpen={i === 0}
-          meta={
-            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-accent-soft font-serif text-[0.85rem] text-accent-contrast">
-              {i + 1}
-            </span>
-          }
-          title={step.title}
-        >
-          <p>{step.body}</p>
-        </Accordion>
-      ))}
+      {process.steps.map((step, i) =>
+        step.body ? (
+          <Accordion key={step.title + i} defaultOpen={i === 0} meta={badge(i + 1)} title={step.title}>
+            <p>{step.body}</p>
+          </Accordion>
+        ) : (
+          <div
+            key={step.title + i}
+            className="flex items-center gap-3 rounded-[var(--radius-md)] border border-border bg-surface px-5 py-5 sm:px-7"
+          >
+            {badge(i + 1)}
+            <span className="font-semibold text-primary">{step.title}</span>
+          </div>
+        )
+      )}
     </div>
   );
 }

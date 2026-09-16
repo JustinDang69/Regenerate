@@ -79,11 +79,11 @@ export const practitioners: Practitioner[] = [
     role: "Dermal Therapist",
     qualifications: ["Qualification pending confirmation"],
     registration: undefined,
-    specialties: ["Hydra treatments", "Head spa rituals", "Skin vitality"],
+    specialties: ["HydraFacial", "ScalpSpa rituals", "Skin vitality"],
     languages: ["English"],
     bio:
       "A dermal therapist delivering restorative treatments and ritual-led experiences with warmth and precision. Full profile to be added.",
-    treatments: ["hydra", "head-spa", "hair-recovery"],
+    treatments: ["hydrafacial", "scalpspa", "hydrascalp"],
     image: undefined,
     isPlaceholder: true,
   },

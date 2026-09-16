@@ -61,7 +61,7 @@ const pathways = [
     eyebrow: "Packages",
     title: "Treatment Packages",
     description:
-      "Multi-session programs designed around a specific concern, alongside individual treatments. Pricing is indicative and confirmed in consultation.",
+      "Multi-session programs designed around a specific concern, alongside individual treatments. All prices in AUD; suitability is confirmed in consultation.",
     cta: { label: "View All Pricing", href: "/pricing" },
     highlights: ["Skin packages", "Hair packages", "Single treatments"],
   },

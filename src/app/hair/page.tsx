@@ -59,7 +59,7 @@ export default function HairPage() {
         </div>
         <p className="mt-12 max-w-2xl text-[0.85rem] text-muted text-pretty">
           {/* COMPLIANCE: grey-hair and hair-growth claims to be clinically/legally confirmed. */}
-          Recovery packages provide basic restorative support. Suitability, expected
+          HydraScalp and ScalpSpa packages provide regular scalp support. Suitability, expected
           experience and any grey-hair pathways are confirmed in consultation. Results vary.
         </p>
         <p className="mt-5 max-w-2xl text-[0.85rem] text-secondary text-pretty">

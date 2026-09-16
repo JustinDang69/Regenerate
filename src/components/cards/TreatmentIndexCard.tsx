@@ -4,7 +4,7 @@
 import Link from "next/link";
 import Button from "@/components/ui/Button";
 import { cta } from "@/lib/site";
-import type { Treatment } from "@/content/treatments";
+import { treatmentMeta, type Treatment } from "@/content/treatments";
 
 export default function TreatmentIndexCard({ treatment }: { treatment: Treatment }) {
   return (
@@ -30,8 +30,18 @@ export default function TreatmentIndexCard({ treatment }: { treatment: Treatment
         )}
       </div>
       <h3 className="mt-4 text-h3 text-[1.5rem]">{treatment.name}</h3>
-      <p className="mt-2.5 font-serif text-[1.02rem] italic text-accent-contrast">{treatment.tagline}</p>
-      <p className="mt-5 text-[0.94rem] leading-relaxed text-secondary text-pretty">{treatment.summary}</p>
+      {treatment.tagline && (
+        <p className="mt-2.5 font-serif text-[1.02rem] italic text-accent-contrast">{treatment.tagline}</p>
+      )}
+      {treatment.summary ? (
+        <p className="mt-5 text-[0.94rem] leading-relaxed text-secondary text-pretty">{treatment.summary}</p>
+      ) : (
+        /* Basic treatments (FaceSpa, ScalpSpa): the client supplied no summary,
+           so the card states only confirmed facts — "12 steps · 50 minutes". */
+        treatmentMeta(treatment) && (
+          <p className="mt-4 text-[0.94rem] text-secondary">{treatmentMeta(treatment)}</p>
+        )
+      )}
 
       <div className="mt-auto flex items-center gap-5 pt-9">
         <Button href={cta.bookHref} size="sm">

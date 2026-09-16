@@ -37,20 +37,39 @@ export type Treatment = {
    *  change the treatment's group — a signature treatment still sits inside
    *  its normal Skin or Hair section. */
   signature?: boolean;
-  tagline: string;
+  /** Client-confirmed session length (e.g. "50 minutes"). Only present where
+   *  the client has stated it. */
+  duration?: string;
+  /* ------------------------------------------------------------------------
+     Clinical sections. ALL optional: a "basic" treatment such as FaceSpa or
+     ScalpSpa, where the client supplied only a name, a step list, a duration
+     and a price, must render ONLY that. The detail template omits any section
+     whose source content does not exist — nothing is filled in to satisfy
+     the type. Do not add placeholder text here to make a section appear.
+     ---------------------------------------------------------------------- */
+  tagline?: string;
   /** Shortened card-preview copy. */
-  summary: string;
-  overview: string;
+  summary?: string;
+  overview?: string;
   /** Simple treatments describe mechanism in prose; multi-step ones use `process`. */
   howItWorks?: string;
   process?: Process;
-  benefits: string[];
-  preProcedure: string;
-  during: string;
-  postProcedure: string;
-  aftercare: string[];
-  recommendation: string;
+  benefits?: string[];
+  preProcedure?: string;
+  during?: string;
+  postProcedure?: string;
+  aftercare?: string[];
+  recommendation?: string;
 };
+
+/** Source-grounded one-line meta for cards and heroes, e.g. "12 steps · 50 minutes".
+ *  Built only from confirmed facts, so it is safe for basic treatments. */
+export function treatmentMeta(t: Treatment): string | undefined {
+  const parts: string[] = [];
+  if (t.process) parts.push(`${t.process.steps.length} steps`);
+  if (t.duration) parts.push(t.duration);
+  return parts.length ? parts.join(" · ") : undefined;
+}
 
 export const treatments: Treatment[] = [
   {
@@ -337,6 +356,61 @@ export const treatments: Treatment[] = [
     ],
     recommendation:
       "For general scalp maintenance and relaxation, a HydraScalp treatment every 4–6 weeks suits many clients. A more frequent initial course may be recommended for significant oiliness, buildup, dryness, flaking or as part of a structured hair-support program. Treatment frequency is adjusted according to the scalp analysis, sensitivity, response to treatment, home-care routine and any medical or professional hair-loss treatment being used.",
+  },
+
+  /* ==========================================================================
+     BASIC TREATMENTS — FaceSpa and ScalpSpa (client price menu, 16 Sep 2026).
+     The client supplied ONLY: the name, twelve step titles, a 50-minute
+     duration and a price. No benefits, contraindications, pre/during/post
+     wording, aftercare, frequency or claims were supplied, and none are
+     written here. Step titles are the client's exact wording, including
+     spacing and capitalisation — do not "correct" them.
+     ======================================================================== */
+  {
+    slug: "facespa",
+    group: "skin",
+    name: "FaceSpa",
+    duration: "50 minutes",
+    process: {
+      display: "accordion",
+      steps: [
+        { title: "Makeup/ sunscreen/ debris Removal", body: "" },
+        { title: "Toner Exfoliation", body: "" },
+        { title: "Steam", body: "" },
+        { title: "Oxygenated Essence Water", body: "" },
+        { title: "Deep-cleanse", body: "" },
+        { title: "Face & Neck Massage", body: "" },
+        { title: "Ultrasonic Exfoliation", body: "" },
+        { title: "Toner Neutralisation", body: "" },
+        { title: "Hydrodermabrasion Treatment", body: "" },
+        { title: "Serum Highfrequency Treatment", body: "" },
+        { title: "Serum Ultrasound Treatment", body: "" },
+        { title: "Moisturiser Pore Miniature Treatment", body: "" },
+      ],
+    },
+  },
+  {
+    slug: "scalpspa",
+    group: "scalp",
+    name: "ScalpSpa",
+    duration: "50 minutes",
+    process: {
+      display: "accordion",
+      steps: [
+        { title: "Toner Exfoliation", body: "" },
+        { title: "Steam", body: "" },
+        { title: "Oxygenated Essence Water", body: "" },
+        { title: "Cleansing", body: "" },
+        { title: "Scalp & Neck Massage", body: "" },
+        { title: "Ultrasonic Exfoliation", body: "" },
+        { title: "Toner Neutralisation", body: "" },
+        { title: "Hydrodermabrasion Treatment", body: "" },
+        { title: "Serum Highfrequency Treatment", body: "" },
+        { title: "Serum Ultrasound Treatment", body: "" },
+        { title: "Serum Pore Miniature Treatment", body: "" },
+        { title: "LED Light Treatment", body: "" },
+      ],
+    },
   },
 ];
 

@@ -56,9 +56,9 @@ export default function PackageCard({ pkg, featured }: Props) {
         </Button>
       </div>
 
-      {/* COMPLIANCE: pricing indicative; suitability confirmed in consultation. */}
+      {/* COMPLIANCE: suitability confirmed in consultation. */}
       <p className="mt-3 text-center text-[0.7rem] text-muted">
-        Indicative pricing · suitability confirmed in consultation
+        Suitability confirmed in consultation
       </p>
     </article>
   );

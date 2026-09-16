@@ -166,7 +166,7 @@ export default function TreatmentsPage() {
         <Container>
           <CTABlock
             title="Not sure which treatment is right for you?"
-            body="Book a consultation and we'll help match your skin or hair goals to the right pathway. Pricing is confirmed in consultation — see indicative pricing on our packages page."
+            body="Book a consultation and we'll help match your skin or hair goals to the right pathway. See our pricing page for packages and individual treatments."
             secondary={{ label: "See Pricing", href: "/pricing" }}
           />
         </Container>

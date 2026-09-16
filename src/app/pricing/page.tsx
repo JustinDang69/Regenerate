@@ -15,7 +15,7 @@ import { cta } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Pricing — Packages & Single Treatments",
   description:
-    "Transparent, elegant pricing for Regenerate skin and hair programs. Multi-session packages and individual treatments. Indicative pricing, confirmed in consultation.",
+    "Pricing for Regenerate skin and hair programs in Melbourne — multi-session packages and individual treatments. All prices in AUD; suitability confirmed in consultation.",
   alternates: { canonical: "/pricing" },
 };
 
@@ -39,7 +39,7 @@ export default function PricingPage() {
       <PageHero
         eyebrow="Pricing"
         title="Clear pricing, considered programs"
-        lead="Choose a multi-session package designed around a concern, or an individual treatment. Pricing is indicative and all suitability is confirmed in consultation."
+        lead="Choose a multi-session package designed around a concern, or an individual treatment. All prices are in AUD. Treatment suitability is confirmed in consultation."
         primary={{ label: cta.book, href: cta.bookHref }}
         secondary={{ label: cta.enquire, href: cta.enquireHref }}
       />
@@ -76,19 +76,32 @@ export default function PricingPage() {
       {/* --- SINGLE TREATMENTS --------------------------------------------- */}
       <Section id="single" tone="elevated" className="scroll-mt-28">
         <Container>
-          <GroupHeading eyebrow="Individual sessions" title="Single Treatments" />
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {singleTreatments.map((t, i) => (
-              <Reveal key={t.slug} delay={(i % 3) * 60}>
+          {/* The client's eight-item menu, in their two groups. Names are the
+              client's concise price-menu names; each card links to the fuller
+              Treatment Guide page rather than duplicating clinical copy. */}
+          <GroupHeading eyebrow="Single sessions · Skin" title="Skin Treatments" />
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {singleTreatments.filter((t) => t.category === "skin").map((t, i) => (
+              <Reveal key={t.slug} delay={(i % 4) * 60}>
                 <TreatmentCard treatment={t} />
               </Reveal>
             ))}
           </div>
+          <div className="mt-14">
+            <GroupHeading eyebrow="Single sessions · Hair" title="Hair Treatments" />
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+              {singleTreatments.filter((t) => t.category === "hair").map((t, i) => (
+                <Reveal key={t.slug} delay={(i % 4) * 60}>
+                  <TreatmentCard treatment={t} />
+                </Reveal>
+              ))}
+            </div>
+          </div>
           <p className="mt-10 text-[0.82rem] text-muted">
-            {/* COMPLIANCE / TODO(client): confirm GST display, durations, and any package
-                terms & conditions. Prices indicative and subject to change. */}
-            All prices are in AUD and indicative only. Treatment durations are approximate
-            and confirmed at booking. Package suitability is determined in consultation.
+            {/* Prices are the client-confirmed menu of 16 Sep 2026. GST status, package
+                expiry, transferability and refund terms have not been supplied and are
+                deliberately not stated. */}
+            All prices are in AUD. Treatment suitability is confirmed in consultation.
           </p>
           <p className="mt-3 text-[0.82rem] text-secondary">
             For what each treatment involves —{" "}
