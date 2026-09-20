@@ -16,7 +16,7 @@ import { cta } from "@/lib/site";
 export const metadata: Metadata = {
   title: "About the Clinic & Practitioners",
   description:
-    "About Regenerate Skin & Hair Clinic in Pascoe Vale South — our philosophy, the clinic space, and the practitioner who leads your care.",
+    "About Regenerate Skin & Hair Clinic in Pascoe Vale South — our philosophy, the clinic space, and the practitioners who lead your care.",
   alternates: { canonical: "/about" },
 };
 
@@ -154,9 +154,12 @@ export default function AboutPage() {
           title="Meet the practitioners"
           lead="You should always know who is treating you."
         />
-        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {/* Two confirmed practitioners: a centred two-column grid keeps the
+            pair balanced with no empty third column. Capped at ~2×card width so
+            the cards don't stretch on wide screens; one column on mobile. */}
+        <div className="mx-auto mt-12 grid max-w-[52rem] gap-6 md:grid-cols-2 lg:gap-8">
           {publicPractitioners.map((p, i) => (
-            <Reveal key={p.slug} delay={(i % 3) * 80}>
+            <Reveal key={p.slug} delay={(i % 2) * 80}>
               <PractitionerCard p={p} />
             </Reveal>
           ))}

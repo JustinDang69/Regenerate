@@ -11,7 +11,7 @@ export default function PractitionerCard({ p }: { p: Practitioner }) {
     <article className="group flex flex-col gap-5 rounded-[var(--radius-lg)] border border-border bg-surface p-6 shadow-[var(--shadow-xs)] transition-all duration-[var(--dur-base)] ease-[var(--ease-soft)] hover:-translate-y-1 hover:shadow-[var(--shadow-md)]">
       <ImageFrame
         src={p.image}
-        alt={p.image ? `${p.name}, ${p.role}` : ""}
+        alt={p.image ? (p.imageAlt ?? `${p.name}, ${p.role}`) : ""}
         ratio="portrait"
         mask="arch"
         placeholderLabel="Practitioner portrait"

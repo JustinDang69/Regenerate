@@ -23,6 +23,8 @@ export type Practitioner = {
   bio: string;
   treatments: string[];     // treatment/package slugs offered
   image?: string;           // portrait path; falls back to elegant initial mark
+  /** Exact, factual alt text for the portrait. Falls back to "Name, Role". */
+  imageAlt?: string;
   isPlaceholder: boolean;
 };
 
@@ -43,6 +45,27 @@ export const practitioners: Practitioner[] = [
     bio: "",
     treatments: [],
     image: "/media/clinic/practitioner-ken.jpg",
+    imageAlt: "Kenneth Romero, Medical Director and Head of Practice at Regenerate Skin & Hair Clinic",
+    isPlaceholder: false,
+  },
+  /* CLIENT-CONFIRMED (20 Sep 2026): name, role and portrait supplied by the
+     client. Only the name and public role are shown. "Facial Surgeon" is a
+     professional title — no qualifications, FRACS/surgical credentials, AHPRA
+     registration, specialties, biography, languages or experience are
+     inferred from it or from the photograph. All such fields are empty until
+     the client supplies them. */
+  {
+    slug: "david-nguyen",
+    name: "David Nguyen",
+    role: "Clinical Director / Facial Surgeon",
+    qualifications: [],
+    registration: undefined,
+    specialties: [],
+    languages: [],
+    bio: "",
+    treatments: [],
+    image: "/media/clinic/practitioner-david-nguyen.jpg",
+    imageAlt: "David Nguyen, Clinical Director and Facial Surgeon at Regenerate Skin & Hair Clinic",
     isPlaceholder: false,
   },
   {
