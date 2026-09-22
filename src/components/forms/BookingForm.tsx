@@ -25,6 +25,7 @@ import { useSearchParams } from "next/navigation";
 import Button from "@/components/ui/Button";
 import { site } from "@/lib/site";
 import { resolveServiceId, type ServiceLike } from "@/lib/bookings/service-map";
+import { composeAppointmentNotes } from "@/lib/bookings/notes";
 
 type Service = ServiceLike & { durationMinutes: number | null; appointmentMinutes: number };
 
@@ -40,6 +41,11 @@ type Fields = {
   serviceId: string;
   date: string;
   time: string;
+  /* Optional medical profile. Free text: the clinic reads these, nothing
+     computes with them, and a customer may leave any of them blank. */
+  age: string;
+  height: string;
+  weight: string;
   notes: string;
 };
 
@@ -58,6 +64,9 @@ const EMPTY: Fields = {
   serviceId: "",
   date: "",
   time: "",
+  age: "",
+  height: "",
+  weight: "",
   notes: "",
 };
 
@@ -246,7 +255,7 @@ export default function BookingForm() {
           serviceId: fields.serviceId,
           date: fields.date,
           time: fields.time,
-          ...(fields.notes.trim() ? { notes: fields.notes.trim() } : {}),
+          ...(composeAppointmentNotes(fields) ? { notes: composeAppointmentNotes(fields) } : {}),
         }),
       });
       const json = (await res.json().catch(() => null)) as
@@ -527,6 +536,53 @@ export default function BookingForm() {
           )}
         </label>
       </div>
+
+      {/* Optional medical profile. Plain clinical labels, never questions.
+          Three across from the small breakpoint up, stacked on a phone. */}
+      <fieldset className="m-0 border-0 p-0">
+        <legend className="mb-3 text-[0.82rem] font-semibold text-primary">
+          Your details <span className="font-normal text-muted">(optional)</span>
+        </legend>
+        <div className="grid gap-5 sm:grid-cols-3">
+          <label className={labelCls}>
+            Age
+            <input
+              name="age"
+              type="text"
+              inputMode="numeric"
+              autoComplete="off"
+              placeholder="e.g. 32"
+              value={fields.age}
+              onChange={(e) => set("age", e.target.value)}
+              className={field}
+            />
+          </label>
+          <label className={labelCls}>
+            Height
+            <input
+              name="height"
+              type="text"
+              autoComplete="off"
+              placeholder="e.g. 175 cm"
+              value={fields.height}
+              onChange={(e) => set("height", e.target.value)}
+              className={field}
+            />
+          </label>
+          <label className={labelCls}>
+            Weight
+            <input
+              name="weight"
+              type="text"
+              autoComplete="off"
+              placeholder="e.g. 70 kg"
+              value={fields.weight}
+              onChange={(e) => set("weight", e.target.value)}
+              className={field}
+            />
+          </label>
+        </div>
+      </fieldset>
 
       <label className={labelCls}>
         Anything we should know? <span className="font-normal text-muted">(optional)</span>

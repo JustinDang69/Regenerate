@@ -36,7 +36,7 @@ export default function TreatmentIndexCard({ treatment }: { treatment: Treatment
       {treatment.summary ? (
         <p className="mt-5 text-[0.94rem] leading-relaxed text-secondary text-pretty">{treatment.summary}</p>
       ) : (
-        /* Basic treatments (FaceSpa, ScalpSpa): the client supplied no summary,
+        /* Basic treatments (UltraFACIAL, UltraSCALP): the client supplied no summary,
            so the card states only confirmed facts — "12 steps · 50 minutes". */
         treatmentMeta(treatment) && (
           <p className="mt-4 text-[0.94rem] text-secondary">{treatmentMeta(treatment)}</p>

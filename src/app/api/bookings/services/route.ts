@@ -10,6 +10,7 @@
 import { getBookableServices } from "@/lib/bookings/graph";
 import { bookingsConfigured, logSafe, notConfigured, ok, upstreamError } from "@/lib/bookings/http";
 import { SLOT_MINUTES } from "@/lib/bookings/availability";
+import { customerFacingName } from "@/lib/bookings/service-map";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -20,7 +21,9 @@ export async function GET() {
   try {
     const services = (await getBookableServices()).map((s) => ({
       id: s.id,
-      displayName: s.displayName,
+      /* The clinic's exact customer-facing name and casing, which may differ
+         from what the service is still called inside Bookings. */
+      displayName: customerFacingName(s.displayName),
       duration: s.defaultDuration,
       durationMinutes: s.durationMinutes,
       /** The block the website reserves — every current service is 50 min. */

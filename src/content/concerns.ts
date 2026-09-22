@@ -111,7 +111,7 @@ export const hairConcerns: Concern[] = [
     problem:
       "Noticing thinning or reduced density can be unsettling, and is influenced by many personal and lifestyle factors.",
     approach:
-      "A consultation-led plan may combine scalp mesotherapy and HydraScalp sessions, tailored to you.",
+      "A consultation-led plan may combine scalp mesotherapy and MedicalSCALP sessions, tailored to you.",
     benefits:
       "Designed to support the scalp environment as part of an individualised hair-support plan. Results vary.",
     technologies: ["electroporation", "ultrasound"],
@@ -125,7 +125,7 @@ export const hairConcerns: Concern[] = [
     problem:
       "Scalp comfort and condition underpin healthy-looking hair, yet are easy to overlook in everyday care.",
     approach:
-      "ScalpSpa and HydraScalp sessions use nourishing essential oils, such as rosemary oil, to cleanse and calm.",
+      "UltraSCALP and MedicalSCALP sessions use nourishing essential oils, such as rosemary oil, to cleanse and calm.",
     benefits:
       "Designed to support a comfortable, well-conditioned scalp and a sense of everyday wellbeing.",
     technologies: ["led", "high-frequency"],
@@ -135,11 +135,11 @@ export const hairConcerns: Concern[] = [
     slug: "recovery",
     title: "Recovery & Vitality",
     category: "hair",
-    summary: "HydraScalp-led pathways to support scalp condition and hair vitality.",
+    summary: "MedicalSCALP-led pathways to support scalp condition and hair vitality.",
     problem:
       "Hair and scalp benefit from consistent, restorative care — particularly through periods of stress or change.",
     approach:
-      "HydraScalp-based packages provide regular, gentle scalp support, and can complement mesotherapy programs.",
+      "MedicalSCALP-based packages provide regular, gentle scalp support, and can complement mesotherapy programs.",
     benefits:
       "Designed to support hair vitality and scalp condition as part of an ongoing routine.",
     technologies: ["ultrasound", "radiofrequency"],
@@ -154,7 +154,7 @@ export const hairConcerns: Concern[] = [
     problem:
       "Some clients wish to explore supportive pathways as their hair changes over time.",
     approach:
-      "Programs may pair mesotherapy and HydraScalp with the ScalpSpa ritual, planned with you in consultation.",
+      "Programs may pair mesotherapy and MedicalSCALP with the UltraSCALP ritual, planned with you in consultation.",
     benefits:
       "Designed as a considered, supportive experience. Suitability is confirmed in consultation and results vary.",
     technologies: ["ultrasound", "radiofrequency"],

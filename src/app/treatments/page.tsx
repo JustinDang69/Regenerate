@@ -8,6 +8,7 @@ import Reveal from "@/components/motion/Reveal";
 import Divider from "@/components/brand/Divider";
 import CTABlock from "@/components/sections/CTABlock";
 import TreatmentIndexCard from "@/components/cards/TreatmentIndexCard";
+import ConcernSelector from "@/components/sections/ConcernSelector";
 import TechnologyCard from "@/components/cards/TechnologyCard";
 
 import {
@@ -23,7 +24,7 @@ import { cta } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Treatments",
   description:
-    "Skin and hair treatments at Regenerate Skin & Hair Clinic, Melbourne — facial and scalp microneedling, mesotherapy, HydraFacial, HydraScalp, and the skin and scalp technologies used within them.",
+    "Skin and hair treatments at Regenerate Skin & Hair Clinic, Melbourne — facial and scalp microneedling, mesotherapy, MedicalFACIAL, MedicalSCALP, and the skin and scalp technologies used within them.",
   alternates: { canonical: "/treatments" },
 };
 
@@ -49,6 +50,14 @@ export default function TreatmentsPage() {
         lead="Every treatment begins with a consultation and, where relevant, a professional skin or scalp scan. Below is what each treatment is, what it supports and what to expect."
         primary={{ label: cta.book, href: cta.bookHref }}
       />
+
+      {/* --- CONCERN SELECTOR ------------------------------------------------
+          Client request (Sep 2026): let visitors start from what they want to
+          work on rather than from a treatment name. Sits above the treatment
+          lists so it is the first thing on the discovery page. */}
+      <Section id="concerns" tone="base" className="scroll-mt-28">
+        <ConcernSelector />
+      </Section>
 
       {/* --- A. SKIN TREATMENTS --------------------------------------------- */}
       <Section id="skin-treatments" tone="base" space="spacious" className="scroll-mt-28">

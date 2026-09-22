@@ -8,7 +8,7 @@
 
    Superseded terminology: "Recovery" and "Head spa" inclusions and the
    "Hair Recovery" / "Head Spa" singles are gone. The client's names are
-   HydraScalp and ScalpSpa.
+   MedicalSCALP and UltraSCALP.
 
    COMPLIANCE NOTE: "concern" labels describe what a program is *designed to
    support*, never a guaranteed outcome. Suitability is confirmed in
@@ -68,7 +68,7 @@ export const skinPackages: Package[] = [
     concern: "Acne & congestion",
     positioning: "A reset-style program targeting congestion and everyday breakouts.",
     sessions: "6 sessions",
-    includes: ["HydraFacial 6 sessions", "Skin acne treatment"],
+    includes: ["MedicalFACIAL 6 sessions", "Skin acne treatment"],
     featured: true,
   },
   {
@@ -84,7 +84,7 @@ export const skinPackages: Package[] = [
     includes: [
       "Microneedling 3 sessions",
       "Mesotherapy 3 sessions",
-      "HydraFacial 1 session",
+      "MedicalFACIAL 1 session",
       "Skin rejuvenation treatment",
     ],
     featured: true,
@@ -101,9 +101,9 @@ export const hairPackages: Package[] = [
     price: 1690,
     category: "hair",
     concern: "Hair-growth support",
-    positioning: "An extended support program combining mesotherapy with HydraScalp.",
+    positioning: "An extended support program combining mesotherapy with MedicalSCALP.",
     sessions: "8 sessions",
-    includes: ["Mesotherapy 4 sessions", "HydraScalp 4 sessions", "Hair growth treatment"],
+    includes: ["Mesotherapy 4 sessions", "MedicalSCALP 4 sessions", "Hair growth treatment"],
     featured: true,
   },
   {
@@ -114,7 +114,7 @@ export const hairPackages: Package[] = [
     concern: "Hair-growth support",
     positioning: "A foundational course for those beginning a hair-support journey.",
     sessions: "6 sessions",
-    includes: ["Mesotherapy 3 sessions", "HydraScalp 3 sessions", "Hair growth treatment"],
+    includes: ["Mesotherapy 3 sessions", "MedicalSCALP 3 sessions", "Hair growth treatment"],
   },
   {
     slug: "ultimate-warrior",
@@ -122,9 +122,9 @@ export const hairPackages: Package[] = [
     price: 690,
     category: "hair",
     concern: "Scalp condition & vitality",
-    positioning: "A HydraScalp-led program to support scalp condition and hair vitality.",
+    positioning: "A MedicalSCALP-led program to support scalp condition and hair vitality.",
     sessions: "6 sessions",
-    includes: ["HydraScalp 6 sessions", "Hair growth treatment"],
+    includes: ["MedicalSCALP 6 sessions", "Hair growth treatment"],
   },
   {
     slug: "return-of-a-hero",
@@ -132,12 +132,12 @@ export const hairPackages: Package[] = [
     price: 1590,
     category: "hair",
     concern: "Grey-hair pathway support",
-    positioning: "A considered program pairing mesotherapy and HydraScalp with the ScalpSpa ritual.",
+    positioning: "A considered program pairing mesotherapy and MedicalSCALP with the UltraSCALP ritual.",
     sessions: "8 sessions across 3 treatments",
     includes: [
       "Mesotherapy 3 sessions",
-      "HydraScalp 3 sessions",
-      "ScalpSpa 2 sessions",
+      "MedicalSCALP 3 sessions",
+      "UltraSCALP 2 sessions",
       "Grey hair treatment",
     ],
     featured: true,
@@ -148,9 +148,9 @@ export const hairPackages: Package[] = [
     price: 490,
     category: "hair",
     concern: "Grey-hair pathway support",
-    positioning: "A gentle, ritual-led entry point centred on the ScalpSpa experience.",
+    positioning: "A gentle, ritual-led entry point centred on the UltraSCALP experience.",
     sessions: "5 sessions",
-    includes: ["ScalpSpa 5 sessions", "Grey hair treatment"],
+    includes: ["UltraSCALP 5 sessions", "Grey hair treatment"],
   },
 ];
 
@@ -159,15 +159,15 @@ export const hairPackages: Package[] = [
    -------------------------------------------------------------------------- */
 export const singleTreatments: SingleTreatment[] = [
   // SKIN / FACE
-  { slug: "face-micro", name: "Face Micro", price: 259, category: "skin", detailSlug: "facial-microneedling" },
-  { slug: "face-meso", name: "Face Meso", price: 319, category: "skin", detailSlug: "facial-mesotherapy" },
-  { slug: "hydrafacial", name: "HydraFacial", price: 139, category: "skin", detailSlug: "hydrafacial" },
-  { slug: "facespa", name: "FaceSpa", price: 109, category: "skin", detailSlug: "facespa", duration: "50 minutes" },
+  { slug: "face-micro", name: "Facial Microneedling", price: 259, category: "skin", detailSlug: "facial-microneedling" },
+  { slug: "face-meso", name: "Facial Mesotherapy", price: 319, category: "skin", detailSlug: "facial-mesotherapy" },
+  { slug: "hydrafacial", name: "MedicalFACIAL", price: 139, category: "skin", detailSlug: "hydrafacial" },
+  { slug: "facespa", name: "UltraFACIAL", price: 109, category: "skin", detailSlug: "facespa", duration: "50 minutes" },
   // HAIR / SCALP
-  { slug: "scalp-micro", name: "Scalp Micro", price: 259, category: "hair", detailSlug: "scalp-microneedling" },
-  { slug: "scalp-meso", name: "Scalp Meso", price: 329, category: "hair", detailSlug: "scalp-mesotherapy" },
-  { slug: "hydrascalp", name: "HydraScalp", price: 139, category: "hair", detailSlug: "hydrascalp-therapy" },
-  { slug: "scalpspa", name: "ScalpSpa", price: 109, category: "hair", detailSlug: "scalpspa", duration: "50 minutes" },
+  { slug: "scalp-micro", name: "Scalp Microneedling", price: 259, category: "hair", detailSlug: "scalp-microneedling" },
+  { slug: "scalp-meso", name: "Scalp Mesotherapy", price: 329, category: "hair", detailSlug: "scalp-mesotherapy" },
+  { slug: "hydrascalp", name: "MedicalSCALP", price: 139, category: "hair", detailSlug: "hydrascalp-therapy" },
+  { slug: "scalpspa", name: "UltraSCALP", price: 109, category: "hair", detailSlug: "scalpspa", duration: "50 minutes" },
 ];
 
 export const allPackages = [...skinPackages, ...hairPackages];

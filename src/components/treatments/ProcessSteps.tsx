@@ -1,7 +1,7 @@
 /* =============================================================================
    ProcessSteps — renders a Treatment's multi-step process.
-   `rail`      — short sequences (HydraFacial's 5 steps): a compact always-open row.
-   `accordion` — long sequences (HydraScalp's 15 stages): numbered, collapsed by
+   `rail`      — short sequences (MedicalFACIAL's 5 steps): a compact always-open row.
+   `accordion` — long sequences (MedicalSCALP's 15 stages): numbered, collapsed by
                  default except the first, so the page never renders fifteen
                  always-open cards at once.
    ========================================================================== */
@@ -35,10 +35,10 @@ export default function ProcessSteps({ process }: { process: Process }) {
   );
 
   return (
-    /* Long sequences (HydraScalp's 15 stages, FaceSpa/ScalpSpa's 12). A
+    /* Long sequences (MedicalSCALP's 15 stages, UltraFACIAL/UltraSCALP's 12). A
        slightly wider gap keeps them reading as discrete stages rather than one
        dense stack. A step WITH a description is an accordion; a step whose
-       source supplied only a title (FaceSpa, ScalpSpa) renders as a static
+       source supplied only a title (UltraFACIAL, UltraSCALP) renders as a static
        numbered row in the same style — no chevron, nothing to expand, and no
        description manufactured to fill it. */
     <div className="flex flex-col gap-4">

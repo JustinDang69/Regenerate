@@ -14,6 +14,8 @@ import {
   MIN_LEAD_MINUTES,
 } from "@/lib/bookings/availability";
 import { orderForCustomers, mergeRanges, type BookingService } from "@/lib/bookings/graph";
+import { customerFacingName, resolveServiceId } from "@/lib/bookings/service-map";
+import { composeAppointmentNotes } from "@/lib/bookings/notes";
 import {
   melbourneHM,
   melbourneToUtcMs,
@@ -240,30 +242,129 @@ function svc(displayName: string): BookingService {
   };
 }
 
-test("Consultation is first even when Graph returns it last", () => {
-  // This is the real production order: Consultation came back LAST.
-  const fromGraph = [
-    "Scalp Spa", "Medical Scalp", "Scalp Mesotherapy", "Scalp Microneedling",
-    "Face Spa", "Medical Facial", "Facial Mesotherapy", "Facial Microneedling",
-    "Consultation",
-  ].map(svc);
+/** The Bookings names in production today, in the order Graph returns them. */
+const GRAPH_ORDER = [
+  "Scalp Spa", "Medical Scalp", "Scalp Mesotherapy", "Scalp Microneedling",
+  "Face Spa", "Medical Facial", "Facial Mesotherapy", "Facial Microneedling",
+  "Consultation",
+];
 
-  const ordered = orderForCustomers(fromGraph).map((s) => s.displayName);
-  assert.equal(ordered[0], "Consultation");
-  // Every other service keeps its relative order.
-  assert.deepEqual(ordered.slice(1), [
-    "Scalp Spa", "Medical Scalp", "Scalp Mesotherapy", "Scalp Microneedling",
-    "Face Spa", "Medical Facial", "Facial Mesotherapy", "Facial Microneedling",
-  ]);
-  assert.equal(ordered.length, 9);
+/** The exact customer-facing menu the client confirmed, in order. */
+const EXPECTED_MENU = [
+  "Consultation",
+  "Facial Microneedling",
+  "Facial Mesotherapy",
+  "MedicalFACIAL",
+  "UltraFACIAL",
+  "Scalp Microneedling",
+  "Scalp Mesotherapy",
+  "MedicalSCALP",
+  "UltraSCALP",
+];
+
+test("the dropdown shows the client's exact menu, in order, from today's Bookings names", () => {
+  const ordered = orderForCustomers(GRAPH_ORDER.map(svc)).map((s) => customerFacingName(s.displayName));
+  assert.deepEqual(ordered, EXPECTED_MENU);
 });
 
-test("ordering is stable when Consultation is absent or already first", () => {
-  const without = ["Face Spa", "Medical Facial"].map(svc);
-  assert.deepEqual(orderForCustomers(without).map((s) => s.displayName), ["Face Spa", "Medical Facial"]);
+test("the same menu results once Bookings itself is renamed", () => {
+  // Backward compatibility both ways: old names today, new names later.
+  const renamed = [
+    "UltraSCALP", "MedicalSCALP", "Scalp Mesotherapy", "Scalp Microneedling",
+    "UltraFACIAL", "MedicalFACIAL", "Facial Mesotherapy", "Facial Microneedling",
+    "Consultation",
+  ];
+  const ordered = orderForCustomers(renamed.map(svc)).map((s) => customerFacingName(s.displayName));
+  assert.deepEqual(ordered, EXPECTED_MENU);
+});
 
-  const already = ["Consultation", "Face Spa"].map(svc);
-  assert.deepEqual(orderForCustomers(already).map((s) => s.displayName), ["Consultation", "Face Spa"]);
+test("Consultation is first and Microneedling precedes Mesotherapy", () => {
+  const ordered = orderForCustomers(GRAPH_ORDER.map(svc)).map((s) => customerFacingName(s.displayName));
+  assert.equal(ordered[0], "Consultation");
+  assert.ok(ordered.indexOf("Facial Microneedling") < ordered.indexOf("Facial Mesotherapy"));
+  assert.ok(ordered.indexOf("Scalp Microneedling") < ordered.indexOf("Scalp Mesotherapy"));
+});
+
+test("the renamed treatments keep their exact casing", () => {
+  assert.equal(customerFacingName("Medical Facial"), "MedicalFACIAL");
+  assert.equal(customerFacingName("Medical Scalp"), "MedicalSCALP");
+  assert.equal(customerFacingName("Face Spa"), "UltraFACIAL");
+  assert.equal(customerFacingName("Scalp Spa"), "UltraSCALP");
+  // Legacy website names resolve too.
+  assert.equal(customerFacingName("HydraFacial"), "MedicalFACIAL");
+  assert.equal(customerFacingName("HydraScalp"), "MedicalSCALP");
+  assert.equal(customerFacingName("FaceSpa"), "UltraFACIAL");
+  assert.equal(customerFacingName("ScalpSpa"), "UltraSCALP");
+});
+
+test("a service the clinic adds later still appears, at the end", () => {
+  const withExtra = orderForCustomers([...GRAPH_ORDER, "Brand New Treatment"].map(svc));
+  const names = withExtra.map((s) => customerFacingName(s.displayName));
+  assert.equal(names[0], "Consultation");
+  assert.equal(names[names.length - 1], "Brand New Treatment");
+  assert.equal(names.length, 10);
+});
+
+test("treatment-card CTAs still preselect the right live service", () => {
+  const services = GRAPH_ORDER.map(svc); // Bookings NOT yet renamed
+  const cases: [string, string][] = [
+    ["facial-microneedling", "Facial Microneedling"],
+    ["facial-mesotherapy", "Facial Mesotherapy"],
+    ["hydrafacial", "Medical Facial"],
+    ["facespa", "Face Spa"],
+    ["scalp-microneedling", "Scalp Microneedling"],
+    ["scalp-mesotherapy", "Scalp Mesotherapy"],
+    ["hydrascalp-therapy", "Medical Scalp"],
+    ["scalpspa", "Scalp Spa"],
+  ];
+  for (const [slug, expectedBookingsName] of cases) {
+    const id = resolveServiceId(slug, services);
+    assert.equal(id, `id-${expectedBookingsName}`, slug);
+  }
+});
+
+test("CTA preselection survives Bookings being renamed", () => {
+  const renamed = ["Consultation", "MedicalFACIAL", "UltraFACIAL", "MedicalSCALP", "UltraSCALP"].map(svc);
+  assert.equal(resolveServiceId("hydrafacial", renamed), "id-MedicalFACIAL");
+  assert.equal(resolveServiceId("facespa", renamed), "id-UltraFACIAL");
+  assert.equal(resolveServiceId("hydrascalp-therapy", renamed), "id-MedicalSCALP");
+  assert.equal(resolveServiceId("scalpspa", renamed), "id-UltraSCALP");
+});
+
+test("a generic CTA and an unknown slug both leave the treatment blank", () => {
+  const services = GRAPH_ORDER.map(svc);
+  assert.equal(resolveServiceId(null, services), null);
+  assert.equal(resolveServiceId("", services), null);
+  assert.equal(resolveServiceId("not-a-real-treatment", services), null);
+});
+
+/* --- 5. Optional medical profile in the appointment notes ------------------- */
+
+test("age, height and weight are folded into the notes, each labelled", () => {
+  assert.equal(
+    composeAppointmentNotes({ age: "32", height: "175 cm", weight: "70 kg", notes: "Sensitive skin" }),
+    "Age: 32\nHeight: 175 cm\nWeight: 70 kg\nCustomer notes: Sensitive skin"
+  );
+});
+
+test("only values the customer actually supplied are included", () => {
+  assert.equal(composeAppointmentNotes({ age: "32" }), "Age: 32");
+  assert.equal(composeAppointmentNotes({ weight: "70 kg" }), "Weight: 70 kg");
+  assert.equal(composeAppointmentNotes({ age: "  ", height: "", weight: "  " }), "");
+  assert.equal(
+    composeAppointmentNotes({ age: "32", weight: "70 kg" }),
+    "Age: 32\nWeight: 70 kg"
+  );
+});
+
+test("all four are optional — an empty form sends no notes at all", () => {
+  assert.equal(composeAppointmentNotes({}), "");
+  assert.equal(composeAppointmentNotes({ age: "", height: "", weight: "", notes: "" }), "");
+});
+
+test("a note on its own is sent verbatim, with no label", () => {
+  // Nothing was added above it, so the prefix would only be noise.
+  assert.equal(composeAppointmentNotes({ notes: "Running 5 minutes late" }), "Running 5 minutes late");
 });
 
 /* --- Supporting helpers ----------------------------------------------------- */

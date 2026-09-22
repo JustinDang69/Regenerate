@@ -63,7 +63,7 @@ export default async function TreatmentDetailPage(
   const meta = treatmentMeta(treatment);
 
   /* Every clinical section below renders ONLY when its source content exists.
-     FaceSpa and ScalpSpa have a step list and a duration and nothing else —
+     UltraFACIAL and UltraSCALP have a step list and a duration and nothing else —
      the page shows exactly that. */
   const hasExpectations = !!(treatment.preProcedure || treatment.during || treatment.postProcedure);
   const hasAftercare = !!(treatment.aftercare?.length || treatment.recommendation);

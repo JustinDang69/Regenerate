@@ -17,6 +17,7 @@ import { createAppointment, findBookableService } from "@/lib/bookings/graph";
 import { computeSlots, isDateInBookingWindow, MAX_DAYS_AHEAD, parseHM, parseLocalDate, SLOT_MINUTES } from "@/lib/bookings/availability";
 import { bookingsConfigured, fail, logSafe, notConfigured, ok, readJson, str, upstreamError } from "@/lib/bookings/http";
 import { localDateString, melbourneHM, MELBOURNE_TZ } from "@/lib/bookings/time";
+import { customerFacingName } from "@/lib/bookings/service-map";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -106,7 +107,7 @@ export async function POST(req: Request) {
       {
         appointment: {
           id: created.id,
-          serviceName: service.displayName,
+          serviceName: customerFacingName(service.displayName),
           date: localDateString(date!),
           time: slot.time,
           endTime: melbourneHM(slot.endUtc),

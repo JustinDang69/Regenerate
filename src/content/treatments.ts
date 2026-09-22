@@ -1,7 +1,7 @@
 /* =============================================================================
    TREATMENT GUIDE CONTENT — single source of truth for /treatments.
    -----------------------------------------------------------------------------
-   Wording is taken from the client's Treatment Guide (and, for HydraScalp, the
+   Wording is taken from the client's Treatment Guide (and, for MedicalSCALP, the
    client's supplied source content, round-4 production brief). Card previews
    are shortened, but shortening only removes words — it never strengthens a
    claim, softens a caution, or adds anything the source does not say.
@@ -23,8 +23,8 @@ export type TreatmentGroup = "skin" | "scalp";
 
 export type ProcessStep = { title: string; body: string };
 
-/** A multi-step treatment process. `rail` suits a short sequence (HydraFacial's
- *  5 steps); `accordion` suits a long one (HydraScalp's 15 stages) so the page
+/** A multi-step treatment process. `rail` suits a short sequence (MedicalFACIAL's
+ *  5 steps); `accordion` suits a long one (MedicalSCALP's 15 stages) so the page
  *  never renders many always-open cards at once. */
 export type Process = { display: "rail" | "accordion"; steps: ProcessStep[] };
 
@@ -41,8 +41,8 @@ export type Treatment = {
    *  the client has stated it. */
   duration?: string;
   /* ------------------------------------------------------------------------
-     Clinical sections. ALL optional: a "basic" treatment such as FaceSpa or
-     ScalpSpa, where the client supplied only a name, a step list, a duration
+     Clinical sections. ALL optional: a "basic" treatment such as UltraFACIAL or
+     UltraSCALP, where the client supplied only a name, a step list, a duration
      and a price, must render ONLY that. The detail template omits any section
      whose source content does not exist — nothing is filled in to satisfy
      the type. Do not add placeholder text here to make a section appear.
@@ -141,12 +141,12 @@ export const treatments: Treatment[] = [
   {
     slug: "hydrafacial",
     group: "skin",
-    name: "HydraFacial",
+    name: "MedicalFACIAL",
     tagline: "Cleansing, exfoliation, extraction and hydration in one treatment",
     summary:
       "A multi-step, non-invasive facial treatment that combines cleansing, exfoliation, vacuum-assisted extraction and topical hydration.",
     overview:
-      "HydraFacial is a multi-step, non-invasive facial treatment that combines cleansing, exfoliation, vacuum-assisted extraction and topical hydration.",
+      "MedicalFACIAL is a multi-step, non-invasive facial treatment that combines cleansing, exfoliation, vacuum-assisted extraction and topical hydration.",
     process: {
       display: "rail",
       steps: [
@@ -250,13 +250,13 @@ export const treatments: Treatment[] = [
        existing internal links and any indexed URLs continue to resolve. */
     slug: "hydrascalp-therapy",
     group: "scalp",
-    name: "HydraScalp",
+    name: "MedicalSCALP",
     signature: true,
     tagline: "A multi-step scalp ritual combining cleansing, technology and relaxation",
     summary:
       "A comprehensive, multi-step scalp treatment combining deep cleansing, scalp conditioning, massage, professional topical ingredients and selected device-based technologies.",
     overview:
-      "HydraScalp is a comprehensive, multi-step scalp treatment that combines deep cleansing, scalp conditioning, massage, professional topical ingredients and selected device-based technologies. The treatment removes excess oil, product residue and surface buildup; improves scalp hydration; supports a balanced scalp environment; stimulates the scalp and hair follicles; addresses common scalp concerns and promotes ultimate relaxation eliminating stress.",
+      "MedicalSCALP is a comprehensive, multi-step scalp treatment that combines deep cleansing, scalp conditioning, massage, professional topical ingredients and selected device-based technologies. The treatment removes excess oil, product residue and surface buildup; improves scalp hydration; supports a balanced scalp environment; stimulates the scalp and hair follicles; addresses common scalp concerns and promotes ultimate relaxation eliminating stress.",
     process: {
       display: "accordion",
       steps: [
@@ -339,11 +339,11 @@ export const treatments: Treatment[] = [
       "No needles and little to no downtime for most clients",
     ],
     preProcedure:
-      "HydraScalp is a specialist scalp treatment. Clients should attend with clean and dry hair and scalp because HydraScalp does not include hair wash. Hair should be free from styling products, dry shampoo, hair fibres, oils, serums, sprays, gels and other leave-in products.\n\nThe scalp must not have open wounds, cuts, broken or actively inflamed skin, recent bruising, bleeding, active infection, weeping lesions or significant sunburn. Clients must inform the practitioner about allergies, sensitivities, diagnosed scalp conditions, recent hair or scalp procedures, pregnancy, implanted electrical or medical devices, relevant medical history and any topical or oral medications being used.\n\nIf the scalp is suitable for treatment, the practitioner selects the appropriate treatment stages, device settings, topical active compounds and essential oils according to the client's scalp condition, comfort and treatment goals.",
+      "MedicalSCALP is a specialist scalp treatment. Clients should attend with clean and dry hair and scalp because MedicalSCALP does not include hair wash. Hair should be free from styling products, dry shampoo, hair fibres, oils, serums, sprays, gels and other leave-in products.\n\nThe scalp must not have open wounds, cuts, broken or actively inflamed skin, recent bruising, bleeding, active infection, weeping lesions or significant sunburn. Clients must inform the practitioner about allergies, sensitivities, diagnosed scalp conditions, recent hair or scalp procedures, pregnancy, implanted electrical or medical devices, relevant medical history and any topical or oral medications being used.\n\nIf the scalp is suitable for treatment, the practitioner selects the appropriate treatment stages, device settings, topical active compounds and essential oils according to the client's scalp condition, comfort and treatment goals.",
     during:
       "The practitioner divides the hair into sections and treats the scalp systematically to ensure consistent coverage. Products, device settings and treatment time are adjusted according to oiliness, dryness, sensitivity, visible flaking, buildup and the client's comfort. Clients may experience gentle warmth, cooling, vibration or mild tingling during different stages.",
     postProcedure:
-      "The scalp feels clean, conditioned, refreshed and hydrated. Because HydraScalp includes leave-on active ingredients, clients should avoid washing the hair immediately after treatment. Unless otherwise directed, allow the applied ingredients to remain on the scalp for approximately 6–12 hours.\n\nAvoid scratching, vigorous brushing, strong exfoliating scalp products, hair dye, bleaching, excessive heat, sauna use and intense exercise for 24–48 hours if the scalp feels sensitive. Use gentle scalp and hair products and follow the personalised home-care advice provided by the practitioner.",
+      "The scalp feels clean, conditioned, refreshed and hydrated. Because MedicalSCALP includes leave-on active ingredients, clients should avoid washing the hair immediately after treatment. Unless otherwise directed, allow the applied ingredients to remain on the scalp for approximately 6–12 hours.\n\nAvoid scratching, vigorous brushing, strong exfoliating scalp products, hair dye, bleaching, excessive heat, sauna use and intense exercise for 24–48 hours if the scalp feels sensitive. Use gentle scalp and hair products and follow the personalised home-care advice provided by the practitioner.",
     aftercare: [
       "Do not wash the hair for approximately 6–12 hours after treatment unless advised otherwise.",
       "Use a gentle shampoo and avoid harsh scalp scrubs or strong exfoliating products for 24–48 hours.",
@@ -355,11 +355,11 @@ export const treatments: Treatment[] = [
       "A maintenance treatment every 4–6 weeks suits many clients; a customised initial course may be recommended for particular scalp concerns.",
     ],
     recommendation:
-      "For general scalp maintenance and relaxation, a HydraScalp treatment every 4–6 weeks suits many clients. A more frequent initial course may be recommended for significant oiliness, buildup, dryness, flaking or as part of a structured hair-support program. Treatment frequency is adjusted according to the scalp analysis, sensitivity, response to treatment, home-care routine and any medical or professional hair-loss treatment being used.",
+      "For general scalp maintenance and relaxation, a MedicalSCALP treatment every 4–6 weeks suits many clients. A more frequent initial course may be recommended for significant oiliness, buildup, dryness, flaking or as part of a structured hair-support program. Treatment frequency is adjusted according to the scalp analysis, sensitivity, response to treatment, home-care routine and any medical or professional hair-loss treatment being used.",
   },
 
   /* ==========================================================================
-     BASIC TREATMENTS — FaceSpa and ScalpSpa (client price menu, 16 Sep 2026).
+     BASIC TREATMENTS — UltraFACIAL and UltraSCALP (client price menu, 16 Sep 2026).
      The client supplied ONLY: the name, twelve step titles, a 50-minute
      duration and a price. No benefits, contraindications, pre/during/post
      wording, aftercare, frequency or claims were supplied, and none are
@@ -369,7 +369,7 @@ export const treatments: Treatment[] = [
   {
     slug: "facespa",
     group: "skin",
-    name: "FaceSpa",
+    name: "UltraFACIAL",
     duration: "50 minutes",
     process: {
       display: "accordion",
@@ -392,7 +392,7 @@ export const treatments: Treatment[] = [
   {
     slug: "scalpspa",
     group: "scalp",
-    name: "ScalpSpa",
+    name: "UltraSCALP",
     duration: "50 minutes",
     process: {
       display: "accordion",

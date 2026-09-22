@@ -14,6 +14,7 @@
    ========================================================================== */
 import "server-only";
 import { graphRequest } from "@/lib/graph/client";
+import { serviceOrderIndex } from "@/lib/bookings/service-map";
 import { isoDurationToMinutes, parseGraphDateTime, toGraphDateTime, type GraphDateTimeTimeZone } from "@/lib/bookings/time";
 
 const METADATA_TTL_MS = 5 * 60_000;
@@ -88,18 +89,20 @@ export async function getServices(): Promise<BookingService[]> {
 }
 
 /**
- * Services a customer may book, in the order the website shows them.
+ * Services a customer may book, in the clinic's confirmed order:
+ * Consultation first, then Microneedling before Mesotherapy, face before
+ * scalp. Graph returns them in an arbitrary order (in production Consultation
+ * came back LAST), so the order is imposed here rather than relied upon.
  *
- * Consultation is pinned first: it is the clinic's intended first step, and
- * Graph returns services in an arbitrary order (in production it came back
- * LAST). Every other service keeps the order Bookings gave it.
+ * A service the clinic adds later that is not in the canonical table keeps
+ * its relative position at the end — it appears rather than disappearing.
  */
 export function orderForCustomers(services: BookingService[]): BookingService[] {
-  const isConsultation = (s: BookingService) => s.displayName.trim().toLowerCase() === CONSULTATION_NAME;
-  return [...services.filter(isConsultation), ...services.filter((s) => !isConsultation(s))];
+  return [...services]
+    .map((s, i) => ({ s, i, order: serviceOrderIndex(s.displayName) }))
+    .sort((a, b) => a.order - b.order || a.i - b.i)
+    .map((x) => x.s);
 }
-
-const CONSULTATION_NAME = "consultation";
 
 export async function getBookableServices(): Promise<BookingService[]> {
   return orderForCustomers((await getServices()).filter((s) => !s.isHiddenFromCustomers));

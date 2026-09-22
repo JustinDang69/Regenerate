@@ -1,6 +1,6 @@
 /* =============================================================================
    Accordion — single expand/collapse disclosure. Used for long-form technology
-   and treatment content (how it works, before/during/after, HydraScalp's 15
+   and treatment content (how it works, before/during/after, MedicalSCALP's 15
    stages) so a detail page never renders as one continuous wall of text.
    ========================================================================== */
 "use client";

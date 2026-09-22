@@ -55,8 +55,8 @@ export const practitioners: Practitioner[] = [
      inferred from it or from the photograph. All such fields are empty until
      the client supplies them. */
   {
-    slug: "david-nguyen",
-    name: "David Nguyen",
+    slug: "william-nguyen",
+    name: "William Nguyen",
     role: "Clinical Director / Facial Surgeon",
     qualifications: [],
     registration: undefined,
@@ -64,8 +64,8 @@ export const practitioners: Practitioner[] = [
     languages: [],
     bio: "",
     treatments: [],
-    image: "/media/clinic/practitioner-david-nguyen.jpg",
-    imageAlt: "David Nguyen, Clinical Director and Facial Surgeon at Regenerate Skin & Hair Clinic",
+    image: "/media/clinic/practitioner-william-nguyen.jpg",
+    imageAlt: "William Nguyen, Clinical Director and Facial Surgeon at Regenerate Skin & Hair Clinic",
     isPlaceholder: false,
   },
   {
@@ -102,7 +102,7 @@ export const practitioners: Practitioner[] = [
     role: "Dermal Therapist",
     qualifications: ["Qualification pending confirmation"],
     registration: undefined,
-    specialties: ["HydraFacial", "ScalpSpa rituals", "Skin vitality"],
+    specialties: ["MedicalFACIAL", "UltraSCALP rituals", "Skin vitality"],
     languages: ["English"],
     bio:
       "A dermal therapist delivering restorative treatments and ritual-led experiences with warmth and precision. Full profile to be added.",
