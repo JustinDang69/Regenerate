@@ -17,6 +17,9 @@
 import { NextResponse } from "next/server";
 import { GraphAuthError, isGraphConfigured, scrubSensitive } from "@/lib/graph/auth";
 import { graphRequest, GraphRequestError } from "@/lib/graph/client";
+import { bookingsBusinessId, getBusiness } from "@/lib/bookings/graph";
+import { candidateStartsFrom, SLOT_MINUTES } from "@/lib/bookings/availability";
+import { melbourneDate, melbourneHM } from "@/lib/bookings/time";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -44,8 +47,32 @@ export async function GET() {
       id: b.id ?? null,
       displayName: b.displayName ?? null,
     }));
+
+    /* Configured opening hours and the 50-minute rhythm they produce. Opening
+       hours are published on the website already, so nothing here is private —
+       and no staff, customer or appointment data is touched. This answers the
+       common question "why does the site not offer the times I expect?": the
+       rhythm below is what the clinic is OPEN for, before staff working hours,
+       time off and existing appointments narrow it. */
+    let schedule: unknown = null;
+    if (bookingsBusinessId()) {
+      const business = await getBusiness();
+      const date = melbourneDate(Date.now());
+      schedule = {
+        businessHours: (business.businessHours ?? []).map((h) => ({
+          day: h.day,
+          timeSlots: (h.timeSlots ?? []).map((t) => `${t.startTime}–${t.endTime}`),
+        })),
+        rhythmToday: {
+          date: `${date.y}-${String(date.m).padStart(2, "0")}-${String(date.d).padStart(2, "0")}`,
+          slotMinutes: SLOT_MINUTES,
+          candidateStarts: candidateStartsFrom(business.businessHours, date).map(melbourneHM),
+        },
+      };
+    }
+
     return NextResponse.json(
-      { success: true, temporary: true, count: businesses.length, bookingBusinesses: businesses },
+      { success: true, temporary: true, count: businesses.length, bookingBusinesses: businesses, schedule },
       { headers: HEADERS }
     );
   } catch (err) {
