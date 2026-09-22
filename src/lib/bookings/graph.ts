@@ -204,7 +204,19 @@ type GraphStaffMember = {
 
 export async function getStaffScheduleConfig(): Promise<StaffScheduleConfig[]> {
   const select = "id,useBusinessHours,availabilityIsAffectedByPersonalCalendar,timeZone,workingHours";
-  const json = await graphRequest<{ value?: GraphStaffMember[] }>(`${base()}/staffMembers?$select=${select}`);
+  /* The collection is typed bookingStaffMemberBase, and these properties live
+     on the derived bookingStaffMember — so $select needs an OData type cast.
+     If the cast is rejected we fall back to the plain collection: that response
+     also carries displayName and emailAddress, which the mapping below simply
+     never reads, so they are dropped rather than returned. */
+  let json: { value?: GraphStaffMember[] };
+  try {
+    json = await graphRequest<{ value?: GraphStaffMember[] }>(
+      `${base()}/staffMembers/microsoft.graph.bookingStaffMember?$select=${select}`
+    );
+  } catch {
+    json = await graphRequest<{ value?: GraphStaffMember[] }>(`${base()}/staffMembers`);
+  }
   return (json.value ?? [])
     .filter((s): s is GraphStaffMember & { id: string } => typeof s.id === "string")
     .map((s) => ({
