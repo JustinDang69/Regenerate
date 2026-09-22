@@ -37,6 +37,7 @@ import {
   getBookableServices,
   getBusiness,
   getStaffAvailability,
+  getStaffAvailabilityRaw,
   getStaffScheduleConfig,
   type BusinessHours,
 } from "@/lib/bookings/graph";
@@ -136,10 +137,11 @@ export async function GET(req: Request) {
       const staffIds = service.staffMemberIds;
       const alias = new Map(staffIds.map((id, i) => [id, `staff-${i + 1}`]));
 
-      const [availability, appointments, staffConfig] = await Promise.all([
+      const [availability, appointments, staffConfig, rawAvailability] = await Promise.all([
         getStaffAvailability(staffIds, dayStart, dayEnd),
         getAppointments(dayStart, dayEnd),
         getStaffScheduleConfig(),
+        getStaffAvailabilityRaw(staffIds, dayStart, dayEnd),
       ]);
 
       const configById = new Map(staffConfig.map((c) => [c.id, c]));
@@ -159,6 +161,11 @@ export async function GET(req: Request) {
              reason live times are narrower than the clinic's opening hours. */
           workingHours: formatHours(c?.workingHours).filter((h) => h.day?.toLowerCase() === melbourneWeekday(date)),
           graphFreeRanges: (availability.get(id) ?? []).map((r) => melbourneRange(r.start, r.end, date)),
+          /* The same items exactly as Graph sent them. Compare against
+             graphFreeRanges above: if these dateTime values already read as
+             Melbourne wall-clock while timeZone says "UTC", Graph is
+             mislabelling and our conversion is shifting them. */
+          graphRawItems: rawAvailability.byStaffId.get(id) ?? [],
         };
       });
 
@@ -205,6 +212,13 @@ export async function GET(req: Request) {
             (h) => h.day?.toLowerCase() === melbourneWeekday(date)
           ),
           businessCandidateSlots: candidates.map(melbourneHM),
+          /* What we asked Graph for, verbatim, next to the same instants in
+             Melbourne and UTC — so a window misinterpretation is visible. */
+          availabilityWindowRequested: {
+            sentToGraph: rawAvailability.request,
+            melbourne: melbourneRange(dayStart, dayEnd, date),
+            utc: `${new Date(dayStart).toISOString()}–${new Date(dayEnd).toISOString()}`,
+          },
           staffCount: staffIds.length,
           staff,
           existingBookings: bookedRanges,

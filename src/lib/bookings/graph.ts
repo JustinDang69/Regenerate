@@ -165,6 +165,39 @@ export async function getStaffAvailability(
   return result;
 }
 
+/**
+ * DIAGNOSTIC ONLY — the getStaffAvailability request and response exactly as
+ * they go over the wire, so a timezone disagreement can be proven rather than
+ * inferred. Returns raw dateTime/timeZone strings; contains no identity.
+ * Does not affect booking behaviour.
+ */
+export async function getStaffAvailabilityRaw(staffIds: string[], startUtc: number, endUtc: number) {
+  const request = {
+    startDateTime: toGraphDateTime(startUtc),
+    endDateTime: toGraphDateTime(endUtc),
+  };
+  const json = await graphRequest<{ value?: GraphStaffAvailability[] }>(`${base()}/getStaffAvailability`, {
+    method: "POST",
+    body: { staffIds, ...request },
+  });
+  return {
+    request,
+    /* Keyed by staff id; the caller maps to aliases before returning it. */
+    byStaffId: new Map(
+      (json.value ?? [])
+        .filter((s): s is GraphStaffAvailability & { staffId: string } => typeof s.staffId === "string")
+        .map((s) => [
+          s.staffId,
+          (s.availabilityItems ?? []).map((i) => ({
+            status: i.status ?? null,
+            start: i.startDateTime ?? null,
+            end: i.endDateTime ?? null,
+          })),
+        ])
+    ),
+  };
+}
+
 export function mergeRanges(ranges: UtcRange[]): UtcRange[] {
   const sorted = [...ranges].sort((a, b) => a.start - b.start);
   const out: UtcRange[] = [];
