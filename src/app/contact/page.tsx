@@ -4,7 +4,6 @@ import PageHero from "@/components/sections/PageHero";
 import Section from "@/components/ui/Section";
 import Container from "@/components/ui/Container";
 import BookingForm from "@/components/forms/BookingForm";
-import ContactForm from "@/components/forms/ContactForm";
 import LocationBlock from "@/components/sections/LocationBlock";
 import Reveal from "@/components/motion/Reveal";
 import Divider from "@/components/brand/Divider";
@@ -13,7 +12,7 @@ import { site, cta } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Contact & Book",
   description:
-    "Book an appointment online with Regenerate Skin & Hair Clinic in Pascoe Vale South, or send an enquiry. Address, hours, parking and transport details.",
+    "Book an appointment online with Regenerate Skin & Hair Clinic in Pascoe Vale South. Address, opening hours, parking and transport details.",
   alternates: { canonical: "/contact" },
 };
 
@@ -23,9 +22,8 @@ export default function ContactPage() {
       <PageHero
         eyebrow="Contact & Book"
         title="Let's begin your consultation"
-        lead="Booking is the best first step — we'll talk through your skin or hair goals and recommend a considered pathway. Prefer to ask first? Send an enquiry below."
+        lead="Booking is the best first step — we'll talk through your skin or hair goals and recommend a considered pathway. Prefer to talk it through first? Call the clinic."
         primary={{ label: cta.book, href: "#book" }}
-        secondary={{ label: cta.enquire, href: "#enquire" }}
       />
 
       {/* --- Book an appointment -------------------------------------------
@@ -37,6 +35,8 @@ export default function ContactPage() {
           preselect the treatment, so it needs a Suspense boundary for
           useSearchParams under static rendering. */}
       <Section id="book" tone="base" className="scroll-mt-28">
+        {/* Legacy anchor: site-wide "Enquire Now" links target #enquire. */}
+        <span id="enquire" aria-hidden className="block scroll-mt-28" />
         <Container>
           <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
             <Reveal className="min-w-0 flex flex-col gap-6">
@@ -97,26 +97,13 @@ export default function ContactPage() {
         </Container>
       </Section>
 
-      <Divider className="mx-auto max-w-[var(--container-max)] px-[var(--gutter)]" />
-
-      {/* --- Enquiry --------------------------------------------------------
-          Kept as its own flow (POST /api/enquiry): visitors who want to ask
-          a question before committing to a time still have somewhere to go. */}
-      <Section id="enquire" tone="elevated" className="scroll-mt-28">
-        <Container>
-          <div className="mx-auto max-w-[44rem]">
-            <Reveal className="rounded-[var(--radius-xl)] border border-border bg-surface p-7 shadow-[var(--shadow-sm)] sm:p-10">
-              <span className="eyebrow">Send an enquiry</span>
-              <h2 className="mt-2 text-h3 text-[1.6rem]">Prefer to ask us first?</h2>
-              <p className="mb-6 mt-2 text-[0.9rem] text-secondary">
-                Not sure which treatment is right for you? Send us a note and we&apos;ll
-                reply to help you decide.
-              </p>
-              <ContactForm />
-            </Reveal>
-          </div>
-        </Container>
-      </Section>
+      {/* CLIENT REVISION (Sep 2026): the "Send an enquiry" section was removed
+          from this page — booking online is now the single customer path, and
+          the contact card above still offers phone and email. The `#enquire`
+          anchor is kept on the booking section so the "Enquire Now" buttons in
+          the header, footer, homepage, pricing and every CTABlock still land
+          somewhere sensible. ContactForm and POST /api/enquiry remain in the
+          codebase, unused, if the clinic wants the flow back. */}
 
       <Divider className="mx-auto max-w-[var(--container-max)] px-[var(--gutter)]" />
 
