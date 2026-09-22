@@ -92,11 +92,14 @@ export async function candidateStarts(date: LocalDate): Promise<number[]> {
 
 /* --- Pure: slot selection --------------------------------------------------- */
 
-function covers(ranges: UtcRange[], start: number, end: number) {
+/* Exported so the temporary diagnostic endpoint reports the SAME predicates
+   the booking path uses, rather than a copy that could drift from it.
+   Behaviour is unchanged. */
+export function covers(ranges: UtcRange[], start: number, end: number) {
   return ranges.some((r) => r.start <= start && r.end >= end);
 }
 
-function overlaps(aStart: number, aEnd: number, bStart: number, bEnd: number) {
+export function overlaps(aStart: number, aEnd: number, bStart: number, bEnd: number) {
   return aStart < bEnd && bStart < aEnd;
 }
 

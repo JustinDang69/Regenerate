@@ -176,6 +176,49 @@ export function mergeRanges(ranges: UtcRange[]): UtcRange[] {
   return out;
 }
 
+/* --- Staff scheduling configuration (DIAGNOSTIC ONLY) ---------------------- */
+
+/**
+ * Per-practitioner SCHEDULING CONFIGURATION — never identity.
+ *
+ * `$select` deliberately excludes displayName, emailAddress and role, so the
+ * practitioners' names and mailboxes are never fetched, never held in memory
+ * and cannot be leaked by a later mistake. `id` is kept only to map a person
+ * to a positional alias (staff-1, staff-2) and must not be returned.
+ */
+export type StaffScheduleConfig = {
+  id: string;
+  useBusinessHours: boolean | null;
+  availabilityIsAffectedByPersonalCalendar: boolean | null;
+  timeZone: string | null;
+  workingHours: BusinessHours[];
+};
+
+type GraphStaffMember = {
+  id?: string;
+  useBusinessHours?: boolean;
+  availabilityIsAffectedByPersonalCalendar?: boolean;
+  timeZone?: string;
+  workingHours?: BusinessHours[];
+};
+
+export async function getStaffScheduleConfig(): Promise<StaffScheduleConfig[]> {
+  const select = "id,useBusinessHours,availabilityIsAffectedByPersonalCalendar,timeZone,workingHours";
+  const json = await graphRequest<{ value?: GraphStaffMember[] }>(`${base()}/staffMembers?$select=${select}`);
+  return (json.value ?? [])
+    .filter((s): s is GraphStaffMember & { id: string } => typeof s.id === "string")
+    .map((s) => ({
+      id: s.id,
+      useBusinessHours: typeof s.useBusinessHours === "boolean" ? s.useBusinessHours : null,
+      availabilityIsAffectedByPersonalCalendar:
+        typeof s.availabilityIsAffectedByPersonalCalendar === "boolean"
+          ? s.availabilityIsAffectedByPersonalCalendar
+          : null,
+      timeZone: s.timeZone ?? null,
+      workingHours: Array.isArray(s.workingHours) ? s.workingHours : [],
+    }));
+}
+
 /* --- Booked appointments (calendarView) ------------------------------------ */
 
 export type BookedAppointment = {
