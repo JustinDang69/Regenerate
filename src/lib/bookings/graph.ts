@@ -87,9 +87,22 @@ export async function getServices(): Promise<BookingService[]> {
   return value;
 }
 
-/** Services a customer may book: exist in Bookings and are not hidden. */
+/**
+ * Services a customer may book, in the order the website shows them.
+ *
+ * Consultation is pinned first: it is the clinic's intended first step, and
+ * Graph returns services in an arbitrary order (in production it came back
+ * LAST). Every other service keeps the order Bookings gave it.
+ */
+export function orderForCustomers(services: BookingService[]): BookingService[] {
+  const isConsultation = (s: BookingService) => s.displayName.trim().toLowerCase() === CONSULTATION_NAME;
+  return [...services.filter(isConsultation), ...services.filter((s) => !isConsultation(s))];
+}
+
+const CONSULTATION_NAME = "consultation";
+
 export async function getBookableServices(): Promise<BookingService[]> {
-  return (await getServices()).filter((s) => !s.isHiddenFromCustomers);
+  return orderForCustomers((await getServices()).filter((s) => !s.isHiddenFromCustomers));
 }
 
 export async function findBookableService(serviceId: string): Promise<BookingService | null> {
@@ -109,9 +122,14 @@ type GraphStaffAvailability = { staffId?: string; availabilityItems?: GraphAvail
 
 /**
  * Returns, per staff id, the merged ranges in which Graph reports the person
- * as AVAILABLE within [startUtc, endUtc). Graph already subtracts business
- * hours, staff working hours, time off and existing appointments — anything
- * not covered by an "available" item is treated as unavailable.
+ * as AVAILABLE within [startUtc, endUtc).
+ *
+ * NOTE: getStaffAvailability alone has proven insufficient. With
+ * "assign any of your selected staff" enabled, Bookings reported a
+ * practitioner as available for a slot they already had an appointment in,
+ * which let the same 50 minutes be sold twice. Callers must therefore ALSO
+ * subtract the real appointments from getAppointments() below.
+ * Never cached.
  */
 export async function getStaffAvailability(
   staffIds: string[],
@@ -154,6 +172,54 @@ export function mergeRanges(ranges: UtcRange[]): UtcRange[] {
     const last = out[out.length - 1];
     if (last && r.start <= last.end) last.end = Math.max(last.end, r.end);
     else out.push({ ...r });
+  }
+  return out;
+}
+
+/* --- Booked appointments (calendarView) ------------------------------------ */
+
+export type BookedAppointment = {
+  id: string | null;
+  start: number;
+  end: number;
+  staffMemberIds: string[];
+};
+
+type GraphCalendarEntry = {
+  id?: string;
+  startDateTime?: GraphDateTimeTimeZone;
+  endDateTime?: GraphDateTimeTimeZone;
+  staffMemberIds?: string[];
+};
+
+/**
+ * Real appointments in the Bookings calendar between two instants.
+ *
+ *   GET /solutions/bookingBusinesses/{id}/calendarView?start=…&end=…
+ *
+ * This is the authoritative record of what is actually booked, and it is the
+ * capacity guard: an appointment assigned to a practitioner makes that
+ * practitioner busy for its whole duration, whatever getStaffAvailability
+ * claims. NEVER cached — a slot's capacity can change second to second.
+ */
+export async function getAppointments(startUtc: number, endUtc: number): Promise<BookedAppointment[]> {
+  const q = new URLSearchParams({
+    start: new Date(startUtc).toISOString(),
+    end: new Date(endUtc).toISOString(),
+  });
+  const json = await graphRequest<{ value?: GraphCalendarEntry[] }>(`${base()}/calendarView?${q.toString()}`);
+
+  const out: BookedAppointment[] = [];
+  for (const a of json.value ?? []) {
+    const start = parseGraphDateTime(a.startDateTime);
+    const end = parseGraphDateTime(a.endDateTime);
+    if (start === null || end === null || end <= start) continue;
+    out.push({
+      id: a.id ?? null,
+      start,
+      end,
+      staffMemberIds: Array.isArray(a.staffMemberIds) ? a.staffMemberIds.filter((x) => typeof x === "string") : [],
+    });
   }
   return out;
 }

@@ -90,14 +90,26 @@ export async function POST(req: Request) {
       time,
     });
 
+    /* CONFIRMATION TIME — read this before changing it.
+
+       The customer-facing time comes from the VALIDATED SLOT, never from the
+       Graph create response. Bookings echoes the appointment back as the
+       Melbourne wall-clock time but labels it timeZone "UTC"; converting that
+       to Melbourne shifts it ten hours, which is why a 10:20 AM booking once
+       confirmed as 8:20 PM. Microsoft's own record and email were correct —
+       only our re-conversion was wrong.
+
+       `slot` is the block we just re-verified and asked Graph to book, so its
+       time IS the booked time. created.startUtc / created.endUtc are
+       deliberately unused here; `created.id` is the only field we trust. */
     return ok(
       {
         appointment: {
           id: created.id,
           serviceName: service.displayName,
           date: localDateString(date!),
-          time: melbourneHM(created.startUtc ?? slot.startUtc),
-          endTime: melbourneHM(created.endUtc ?? slot.endUtc),
+          time: slot.time,
+          endTime: melbourneHM(slot.endUtc),
           durationMinutes: SLOT_MINUTES,
           timeZone: MELBOURNE_TZ,
         },

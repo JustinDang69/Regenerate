@@ -9,6 +9,10 @@ import { NextResponse } from "next/server";
 import { GraphAuthError, isGraphConfigured } from "@/lib/graph/auth";
 import { GraphRequestError } from "@/lib/graph/client";
 import { bookingsBusinessId } from "@/lib/bookings/graph";
+import { logSafe } from "@/lib/bookings/log";
+
+/* Re-exported so route files keep a single import for their helpers. */
+export { logSafe };
 
 export const NO_STORE = { "Cache-Control": "no-store" } as const;
 
@@ -45,18 +49,6 @@ export function upstreamError(context: string, err: unknown) {
   }
   logSafe("error", `${context}: unexpected error`, { message: err instanceof Error ? err.message : String(err) });
   return fail(500, "internal", UNAVAILABLE_MESSAGE);
-}
-
-/**
- * Structured server log. Callers pass ONLY non-sensitive fields: ids of
- * services/appointments, dates, counts, status codes, scrubbed messages.
- * Never customer details, staff details, tokens or env values.
- */
-export function logSafe(level: "info" | "warn" | "error", event: string, data: Record<string, unknown> = {}) {
-  const line = JSON.stringify({ event, ...data });
-  if (level === "error") console.error(line);
-  else if (level === "warn") console.warn(line);
-  else console.info(line);
 }
 
 export async function readJson(req: Request): Promise<Record<string, unknown> | null> {

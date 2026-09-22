@@ -4,21 +4,33 @@
    Rules (client brief, Sep 2026):
      • Every appointment reserves a 50-minute block.
      • Customer-facing start times follow a 50-minute rhythm anchored to the
-       clinic's opening time for that day (09:30, 10:20, 11:10 …).
+       clinic's opening time for that day, read live from Bookings business
+       hours — never hard-coded. 09:30–20:30 therefore yields 09:30 … 19:30,
+       the last start that still ends inside the day (19:30 + 50 = 20:20).
      • Minimum 30-minute lead time on the website, regardless of what the
        Bookings UI is configured with.
      • A slot is offered only if at least ONE practitioner assigned to the
-       service is free for the ENTIRE block. Time off and existing
-       appointments make a practitioner unavailable (Graph reports this).
-     • Practitioner identities are never sent to the browser.
+       service is free for the ENTIRE block.
+     • Practitioner identities are never sent to the browser, and never
+       written to a log — diagnostics use positional aliases (staff-1, …).
+
+   CAPACITY (production incident, Sep 2026): getStaffAvailability alone let the
+   same 10:20 slot be sold twice, both bookings landing on the same
+   practitioner. A practitioner is now free only when Graph's availability
+   covers the block AND they have no overlapping appointment in calendarView.
+   Neither source is cached.
    ========================================================================== */
 import "server-only";
 import {
+  getAppointments,
   getBusiness,
   getStaffAvailability,
+  type BookedAppointment,
   type BookingService,
+  type BusinessHours,
   type UtcRange,
 } from "@/lib/bookings/graph";
+import { logSafe } from "@/lib/bookings/log";
 import {
   melbourneDate,
   melbourneHM,
@@ -44,11 +56,20 @@ export type Slot = {
   freeStaffIds: string[];
 };
 
-/** Candidate start instants for `date`, following the 50-minute rhythm. */
-export async function candidateStarts(date: LocalDate): Promise<number[]> {
-  const business = await getBusiness();
+/** Why a practitioner was excluded. Logged; never shown to a customer. */
+type Reason = "available" | "graph-availability" | "existing-appointment" | "lead-time";
+
+/* --- Pure: candidate start times ------------------------------------------- */
+
+/**
+ * The 50-minute rhythm for one day, derived from that day's business hours.
+ * Each opening period is walked independently from its own opening time, so a
+ * split day (e.g. a lunch break configured as two periods) restarts the
+ * rhythm after the break rather than drifting through it.
+ */
+export function candidateStartsFrom(businessHours: BusinessHours[] | undefined, date: LocalDate): number[] {
   const weekday = melbourneWeekday(date);
-  const hours = business.businessHours?.find((h) => h.day?.toLowerCase() === weekday);
+  const hours = businessHours?.find((h) => h.day?.toLowerCase() === weekday);
   if (!hours) return [];
 
   const starts: number[] = [];
@@ -56,43 +77,129 @@ export async function candidateStarts(date: LocalDate): Promise<number[]> {
     const open = parseGraphClock(slot.startTime);
     const close = parseGraphClock(slot.endTime);
     if (open === null || close === null || close <= open) continue;
+    // A start is valid only when the full block finishes by closing time.
     for (let t = open; t + SLOT_MINUTES <= close; t += SLOT_MINUTES) {
       starts.push(melbourneToUtcMs(date, Math.floor(t / 60), t % 60));
     }
   }
-  return starts.sort((a, b) => a - b);
+  return [...new Set(starts)].sort((a, b) => a - b);
 }
+
+export async function candidateStarts(date: LocalDate): Promise<number[]> {
+  const business = await getBusiness();
+  return candidateStartsFrom(business.businessHours, date);
+}
+
+/* --- Pure: slot selection --------------------------------------------------- */
 
 function covers(ranges: UtcRange[], start: number, end: number) {
   return ranges.some((r) => r.start <= start && r.end >= end);
 }
 
+function overlaps(aStart: number, aEnd: number, bStart: number, bEnd: number) {
+  return aStart < bEnd && bStart < aEnd;
+}
+
+export type SelectInput = {
+  staffIds: string[];
+  candidates: number[];
+  /** Free ranges per staff id, from getStaffAvailability. */
+  availability: Map<string, UtcRange[]>;
+  /** Real appointments from calendarView. */
+  appointments: BookedAppointment[];
+  nowUtc: number;
+  /** Set by the caller for logging context; omitted in unit tests. */
+  logContext?: { serviceId: string; date: string };
+};
+
 /**
- * All bookable slots for a service on a Melbourne date. Uses one Graph
- * availability query spanning the whole local day.
+ * Applies the clinic's rules to already-fetched data. Pure and synchronous,
+ * so the capacity behaviour is unit-testable without touching Graph.
+ */
+export function selectSlots(input: SelectInput): Slot[] {
+  const { staffIds, candidates, availability, appointments, nowUtc } = input;
+  if (staffIds.length === 0) return [];
+
+  /* Positional aliases so a diagnostic line can say WHICH practitioner was
+     busy without ever naming or identifying them. */
+  const alias = new Map(staffIds.map((id, i) => [id, `staff-${i + 1}`]));
+  const earliest = nowUtc + MIN_LEAD_MINUTES * MS;
+
+  const slots: Slot[] = [];
+  const rejected: { time: string; staff: string; available: false; reason: Reason }[] = [];
+
+  for (const startUtc of candidates) {
+    const endUtc = startUtc + SLOT_MINUTES * MS;
+    const time = melbourneHM(startUtc);
+
+    if (startUtc < earliest) {
+      rejected.push({ time, staff: "*", available: false, reason: "lead-time" });
+      continue;
+    }
+
+    const freeStaffIds: string[] = [];
+    for (const id of staffIds) {
+      if (!covers(availability.get(id) ?? [], startUtc, endUtc)) {
+        rejected.push({ time, staff: alias.get(id)!, available: false, reason: "graph-availability" });
+        continue;
+      }
+      const booked = appointments.some(
+        (a) => a.staffMemberIds.includes(id) && overlaps(startUtc, endUtc, a.start, a.end)
+      );
+      if (booked) {
+        rejected.push({ time, staff: alias.get(id)!, available: false, reason: "existing-appointment" });
+        continue;
+      }
+      freeStaffIds.push(id);
+    }
+
+    if (freeStaffIds.length === 0) continue;
+    slots.push({ startUtc, endUtc, time, freeStaffIds });
+  }
+
+  if (rejected.length > 0 && input.logContext) {
+    logSafe("info", "bookings: slots excluded", {
+      ...input.logContext,
+      staffCount: staffIds.length,
+      excluded: rejected,
+    });
+  }
+
+  return slots;
+}
+
+/* --- I/O: fetch everything, then select ------------------------------------ */
+
+/**
+ * All bookable slots for a service on a Melbourne date. Reads business hours,
+ * staff availability and the real appointment calendar for that day — the
+ * latter two uncached and in parallel, so the answer is as fresh as possible.
  */
 export async function computeSlots(service: BookingService, date: LocalDate, nowUtc = Date.now()): Promise<Slot[]> {
   if (service.staffMemberIds.length === 0) return [];
 
-  const starts = await candidateStarts(date);
-  if (starts.length === 0) return [];
+  const candidates = await candidateStarts(date);
+  if (candidates.length === 0) return [];
 
+  /* Span the whole Melbourne day, plus the tail of the last block, so an
+     appointment that starts before midnight still overlaps correctly. */
   const dayStart = melbourneToUtcMs(date, 0, 0);
   const nextDay = melbourneDate(dayStart + 36 * 60 * MS);
   const dayEnd = melbourneToUtcMs(nextDay, 0, 0);
 
-  const availability = await getStaffAvailability(service.staffMemberIds, dayStart, dayEnd);
-  const earliest = nowUtc + MIN_LEAD_MINUTES * MS;
+  const [availability, appointments] = await Promise.all([
+    getStaffAvailability(service.staffMemberIds, dayStart, dayEnd),
+    getAppointments(dayStart, dayEnd),
+  ]);
 
-  const slots: Slot[] = [];
-  for (const startUtc of starts) {
-    if (startUtc < earliest) continue;
-    const endUtc = startUtc + SLOT_MINUTES * MS;
-    const freeStaffIds = service.staffMemberIds.filter((id) => covers(availability.get(id) ?? [], startUtc, endUtc));
-    if (freeStaffIds.length === 0) continue;
-    slots.push({ startUtc, endUtc, time: melbourneHM(startUtc), freeStaffIds });
-  }
-  return slots;
+  return selectSlots({
+    staffIds: service.staffMemberIds,
+    candidates,
+    availability,
+    appointments,
+    nowUtc,
+    logContext: { serviceId: service.id, date: `${date.y}-${date.m}-${date.d}` },
+  });
 }
 
 /* --- Input validation ------------------------------------------------------ */
