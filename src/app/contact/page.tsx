@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import PageHero from "@/components/sections/PageHero";
 import Section from "@/components/ui/Section";
 import Container from "@/components/ui/Container";
+import BookingForm from "@/components/forms/BookingForm";
 import ContactForm from "@/components/forms/ContactForm";
 import LocationBlock from "@/components/sections/LocationBlock";
 import Reveal from "@/components/motion/Reveal";
@@ -11,7 +13,7 @@ import { site, cta } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Contact & Book",
   description:
-    "Book a consultation or send an enquiry to Regenerate Skin & Hair Clinic in Pascoe Vale South. Address, hours, parking and transport details.",
+    "Book an appointment online with Regenerate Skin & Hair Clinic in Pascoe Vale South, or send an enquiry. Address, hours, parking and transport details.",
   alternates: { canonical: "/contact" },
 };
 
@@ -26,17 +28,24 @@ export default function ContactPage() {
         secondary={{ label: cta.enquire, href: "#enquire" }}
       />
 
-      {/* --- Enquiry / Book ------------------------------------------------- */}
-      <Section id="enquire" tone="base" className="scroll-mt-28">
+      {/* --- Book an appointment -------------------------------------------
+          The booking form talks to our own API routes, which talk to
+          Microsoft Bookings. Customers stay on the Regenerate website
+          throughout — no Microsoft UI, no redirect.
+
+          BookingForm reads `?service=` (a website treatment slug) to
+          preselect the treatment, so it needs a Suspense boundary for
+          useSearchParams under static rendering. */}
+      <Section id="book" tone="base" className="scroll-mt-28">
         <Container>
           <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
-            {/* Booking column */}
-            <Reveal id="book" className="min-w-0 scroll-mt-28 flex flex-col gap-6">
-              <span className="eyebrow">Book a consultation</span>
+            <Reveal className="min-w-0 flex flex-col gap-6">
+              <span className="eyebrow">Book an appointment</span>
               <h2 className="text-h2">Ready when you are</h2>
               <p className="text-secondary text-pretty">
-                Consultations are the heart of how we work — an unhurried conversation to
-                understand your goals before any treatment is recommended.
+                Choose your treatment and a time that suits you. Every appointment is a
+                considered, unhurried 50 minutes — including your consultation, so we
+                understand your goals before anything begins.
               </p>
 
               <div className="flex flex-col gap-4 rounded-[var(--radius-lg)] border border-border bg-surface-elevated p-6">
@@ -62,21 +71,46 @@ export default function ContactPage() {
                 </div>
               </div>
 
-              {/* Microsoft Bookings: once the client supplies the official
-                  public Bookings URL, /book is created and cta.bookHref points
-                  there. Until then booking is by phone or enquiry — stated
-                  plainly, with no "coming soon" language. */}
               <p className="text-[0.8rem] text-muted">
-                To book, call the clinic or send an enquiry and we&apos;ll arrange a time with you.
+                Need to change or cancel an appointment? Call the clinic and we&apos;ll
+                rearrange it with you.
               </p>
             </Reveal>
 
-            {/* Enquiry form column */}
             <Reveal delay={100} className="rounded-[var(--radius-xl)] border border-border bg-surface p-7 shadow-[var(--shadow-sm)] sm:p-10">
-              <span className="eyebrow">Send an enquiry</span>
-              <h2 className="mt-2 text-h3 text-[1.6rem]">Tell us how we can help</h2>
+              <span className="eyebrow">Book appointment</span>
+              <h2 className="mt-2 text-h3 text-[1.6rem]">Choose your treatment and time</h2>
               <p className="mb-6 mt-2 text-[0.9rem] text-secondary">
-                We&apos;ll reply to arrange your consultation or answer any questions.
+                Times shown are live from our clinic diary, in Melbourne time.
+              </p>
+              <Suspense
+                fallback={
+                  <div className="py-10 text-center text-[0.9rem] text-muted" aria-live="polite">
+                    Loading the booking calendar…
+                  </div>
+                }
+              >
+                <BookingForm />
+              </Suspense>
+            </Reveal>
+          </div>
+        </Container>
+      </Section>
+
+      <Divider className="mx-auto max-w-[var(--container-max)] px-[var(--gutter)]" />
+
+      {/* --- Enquiry --------------------------------------------------------
+          Kept as its own flow (POST /api/enquiry): visitors who want to ask
+          a question before committing to a time still have somewhere to go. */}
+      <Section id="enquire" tone="elevated" className="scroll-mt-28">
+        <Container>
+          <div className="mx-auto max-w-[44rem]">
+            <Reveal className="rounded-[var(--radius-xl)] border border-border bg-surface p-7 shadow-[var(--shadow-sm)] sm:p-10">
+              <span className="eyebrow">Send an enquiry</span>
+              <h2 className="mt-2 text-h3 text-[1.6rem]">Prefer to ask us first?</h2>
+              <p className="mb-6 mt-2 text-[0.9rem] text-secondary">
+                Not sure which treatment is right for you? Send us a note and we&apos;ll
+                reply to help you decide.
               </p>
               <ContactForm />
             </Reveal>

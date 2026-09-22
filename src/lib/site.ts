@@ -2,6 +2,7 @@
    SITE CONFIG — single source of truth for brand, navigation, and NAP details.
    Swap values here to update the header, footer, contact page, and metadata.
    ========================================================================== */
+import { serviceParamForTreatment } from "@/lib/bookings/service-map";
 
 export const site = {
   name: "Regenerate Skin & Hair Clinic",
@@ -166,6 +167,24 @@ export const cta = {
   bookHref: "/contact#book",
   enquireHref: "/contact#enquire",
 } as const;
+
+/* -----------------------------------------------------------------------------
+   Booking CTA links.
+
+   `cta.bookHref` is the GENERIC booking link — header, hero, footer, sticky
+   CTA, packages and 404. It opens the booking form with no treatment chosen.
+
+   `bookHrefFor(slug)` is for a CTA attached to a SPECIFIC treatment. It adds
+   `?service=<website slug>`, which BookingForm resolves against the live
+   Bookings service list. There is one form, not one per treatment. A slug with
+   no Bookings counterpart falls back to the generic link, so a CTA can never
+   preselect the wrong treatment.
+   -------------------------------------------------------------------------- */
+export function bookHrefFor(treatmentSlug: string | undefined | null): string {
+  if (!treatmentSlug) return cta.bookHref;
+  const param = serviceParamForTreatment(treatmentSlug);
+  return param ? `/contact?service=${encodeURIComponent(param)}#book` : cta.bookHref;
+}
 
 /* Footer link groups. */
 export const footerNav = {

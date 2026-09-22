@@ -3,7 +3,7 @@
    TechnologyCard, which never carries a booking CTA. */
 import Link from "next/link";
 import Button from "@/components/ui/Button";
-import { cta } from "@/lib/site";
+import { bookHrefFor, cta } from "@/lib/site";
 import { treatmentMeta, type Treatment } from "@/content/treatments";
 
 export default function TreatmentIndexCard({ treatment }: { treatment: Treatment }) {
@@ -44,7 +44,7 @@ export default function TreatmentIndexCard({ treatment }: { treatment: Treatment
       )}
 
       <div className="mt-auto flex items-center gap-5 pt-9">
-        <Button href={cta.bookHref} size="sm">
+        <Button href={bookHrefFor(treatment.slug)} size="sm">
           {cta.book}
         </Button>
         <Link

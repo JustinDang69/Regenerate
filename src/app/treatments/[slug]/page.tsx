@@ -10,7 +10,7 @@ import Divider from "@/components/brand/Divider";
 import CTABlock from "@/components/sections/CTABlock";
 import ProcessSteps from "@/components/treatments/ProcessSteps";
 import { treatments, treatmentBySlug, treatmentMeta } from "@/content/treatments";
-import { cta } from "@/lib/site";
+import { bookHrefFor, cta } from "@/lib/site";
 
 export function generateStaticParams() {
   return treatments.map((t) => ({ slug: t.slug }));
@@ -76,7 +76,7 @@ export default async function TreatmentDetailPage(
         /* Lead: the client's overview where supplied; otherwise only the
            confirmed facts ("12 steps · 50 minutes"). */
         lead={treatment.overview ?? meta}
-        primary={{ label: cta.book, href: cta.bookHref }}
+        primary={{ label: cta.book, href: bookHrefFor(treatment.slug) }}
         secondary={{ label: "Back to Treatments", href: "/treatments" }}
       />
 
@@ -182,7 +182,7 @@ export default async function TreatmentDetailPage(
           <CTABlock
             title={`Is ${treatment.name} right for you?`}
             body="Treatment suitability, expected experience and an individual plan are confirmed during consultation. Results vary."
-            primary={{ label: cta.book, href: cta.bookHref }}
+            primary={{ label: cta.book, href: bookHrefFor(treatment.slug) }}
             secondary={{ label: "See Pricing", href: "/pricing" }}
           />
         </Container>

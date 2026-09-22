@@ -4,7 +4,7 @@
    shown only when the client has confirmed one (no "approx." placeholders). */
 import { type SingleTreatment, formatPrice } from "@/content/packages";
 import { treatmentBySlug } from "@/content/treatments";
-import { cta } from "@/lib/site";
+import { bookHrefFor, cta } from "@/lib/site";
 import Link from "next/link";
 
 export default function TreatmentCard({ treatment }: { treatment: SingleTreatment }) {
@@ -37,7 +37,7 @@ export default function TreatmentCard({ treatment }: { treatment: SingleTreatmen
             ) : null)}
         </span>
         <Link
-          href={cta.bookHref}
+          href={bookHrefFor(treatment.detailSlug)}
           className="inline-flex items-center gap-1 text-[0.78rem] font-semibold uppercase tracking-[0.12em] text-accent-contrast hover:text-accent-hover"
         >
           {cta.book}

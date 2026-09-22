@@ -96,6 +96,12 @@
   --success: #55694e;
   --success-soft: #e4ebe0;
 
+  /* Validation errors. A muted terracotta rather than a hard sRGB red, so a
+     field-level message still reads as "attention" inside the warm palette
+     without breaking the clinic's calm. Contrast on --surface is 5.1:1. */
+  --danger: #9a4a36;
+  --danger-soft: #f6e5df;
+
   --overlay: rgba(28, 24, 14, 0.56);          /* modal / image scrim */
   --shadow-tint: rgba(64, 54, 28, 0.18);      /* warm-brown shadow, never neutral grey */
   --glow-gold: rgba(211, 172, 107, 0.26);     /* ambient radial glow */
@@ -171,6 +177,9 @@
 
   --color-success: var(--success);
   --color-success-soft: var(--success-soft);
+
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
 
   /* Fonts — variables are injected by next/font in layout.tsx */
   --font-serif: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
