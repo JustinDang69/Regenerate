@@ -13,7 +13,9 @@
 
    If the slot is gone → HTTP 409, no appointment created.
    ========================================================================== */
-import { createAppointment, findBookableService } from "@/lib/bookings/graph";
+import { createAppointment, findBookableService, getCustomQuestions } from "@/lib/bookings/graph";
+import { buildCustomQuestionAnswers, missingQuestionNames } from "@/lib/bookings/custom-questions";
+import { composeAppointmentNotes } from "@/lib/bookings/notes";
 import { computeSlots, isDateInBookingWindow, MAX_DAYS_AHEAD, parseHM, parseLocalDate, SLOT_MINUTES } from "@/lib/bookings/availability";
 import { bookingsConfigured, fail, logSafe, notConfigured, ok, readJson, str, upstreamError } from "@/lib/bookings/http";
 import { localDateString, melbourneHM, MELBOURNE_TZ } from "@/lib/bookings/time";
@@ -22,7 +24,7 @@ import { customerFacingName } from "@/lib/bookings/service-map";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const MAX = { name: 80, email: 160, phone: 40, notes: 1000 };
+const MAX = { name: 80, email: 160, phone: 40, notes: 1000, profile: 40 };
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 /** Digits, spaces, +, (), - and dots; 8–15 digits overall (E.164 upper bound). */
 const PHONE_RE = /^[+\d][\d\s().-]{5,}$/;
@@ -44,6 +46,11 @@ export async function POST(req: Request) {
   const date = parseLocalDate(body.date);
   const time = parseHM(body.time);
   const notes = str(body.notes, MAX.notes);
+  /* Optional medical profile. Free text, never validated into a number:
+     "32", "about 30" and "175cm" are all acceptable to the clinic. */
+  const age = str(body.age, MAX.profile);
+  const height = str(body.height, MAX.profile);
+  const weight = str(body.weight, MAX.profile);
 
   const problems: Record<string, string> = {};
   if (!firstName) problems.firstName = "First name is required.";
@@ -75,13 +82,41 @@ export async function POST(req: Request) {
     /* --- Assign exactly one free practitioner ------------------------------ */
     const staffMemberId = slot.freeStaffIds[0];
 
+    /* --- Optional profile → Bookings custom questions ----------------------- */
+    /* Reading the questions must never stop a booking: if Graph fails here the
+       appointment still goes ahead, with the values carried in the notes. */
+    let questions: { id: string; displayName: string }[] = [];
+    try {
+      questions = await getCustomQuestions();
+      const missing = missingQuestionNames(questions);
+      if (missing.length > 0) {
+        // Names only — never a customer's answer.
+        logSafe("warn", "bookings: expected custom questions missing", { missing });
+      }
+    } catch (err) {
+      logSafe("warn", "bookings: could not read custom questions", {
+        message: err instanceof Error ? err.message : String(err),
+      });
+    }
+
+    const { answers, unmapped } = buildCustomQuestionAnswers({ age, height, weight }, questions);
+    /* Anything Bookings has no question for falls back into the notes, so a
+       value the customer supplied is never silently dropped. */
+    const composedNotes = composeAppointmentNotes({
+      age: unmapped.find((u) => u.label === "Age")?.value,
+      height: unmapped.find((u) => u.label === "Height")?.value,
+      weight: unmapped.find((u) => u.label === "Weight")?.value,
+      notes,
+    });
+
     const created = await createAppointment({
       serviceId: service.id,
       staffMemberId,
       startUtc: slot.startUtc,
       endUtc: slot.endUtc,
       durationMinutes: SLOT_MINUTES,
-      customer: { firstName, lastName, email, phone, notes: notes || undefined },
+      customer: { firstName, lastName, email, phone, notes: composedNotes || undefined },
+      customQuestionAnswers: answers,
     });
 
     logSafe("info", "bookings: appointment created", {
@@ -89,6 +124,8 @@ export async function POST(req: Request) {
       serviceId: service.id,
       date: localDateString(date!),
       time,
+      customAnswers: answers.length,
+      notesFallback: unmapped.length,
     });
 
     /* CONFIRMATION TIME — read this before changing it.

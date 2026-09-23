@@ -15,6 +15,7 @@
 import "server-only";
 import { graphRequest } from "@/lib/graph/client";
 import { serviceOrderIndex } from "@/lib/bookings/service-map";
+import type { BookingQuestionAnswer } from "@/lib/bookings/custom-questions";
 import { isoDurationToMinutes, parseGraphDateTime, toGraphDateTime, type GraphDateTimeTimeZone } from "@/lib/bookings/time";
 
 const METADATA_TTL_MS = 5 * 60_000;
@@ -212,6 +213,37 @@ export function mergeRanges(ranges: UtcRange[]): UtcRange[] {
   return out;
 }
 
+/* --- Custom questions ------------------------------------------------------ */
+
+/**
+ * The business's custom questions (Age / Height / Weight and anything else
+ * the clinic has created).
+ *
+ *   GET /solutions/bookingBusinesses/{id}/customQuestions
+ *
+ * Only id and displayName are kept. The ids are opaque GUIDs used to build
+ * appointment answers server-side; they are NEVER returned to the browser.
+ * Cached briefly like the other metadata — questions change rarely, and a
+ * newly created one appears within the TTL.
+ */
+export type CustomQuestion = { id: string; displayName: string };
+
+type GraphCustomQuestion = { id?: string; displayName?: string };
+
+let customQuestionsCache: { at: number; value: CustomQuestion[] } | null = null;
+
+export async function getCustomQuestions(): Promise<CustomQuestion[]> {
+  if (customQuestionsCache && Date.now() - customQuestionsCache.at < METADATA_TTL_MS) {
+    return customQuestionsCache.value;
+  }
+  const json = await graphRequest<{ value?: GraphCustomQuestion[] }>(`${base()}/customQuestions`);
+  const value = (json.value ?? [])
+    .filter((q): q is GraphCustomQuestion & { id: string } => typeof q.id === "string" && q.id.length > 0)
+    .map((q) => ({ id: q.id, displayName: q.displayName ?? "" }));
+  customQuestionsCache = { at: Date.now(), value };
+  return value;
+}
+
 /* --- Staff scheduling configuration (DIAGNOSTIC ONLY) ---------------------- */
 
 /**
@@ -324,6 +356,8 @@ export type CreateAppointmentInput = {
   endUtc: number;
   durationMinutes: number;
   customer: { firstName: string; lastName: string; email: string; phone: string; notes?: string };
+  /** Answers to the business's custom questions (Age / Height / Weight). */
+  customQuestionAnswers?: BookingQuestionAnswer[];
 };
 
 export type CreatedAppointment = {
@@ -360,6 +394,11 @@ export async function createAppointment(input: CreateAppointmentInput): Promise<
         phone: customer.phone,
         timeZone: toGraphDateTime(input.startUtc).timeZone,
         ...(customer.notes ? { notes: customer.notes } : {}),
+        /* Sent only when the clinic has created the matching questions in
+           Bookings; an empty list is omitted entirely. */
+        ...(input.customQuestionAnswers && input.customQuestionAnswers.length > 0
+          ? { customQuestionAnswers: input.customQuestionAnswers }
+          : {}),
       },
     ],
   };

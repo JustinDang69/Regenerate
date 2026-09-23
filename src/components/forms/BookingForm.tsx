@@ -25,7 +25,6 @@ import { useSearchParams } from "next/navigation";
 import Button from "@/components/ui/Button";
 import { site } from "@/lib/site";
 import { resolveServiceId, type ServiceLike } from "@/lib/bookings/service-map";
-import { composeAppointmentNotes } from "@/lib/bookings/notes";
 
 type Service = ServiceLike & { durationMinutes: number | null; appointmentMinutes: number };
 
@@ -255,7 +254,14 @@ export default function BookingForm() {
           serviceId: fields.serviceId,
           date: fields.date,
           time: fields.time,
-          ...(composeAppointmentNotes(fields) ? { notes: composeAppointmentNotes(fields) } : {}),
+          /* Age/Height/Weight are sent as their own fields now. The server
+             maps them to the Bookings custom questions where the clinic has
+             created them, and falls back to the notes where it has not — so
+             the browser no longer decides how they are stored. */
+          ...(fields.age.trim() ? { age: fields.age.trim() } : {}),
+          ...(fields.height.trim() ? { height: fields.height.trim() } : {}),
+          ...(fields.weight.trim() ? { weight: fields.weight.trim() } : {}),
+          ...(fields.notes.trim() ? { notes: fields.notes.trim() } : {}),
         }),
       });
       const json = (await res.json().catch(() => null)) as

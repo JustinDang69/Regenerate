@@ -16,6 +16,7 @@ import {
 import { orderForCustomers, mergeRanges, type BookingService } from "@/lib/bookings/graph";
 import { customerFacingName, resolveServiceId } from "@/lib/bookings/service-map";
 import { composeAppointmentNotes } from "@/lib/bookings/notes";
+import { buildCustomQuestionAnswers, missingQuestionNames } from "@/lib/bookings/custom-questions";
 import {
   melbourneHM,
   melbourneToUtcMs,
@@ -422,6 +423,103 @@ test("all four are optional — an empty form sends no notes at all", () => {
 test("a note on its own is sent verbatim, with no label", () => {
   // Nothing was added above it, so the prefix would only be noise.
   assert.equal(composeAppointmentNotes({ notes: "Running 5 minutes late" }), "Running 5 minutes late");
+});
+
+/* --- Bookings custom questions (Age / Height / Weight) ---------------------- */
+
+/** The three questions as the clinic will create them in Bookings. */
+const ALL_QUESTIONS = [
+  { id: "q-age", displayName: "Age" },
+  { id: "q-height", displayName: "Height" },
+  { id: "q-weight", displayName: "Weight" },
+];
+
+function answerFor(built: ReturnType<typeof buildCustomQuestionAnswers>, question: string) {
+  return built.answers.find((a) => a.question === question);
+}
+
+test("Age supplied — customQuestionAnswers contains Age, correctly shaped", () => {
+  const built = buildCustomQuestionAnswers({ age: "32" }, ALL_QUESTIONS);
+  const a = answerFor(built, "Age");
+  assert.ok(a, "an Age answer must be produced");
+  assert.deepEqual(a, {
+    "@odata.type": "#microsoft.graph.bookingQuestionAnswer",
+    questionId: "q-age",
+    question: "Age",
+    answerInputType: "text",
+    answerOptions: [],
+    isRequired: false,
+    answer: "32",
+    selectedOptions: [],
+  });
+  assert.equal(built.answers.length, 1, "no answer for fields left blank");
+});
+
+test("Height supplied — customQuestionAnswers contains Height", () => {
+  const built = buildCustomQuestionAnswers({ height: "175 cm" }, ALL_QUESTIONS);
+  assert.equal(answerFor(built, "Height")?.answer, "175 cm");
+  assert.equal(answerFor(built, "Height")?.questionId, "q-height");
+  assert.equal(built.answers.length, 1);
+});
+
+test("Weight supplied — customQuestionAnswers contains Weight", () => {
+  const built = buildCustomQuestionAnswers({ weight: "70 kg" }, ALL_QUESTIONS);
+  assert.equal(answerFor(built, "Weight")?.answer, "70 kg");
+  assert.equal(answerFor(built, "Weight")?.questionId, "q-weight");
+  assert.equal(built.answers.length, 1);
+});
+
+test("all three supplied — three answers, in form order", () => {
+  const built = buildCustomQuestionAnswers({ age: "32", height: "175 cm", weight: "70 kg" }, ALL_QUESTIONS);
+  assert.deepEqual(built.answers.map((a) => a.question), ["Age", "Height", "Weight"]);
+  assert.deepEqual(built.unmapped, []);
+});
+
+test("blank optional fields generate no answer at all", () => {
+  assert.deepEqual(buildCustomQuestionAnswers({}, ALL_QUESTIONS).answers, []);
+  assert.deepEqual(buildCustomQuestionAnswers({ age: "", height: "   ", weight: "" }, ALL_QUESTIONS).answers, []);
+});
+
+test("a missing Bookings question does not break the booking — the value falls back to notes", () => {
+  // The clinic has created Age only; Height and Weight do not exist yet.
+  const built = buildCustomQuestionAnswers(
+    { age: "32", height: "175 cm", weight: "70 kg" },
+    [{ id: "q-age", displayName: "Age" }]
+  );
+  assert.deepEqual(built.answers.map((a) => a.question), ["Age"]);
+  assert.deepEqual(built.unmapped, [
+    { label: "Height", value: "175 cm" },
+    { label: "Weight", value: "70 kg" },
+  ]);
+  // Nothing is lost: the create route puts the unmapped values in the notes.
+  assert.equal(
+    composeAppointmentNotes({ height: "175 cm", weight: "70 kg", notes: "Sensitive skin" }),
+    "Height: 175 cm\nWeight: 70 kg\nCustomer notes: Sensitive skin"
+  );
+});
+
+test("NO questions configured at all — still no answers, still no throw", () => {
+  const built = buildCustomQuestionAnswers({ age: "32", height: "175 cm", weight: "70 kg" }, []);
+  assert.deepEqual(built.answers, []);
+  assert.equal(built.unmapped.length, 3);
+  assert.deepEqual(missingQuestionNames([]), ["Age", "Height", "Weight"]);
+});
+
+test("question names are matched forgivingly on case and spacing", () => {
+  const built = buildCustomQuestionAnswers({ age: "32" }, [{ id: "q1", displayName: "  age  " }]);
+  assert.equal(built.answers[0]?.questionId, "q1");
+  // The label we send Bookings stays the clinic's exact spelling.
+  assert.equal(built.answers[0]?.question, "Age");
+});
+
+test("an unrelated custom question is ignored", () => {
+  const built = buildCustomQuestionAnswers(
+    { age: "32" },
+    [{ id: "q-other", displayName: "How did you hear about us?" }, ...ALL_QUESTIONS]
+  );
+  assert.equal(built.answers.length, 1);
+  assert.equal(built.answers[0].questionId, "q-age");
+  assert.deepEqual(missingQuestionNames(ALL_QUESTIONS), []);
 });
 
 /* --- Supporting helpers ----------------------------------------------------- */
