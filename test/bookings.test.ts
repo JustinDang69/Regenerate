@@ -13,7 +13,7 @@ import {
   SLOT_MINUTES,
   MIN_LEAD_MINUTES,
 } from "@/lib/bookings/availability";
-import { orderForCustomers, mergeRanges, type BookingService } from "@/lib/bookings/graph";
+import { orderForCustomers, mergeRanges, buildAppointmentBody, type BookingService } from "@/lib/bookings/graph";
 import { customerFacingName, resolveServiceId } from "@/lib/bookings/service-map";
 import { composeAppointmentNotes } from "@/lib/bookings/notes";
 import { buildCustomQuestionAnswers, missingQuestionNames } from "@/lib/bookings/custom-questions";
@@ -520,6 +520,100 @@ test("an unrelated custom question is ignored", () => {
   assert.equal(built.answers.length, 1);
   assert.equal(built.answers[0].questionId, "q-age");
   assert.deepEqual(missingQuestionNames(ALL_QUESTIONS), []);
+});
+
+/* --- Outgoing appointment payload shape ------------------------------------ */
+
+/** Just enough structure to assert the outgoing Graph payload. */
+type SentAnswer = {
+  "@odata.type": string;
+  "answerInputType@odata.type"?: string;
+  answerInputType: string;
+  question: string;
+  answer: string;
+};
+type SentCustomer = {
+  "@odata.type": string;
+  "customQuestionAnswers@odata.type"?: string;
+  customQuestionAnswers?: SentAnswer[];
+  notes?: string;
+};
+type SentBody = {
+  "@odata.type": string;
+  "staffMemberIds@odata.type": string;
+  "customers@odata.type": string;
+  staffMemberIds: string[];
+  customers: SentCustomer[];
+  serviceId: string;
+  duration: string;
+  startDateTime: { dateTime: string; timeZone: string };
+  endDateTime: { dateTime: string; timeZone: string };
+};
+
+function payload(answers: ReturnType<typeof buildCustomQuestionAnswers>["answers"] = [], notes?: string) {
+  return buildAppointmentBody({
+    serviceId: "svc-1",
+    staffMemberId: "staff-1",
+    startUtc: at(10, 20),
+    endUtc: at(10, 20) + SLOT_MINUTES * MS,
+    durationMinutes: SLOT_MINUTES,
+    customer: { firstName: "Ada", lastName: "Lovelace", email: "a@example.com", phone: "0400000000", notes },
+    customQuestionAnswers: answers,
+  }) as unknown as SentBody;
+}
+
+test("every nested collection carries its OData type annotation", () => {
+  // A missing cast is exactly what made the staffMembers PATCH a silent
+  // no-op, so the documented annotations are asserted rather than assumed.
+  const answers = buildCustomQuestionAnswers({ age: "32", height: "175 cm", weight: "70 kg" }, ALL_QUESTIONS).answers;
+  const body = payload(answers, "Sensitive skin");
+
+  assert.equal(body["@odata.type"], "#microsoft.graph.bookingAppointment");
+  assert.equal(body["staffMemberIds@odata.type"], "#Collection(String)");
+  assert.equal(body["customers@odata.type"], "#Collection(microsoft.graph.bookingCustomerInformation)");
+
+  const c = body.customers[0];
+  assert.equal(c["@odata.type"], "#microsoft.graph.bookingCustomerInformation");
+  assert.equal(c["customQuestionAnswers@odata.type"], "#Collection(microsoft.graph.bookingQuestionAnswer)");
+
+  assert.ok(c.customQuestionAnswers, "answers must be present");
+  for (const a of c.customQuestionAnswers) {
+    assert.equal(a["@odata.type"], "#microsoft.graph.bookingQuestionAnswer");
+    assert.equal(a["answerInputType@odata.type"], "#microsoft.graph.answerInputType");
+    assert.equal(a.answerInputType, "text");
+  }
+});
+
+test("the payload carries the three answers and the customer notes", () => {
+  const answers = buildCustomQuestionAnswers({ age: "32", height: "175 cm", weight: "70 kg" }, ALL_QUESTIONS).answers;
+  const c = payload(answers, "Sensitive skin").customers[0];
+  assert.ok(c.customQuestionAnswers, "answers must be present");
+  assert.deepEqual(c.customQuestionAnswers.map((a) => a.question), ["Age", "Height", "Weight"]);
+  assert.deepEqual(c.customQuestionAnswers.map((a) => a.answer), ["32", "175 cm", "70 kg"]);
+  assert.equal(c.notes, "Sensitive skin");
+});
+
+test("notes is always sent, as an empty string when the customer wrote none", () => {
+  // Omitting the property and sending it empty are different to Graph.
+  const c = payload([], undefined).customers[0];
+  assert.equal(c.notes, "");
+  assert.ok("notes" in c);
+});
+
+test("with no answers, the customQuestionAnswers key is omitted entirely", () => {
+  const c = payload([]).customers[0];
+  assert.equal("customQuestionAnswers" in c, false);
+  assert.equal("customQuestionAnswers@odata.type" in c, false);
+});
+
+test("staff assignment and timing in the payload are unchanged", () => {
+  const body = payload();
+  assert.deepEqual(body.staffMemberIds, ["staff-1"]);
+  assert.equal(body.serviceId, "svc-1");
+  assert.equal(body.duration, "PT50M");
+  assert.equal(body.startDateTime.dateTime, "2026-09-24T10:20:00");
+  assert.equal(body.startDateTime.timeZone, "AUS Eastern Standard Time");
+  assert.equal(body.endDateTime.dateTime, "2026-09-24T11:10:00");
 });
 
 /* --- Supporting helpers ----------------------------------------------------- */

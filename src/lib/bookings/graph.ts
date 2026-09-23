@@ -372,41 +372,132 @@ type GraphAppointment = {
   endDateTime?: GraphDateTimeTimeZone;
 };
 
-export async function createAppointment(input: CreateAppointmentInput): Promise<CreatedAppointment> {
+/**
+ * The exact JSON posted to Graph. Pure and exported so its SHAPE can be
+ * asserted in tests without touching the network.
+ *
+ * ODATA TYPE ANNOTATIONS — do not remove them.
+ * Microsoft's documented create-appointment example annotates every nested
+ * collection, and this payload previously omitted them. Graph accepted the
+ * request and created the appointment either way, but nested values could be
+ * dropped in silence. That is the same failure mode as the staffMembers PATCH,
+ * which returned 204 while discarding `timeZone` because the body carried no
+ * type cast. Annotating the collections is the documented shape:
+ *
+ *   customers@odata.type              #Collection(microsoft.graph.bookingCustomerInformation)
+ *   customQuestionAnswers@odata.type  #Collection(microsoft.graph.bookingQuestionAnswer)
+ *   answerInputType@odata.type        #microsoft.graph.answerInputType
+ *   staffMemberIds@odata.type         #Collection(String)
+ */
+export function buildAppointmentBody(input: CreateAppointmentInput): Record<string, unknown> {
   const { customer } = input;
-  const body = {
+  const timeZone = toGraphDateTime(input.startUtc).timeZone;
+  const answers = input.customQuestionAnswers ?? [];
+
+  const customerInformation: Record<string, unknown> = {
+    "@odata.type": "#microsoft.graph.bookingCustomerInformation",
+    name: `${customer.firstName} ${customer.lastName}`.trim(),
+    emailAddress: customer.email,
+    phone: customer.phone,
+    timeZone,
+    /* Always send notes, even when empty: an omitted property and an empty
+       one are different things to Graph, and the clinic expects the field. */
+    notes: customer.notes ?? "",
+  };
+
+  if (answers.length > 0) {
+    customerInformation["customQuestionAnswers@odata.type"] =
+      "#Collection(microsoft.graph.bookingQuestionAnswer)";
+    customerInformation.customQuestionAnswers = answers.map((a) => ({
+      ...a,
+      "answerInputType@odata.type": "#microsoft.graph.answerInputType",
+    }));
+  }
+
+  return {
     "@odata.type": "#microsoft.graph.bookingAppointment",
     serviceId: input.serviceId,
+    "staffMemberIds@odata.type": "#Collection(String)",
     staffMemberIds: [input.staffMemberId],
     startDateTime: { "@odata.type": "#microsoft.graph.dateTimeTimeZone", ...toGraphDateTime(input.startUtc) },
     endDateTime: { "@odata.type": "#microsoft.graph.dateTimeTimeZone", ...toGraphDateTime(input.endUtc) },
     duration: `PT${input.durationMinutes}M`,
-    customerTimeZone: toGraphDateTime(input.startUtc).timeZone,
+    customerTimeZone: timeZone,
     isLocationOnline: false,
     // Let Bookings send its own confirmation email to the customer.
     optOutOfCustomerEmail: false,
     smsNotificationsEnabled: false,
-    customers: [
-      {
-        "@odata.type": "#microsoft.graph.bookingCustomerInformation",
-        name: `${customer.firstName} ${customer.lastName}`.trim(),
-        emailAddress: customer.email,
-        phone: customer.phone,
-        timeZone: toGraphDateTime(input.startUtc).timeZone,
-        ...(customer.notes ? { notes: customer.notes } : {}),
-        /* Sent only when the clinic has created the matching questions in
-           Bookings; an empty list is omitted entirely. */
-        ...(input.customQuestionAnswers && input.customQuestionAnswers.length > 0
-          ? { customQuestionAnswers: input.customQuestionAnswers }
-          : {}),
-      },
-    ],
+    "customers@odata.type": "#Collection(microsoft.graph.bookingCustomerInformation)",
+    customers: [customerInformation],
   };
+}
 
-  const json = await graphRequest<GraphAppointment>(`${base()}/appointments`, { method: "POST", body });
+export async function createAppointment(input: CreateAppointmentInput): Promise<CreatedAppointment> {
+  const json = await graphRequest<GraphAppointment>(`${base()}/appointments`, {
+    method: "POST",
+    body: buildAppointmentBody(input),
+  });
   return {
     id: json.id ?? null,
     startUtc: parseGraphDateTime(json.startDateTime),
     endUtc: parseGraphDateTime(json.endDateTime),
+  };
+}
+
+/* --- Read-back verification ------------------------------------------------ */
+
+/**
+ * What Microsoft ACTUALLY stored, reduced to safe metadata before it returns.
+ *
+ *   GET /solutions/bookingBusinesses/{id}/appointments/{appointmentId}
+ *
+ * The customer's answers and notes are read but NEVER returned, logged or
+ * surfaced — only counts, question names and booleans leave this function.
+ * Used to tell "Graph dropped our data" apart from "Bookings does not display
+ * it", which look identical from the clinic's calendar.
+ */
+export type StoredAppointmentSummary = {
+  customerCount: number;
+  customQuestionAnswerCount: number;
+  /** Question names Graph returned — the clinic's own labels, not answers. */
+  customQuestionNamesPresent: string[];
+  /** Per-question booleans for the three profile fields. */
+  agePresent: boolean;
+  heightPresent: boolean;
+  weightPresent: boolean;
+  notesPresent: boolean;
+};
+
+type GraphStoredCustomer = {
+  notes?: string | null;
+  customQuestionAnswers?: { question?: string | null; answer?: string | null }[];
+};
+
+export async function getStoredAppointmentSummary(appointmentId: string): Promise<StoredAppointmentSummary> {
+  const json = await graphRequest<{ customers?: GraphStoredCustomer[] }>(
+    `${base()}/appointments/${encodeURIComponent(appointmentId)}`
+  );
+
+  const customers = json.customers ?? [];
+  const first = customers[0];
+  const answers = first?.customQuestionAnswers ?? [];
+
+  /* Only a name counts as "present", and only when it carries an answer. */
+  const named = new Set(
+    answers
+      .filter((a) => typeof a.answer === "string" && a.answer.trim().length > 0)
+      .map((a) => (a.question ?? "").trim())
+      .filter(Boolean)
+  );
+  const has = (label: string) => [...named].some((n) => n.toLowerCase() === label.toLowerCase());
+
+  return {
+    customerCount: customers.length,
+    customQuestionAnswerCount: answers.length,
+    customQuestionNamesPresent: [...named],
+    agePresent: has("Age"),
+    heightPresent: has("Height"),
+    weightPresent: has("Weight"),
+    notesPresent: typeof first?.notes === "string" && first.notes.trim().length > 0,
   };
 }
