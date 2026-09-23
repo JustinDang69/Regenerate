@@ -169,39 +169,6 @@ export async function getStaffAvailability(
   return result;
 }
 
-/**
- * DIAGNOSTIC ONLY — the getStaffAvailability request and response exactly as
- * they go over the wire, so a timezone disagreement can be proven rather than
- * inferred. Returns raw dateTime/timeZone strings; contains no identity.
- * Does not affect booking behaviour.
- */
-export async function getStaffAvailabilityRaw(staffIds: string[], startUtc: number, endUtc: number) {
-  const request = {
-    startDateTime: toGraphDateTime(startUtc),
-    endDateTime: toGraphDateTime(endUtc),
-  };
-  const json = await graphRequest<{ value?: GraphStaffAvailability[] }>(`${base()}/getStaffAvailability`, {
-    method: "POST",
-    body: { staffIds, ...request },
-  });
-  return {
-    request,
-    /* Keyed by staff id; the caller maps to aliases before returning it. */
-    byStaffId: new Map(
-      (json.value ?? [])
-        .filter((s): s is GraphStaffAvailability & { staffId: string } => typeof s.staffId === "string")
-        .map((s) => [
-          s.staffId,
-          (s.availabilityItems ?? []).map((i) => ({
-            status: i.status ?? null,
-            start: i.startDateTime ?? null,
-            end: i.endDateTime ?? null,
-          })),
-        ])
-    ),
-  };
-}
-
 export function mergeRanges(ranges: UtcRange[]): UtcRange[] {
   const sorted = [...ranges].sort((a, b) => a.start - b.start);
   const out: UtcRange[] = [];
@@ -242,61 +209,6 @@ export async function getCustomQuestions(): Promise<CustomQuestion[]> {
     .map((q) => ({ id: q.id, displayName: q.displayName ?? "" }));
   customQuestionsCache = { at: Date.now(), value };
   return value;
-}
-
-/* --- Staff scheduling configuration (DIAGNOSTIC ONLY) ---------------------- */
-
-/**
- * Per-practitioner SCHEDULING CONFIGURATION — never identity.
- *
- * `$select` deliberately excludes displayName, emailAddress and role, so the
- * practitioners' names and mailboxes are never fetched, never held in memory
- * and cannot be leaked by a later mistake. `id` is kept only to map a person
- * to a positional alias (staff-1, staff-2) and must not be returned.
- */
-export type StaffScheduleConfig = {
-  id: string;
-  useBusinessHours: boolean | null;
-  availabilityIsAffectedByPersonalCalendar: boolean | null;
-  timeZone: string | null;
-  workingHours: BusinessHours[];
-};
-
-type GraphStaffMember = {
-  id?: string;
-  useBusinessHours?: boolean;
-  availabilityIsAffectedByPersonalCalendar?: boolean;
-  timeZone?: string;
-  workingHours?: BusinessHours[];
-};
-
-export async function getStaffScheduleConfig(): Promise<StaffScheduleConfig[]> {
-  const select = "id,useBusinessHours,availabilityIsAffectedByPersonalCalendar,timeZone,workingHours";
-  /* The collection is typed bookingStaffMemberBase, and these properties live
-     on the derived bookingStaffMember — so $select needs an OData type cast.
-     If the cast is rejected we fall back to the plain collection: that response
-     also carries displayName and emailAddress, which the mapping below simply
-     never reads, so they are dropped rather than returned. */
-  let json: { value?: GraphStaffMember[] };
-  try {
-    json = await graphRequest<{ value?: GraphStaffMember[] }>(
-      `${base()}/staffMembers/microsoft.graph.bookingStaffMember?$select=${select}`
-    );
-  } catch {
-    json = await graphRequest<{ value?: GraphStaffMember[] }>(`${base()}/staffMembers`);
-  }
-  return (json.value ?? [])
-    .filter((s): s is GraphStaffMember & { id: string } => typeof s.id === "string")
-    .map((s) => ({
-      id: s.id,
-      useBusinessHours: typeof s.useBusinessHours === "boolean" ? s.useBusinessHours : null,
-      availabilityIsAffectedByPersonalCalendar:
-        typeof s.availabilityIsAffectedByPersonalCalendar === "boolean"
-          ? s.availabilityIsAffectedByPersonalCalendar
-          : null,
-      timeZone: s.timeZone ?? null,
-      workingHours: Array.isArray(s.workingHours) ? s.workingHours : [],
-    }));
 }
 
 /* --- Booked appointments (calendarView) ------------------------------------ */
@@ -441,63 +353,5 @@ export async function createAppointment(input: CreateAppointmentInput): Promise<
     id: json.id ?? null,
     startUtc: parseGraphDateTime(json.startDateTime),
     endUtc: parseGraphDateTime(json.endDateTime),
-  };
-}
-
-/* --- Read-back verification ------------------------------------------------ */
-
-/**
- * What Microsoft ACTUALLY stored, reduced to safe metadata before it returns.
- *
- *   GET /solutions/bookingBusinesses/{id}/appointments/{appointmentId}
- *
- * The customer's answers and notes are read but NEVER returned, logged or
- * surfaced — only counts, question names and booleans leave this function.
- * Used to tell "Graph dropped our data" apart from "Bookings does not display
- * it", which look identical from the clinic's calendar.
- */
-export type StoredAppointmentSummary = {
-  customerCount: number;
-  customQuestionAnswerCount: number;
-  /** Question names Graph returned — the clinic's own labels, not answers. */
-  customQuestionNamesPresent: string[];
-  /** Per-question booleans for the three profile fields. */
-  agePresent: boolean;
-  heightPresent: boolean;
-  weightPresent: boolean;
-  notesPresent: boolean;
-};
-
-type GraphStoredCustomer = {
-  notes?: string | null;
-  customQuestionAnswers?: { question?: string | null; answer?: string | null }[];
-};
-
-export async function getStoredAppointmentSummary(appointmentId: string): Promise<StoredAppointmentSummary> {
-  const json = await graphRequest<{ customers?: GraphStoredCustomer[] }>(
-    `${base()}/appointments/${encodeURIComponent(appointmentId)}`
-  );
-
-  const customers = json.customers ?? [];
-  const first = customers[0];
-  const answers = first?.customQuestionAnswers ?? [];
-
-  /* Only a name counts as "present", and only when it carries an answer. */
-  const named = new Set(
-    answers
-      .filter((a) => typeof a.answer === "string" && a.answer.trim().length > 0)
-      .map((a) => (a.question ?? "").trim())
-      .filter(Boolean)
-  );
-  const has = (label: string) => [...named].some((n) => n.toLowerCase() === label.toLowerCase());
-
-  return {
-    customerCount: customers.length,
-    customQuestionAnswerCount: answers.length,
-    customQuestionNamesPresent: [...named],
-    agePresent: has("Age"),
-    heightPresent: has("Height"),
-    weightPresent: has("Weight"),
-    notesPresent: typeof first?.notes === "string" && first.notes.trim().length > 0,
   };
 }

@@ -13,12 +13,7 @@
 
    If the slot is gone → HTTP 409, no appointment created.
    ========================================================================== */
-import {
-  createAppointment,
-  findBookableService,
-  getCustomQuestions,
-  getStoredAppointmentSummary,
-} from "@/lib/bookings/graph";
+import { createAppointment, findBookableService, getCustomQuestions } from "@/lib/bookings/graph";
 import { buildCustomQuestionAnswers, missingQuestionNames } from "@/lib/bookings/custom-questions";
 import { composeAppointmentNotes } from "@/lib/bookings/notes";
 import { computeSlots, isDateInBookingWindow, MAX_DAYS_AHEAD, parseHM, parseLocalDate, SLOT_MINUTES } from "@/lib/bookings/availability";
@@ -132,34 +127,6 @@ export async function POST(req: Request) {
       customAnswers: answers.length,
       notesFallback: unmapped.length,
     });
-
-    /* --- TEMPORARY read-back verification (server log only) ----------------
-       TODO(remove): delete once Age/Height/Weight are confirmed visible in
-       Bookings. Reads the appointment straight back from Graph and logs ONLY
-       safe metadata — counts, the clinic's own question names and booleans.
-       The customer's answers and notes are never logged, returned or shown.
-
-       This distinguishes "Graph silently dropped our data" from "Bookings
-       does not display it", which look identical in the clinic calendar.
-
-       It runs AFTER the booking is confirmed and is wrapped so that a failure
-       here can never affect the customer: the appointment already exists. */
-    if (created.id) {
-      try {
-        const stored = await getStoredAppointmentSummary(created.id);
-        logSafe("info", "bookings: appointment verification", {
-          appointmentId: created.id,
-          sentCustomAnswers: answers.length,
-          sentNotes: composedNotes.length > 0,
-          ...stored,
-        });
-      } catch (err) {
-        logSafe("warn", "bookings: could not read appointment back", {
-          appointmentId: created.id,
-          message: err instanceof Error ? err.message : String(err),
-        });
-      }
-    }
 
     /* CONFIRMATION TIME — read this before changing it.
 
