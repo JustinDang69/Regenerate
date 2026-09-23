@@ -216,6 +216,63 @@ test("the Graph echo that caused the 8:20 PM bug is not trusted", () => {
   assert.equal(slot.time, "10:20", "the validated slot stays correct");
 });
 
+/* --- Graph time-zone labels ------------------------------------------------ */
+
+test('the Windows DISPLAY name "(UTC+10:00) Canberra, Melbourne, Sydney" is Melbourne', () => {
+  // getStaffAvailability uses this spelling. It previously matched nothing,
+  // fell through to UTC, and shifted the clinic's whole day by ten hours.
+  const t = parseGraphDateTime({
+    dateTime: "2026-09-25T09:30:00",
+    timeZone: "(UTC+10:00) Canberra, Melbourne, Sydney",
+  });
+  assert.equal(melbourneHM(t!), "09:30");
+  assert.equal(t, melbourneToUtcMs({ y: 2026, m: 9, d: 25 }, 9, 30));
+});
+
+test("the Windows id and the IANA names are Melbourne", () => {
+  const expect = melbourneToUtcMs({ y: 2026, m: 9, d: 25 }, 9, 30);
+  for (const timeZone of ["AUS Eastern Standard Time", "Australia/Melbourne", "Australia/Sydney"]) {
+    assert.equal(parseGraphDateTime({ dateTime: "2026-09-25T09:30:00", timeZone }), expect, timeZone);
+  }
+});
+
+test("the display name is matched during daylight saving too", () => {
+  // Microsoft keeps the +10:00 prefix year-round; January is AEDT (+11).
+  const t = parseGraphDateTime({
+    dateTime: "2027-01-15T09:30:00",
+    timeZone: "(UTC+10:00) Canberra, Melbourne, Sydney",
+  });
+  assert.equal(melbourneHM(t!), "09:30");
+});
+
+test("an UNKNOWN time zone is rejected, never silently treated as UTC", () => {
+  const unknown = parseGraphDateTime({ dateTime: "2026-09-25T09:30:00", timeZone: "Totally Made Up Zone" });
+  assert.equal(unknown, null, "must fail closed");
+  // Proves it did not fall back: UTC would have produced a usable instant.
+  assert.notEqual(unknown, Date.UTC(2026, 8, 25, 9, 30));
+});
+
+test("Brisbane is NOT treated as Melbourne — it has no daylight saving", () => {
+  const brisbane = parseGraphDateTime({ dateTime: "2027-01-15T09:30:00", timeZone: "(UTC+10:00) Brisbane" });
+  // Either resolved as its own zone or rejected, but never as Melbourne.
+  if (brisbane !== null) {
+    assert.notEqual(brisbane, melbourneToUtcMs({ y: 2027, m: 1, d: 15 }, 9, 30));
+  }
+});
+
+test("an absent time zone stays UTC — that is Graph's default, not an unknown label", () => {
+  // calendarView relies on this; making it fail closed would silently disable
+  // the capacity guard, which is far more dangerous than a missing slot.
+  assert.equal(parseGraphDateTime({ dateTime: "2026-09-25T00:20:00" }), Date.UTC(2026, 8, 25, 0, 20));
+  assert.equal(parseGraphDateTime({ dateTime: "2026-09-25T00:20:00", timeZone: "" }), Date.UTC(2026, 8, 25, 0, 20));
+});
+
+test("a rejected availability item drops out instead of poisoning the day", () => {
+  // getStaffAvailability skips items whose start or end will not parse.
+  assert.equal(parseGraphDateTime({ dateTime: "not-a-date", timeZone: "UTC" }), null);
+  assert.equal(parseGraphDateTime(undefined), null);
+});
+
 test("a correctly-labelled Graph response still parses", () => {
   // 10:20 Melbourne (AEST) = 00:20 UTC the same calendar day.
   const utc = parseGraphDateTime({ dateTime: "2026-09-24T00:20:00.0000000", timeZone: "UTC" });
