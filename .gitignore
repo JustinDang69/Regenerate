@@ -47,3 +47,6 @@ next-env.d.ts
 
 
 REGENERATE plan 21-07.docx
+
+.vercel
+.env*

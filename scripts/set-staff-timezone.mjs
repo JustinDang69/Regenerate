@@ -153,7 +153,16 @@ for (let i = 0; i < matched.length; i++) {
   try {
     await graph(bearer, `/staffMembers/${encodeURIComponent(matched[i].id)}`, {
       method: "PATCH",
-      body: JSON.stringify({ timeZone: TARGET_TIME_ZONE }),
+      /* The @odata.type is REQUIRED, not decoration. staffMembers is a
+         collection of bookingStaffMemberBase; without the cast Graph accepts
+         the request, answers 204, and silently discards timeZone because the
+         property is not on the base type. Microsoft's own PATCH example
+         includes it. Only timeZone is sent — every other property of the
+         staff member is left exactly as it is. */
+      body: JSON.stringify({
+        "@odata.type": "#microsoft.graph.bookingStaffMember",
+        timeZone: TARGET_TIME_ZONE,
+      }),
     });
     console.log(`${alias} timezone updated`);
   } catch (err) {
@@ -176,5 +185,18 @@ matched.forEach((m, i) => {
   console.log(`  staff-${i + 1}  timeZone="${tz}"  useBusinessHours=${ubh}  ${good ? "OK" : "UNEXPECTED"}`);
 });
 
-console.log(ok ? "\nAll matched practitioners are set correctly." : "\nOne or more practitioners are not as expected.");
-if (!ok) process.exitCode = 1;
+if (ok) {
+  console.log("\nAll matched practitioners are set correctly.");
+} else {
+  console.log(
+    [
+      "\nOne or more practitioners are NOT as expected.",
+      "",
+      "If Graph returned 204 but timeZone is still empty, STOP HERE.",
+      "Do not re-run, and do not change any other staff property to work around",
+      "it — external Guest staff members can refuse to persist timeZone. Report",
+      "this output and we will handle it application-side instead.",
+    ].join("\n")
+  );
+  process.exitCode = 1;
+}
