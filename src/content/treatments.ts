@@ -700,44 +700,48 @@ export const skinTechnologies: SkinTechnology[] = [
      restrained — explanatory, not therapeutic. Do not strengthen it into
      claims (penetration, absorption, growth or removal outcomes). */
   {
+    /* Rewritten 28 Sep 2026 from the clinic's clarification: controlled heat
+       (mild hyperthermia, ~39–45°C) temporarily increases stratum corneum
+       permeability to accelerate transdermal delivery. Customer-facing voice.
+       Do not add rates, percentages or outcome claims. */
     slug: "hyperthermia-dermal-penetration",
     name: "Hyperthermia Dermal Penetration",
     fullName: "Hyperthermia Dermal Penetration Technology",
-    tagline: "Controlled warming within skin and scalp treatment protocols",
+    tagline: "Controlled heat for enhanced transdermal delivery",
     summary:
-      "Uses controlled warmth as part of selected treatment protocols to prepare and condition the treatment area before topical application or device-based care.",
+      "Uses mild, controlled hyperthermia to temporarily increase the permeability of your skin barrier and support faster transdermal delivery of selected compounds.",
     overview:
-      "Hyperthermia Dermal Penetration uses controlled warming as part of selected skin and scalp treatment protocols. The warming phase helps prepare the treatment area and supports the even application of compatible topical products or subsequent device-based steps. Settings are selected according to the treatment area, skin or scalp condition and client comfort.",
+      "Hyperthermia Dermal Penetration Technology uses controlled heat to temporarily increase the permeability of your skin's outer barrier. By raising your skin temperature into a mild hyperthermic range, typically around 39°C to 45°C, the stratum corneum becomes more permeable. This can accelerate the transdermal movement of selected drugs, therapeutic agents or cosmetic compounds across your skin barrier.",
     howItWorks:
-      "A treatment handpiece applies controlled warmth to the selected area while the practitioner monitors comfort and skin response. The warming stage is used as part of a broader treatment sequence and may be combined with compatible topical products or other non-invasive technologies. Temperature, treatment time and technique are adjusted according to the protocol being performed.",
+      "The stratum corneum normally acts as the primary barrier that limits substances entering through your skin. Controlled hyperthermia temporarily alters this barrier function. As your skin temperature rises within the mild hyperthermic range of approximately 39°C to 45°C, the permeability of the stratum corneum increases, allowing selected compounds to move through your skin more readily. This effect is temporary and is used as part of a controlled transdermal-delivery protocol.",
     modes: [
-      { title: "Facial preparation", body: "Uses controlled warming to prepare selected facial areas before subsequent treatment steps." },
-      { title: "Scalp preparation", body: "Applies controlled warmth as part of selected scalp-conditioning and device-assisted protocols." },
-      { title: "Topical application support", body: "May be used before or alongside compatible topical products as part of a structured treatment sequence." },
-      { title: "Combination protocol", body: "Can be incorporated with other non-invasive technologies when selected during consultation." },
+      { title: "Cosmetic compound delivery", body: "Uses controlled hyperthermia to temporarily increase your skin's permeability and support transdermal delivery of selected cosmetic compounds." },
+      { title: "Therapeutic compound delivery", body: "The temporary increase in permeability may be used within an appropriate treatment protocol to support delivery of selected therapeutic compounds through your skin." },
+      { title: "Drug-delivery application", body: "Hyperthermia-assisted penetration can be used as a transdermal-delivery approach for selected drugs where this forms part of an appropriate clinical protocol for you." },
+      { title: "Controlled hyperthermic protocol", body: "Your skin temperature is raised into a mild hyperthermic range, typically around 39°C to 45°C, to temporarily increase barrier permeability during the delivery phase." },
     ],
     bestFor: [
-      "Treatment protocols that include controlled warming",
-      "Skin or scalp preparation before selected device-based steps",
-      "Clients suitable for non-invasive technology-assisted care",
-      "Combination skin-conditioning protocols",
-      "Combination scalp-conditioning protocols",
+      "Transdermal-delivery protocols using compatible topical compounds",
+      "Cosmetic compound delivery through your skin barrier",
+      "Selected therapeutic-delivery applications",
+      "Protocols where temporary enhancement of your skin permeability is desired",
+      "Controlled hyperthermia-assisted topical delivery",
     ],
     benefits: [
-      "Controlled and adjustable warming",
-      "Supports preparation of the treatment area",
-      "Integrates with selected topical and device-based protocols",
-      "Non-invasive application",
-      "Settings can be adjusted according to treatment area and comfort",
+      "Temporarily increases the permeability of your stratum corneum",
+      "Supports faster transdermal movement of selected compounds",
+      "Uses controlled mild hyperthermia rather than uncontrolled heating",
+      "Can support delivery of selected cosmetic or therapeutic compounds",
+      "Provides a controlled way to temporarily modify skin-barrier permeability",
     ],
     before:
-      "The treatment area is assessed and cleansed before the warming stage begins. Relevant sensitivities, treatment history and suitability are reviewed so the practitioner can select appropriate settings and compatible products.",
+      "Before your treatment, your practitioner reviews the compound being delivered, your treatment area and whether a hyperthermia-assisted transdermal protocol is suitable for you. Treatment parameters are then selected according to your intended application.",
     during:
-      "The handpiece is moved across the selected area while controlled warmth is applied. Temperature and treatment time are adjusted according to the protocol and client comfort. The treatment should feel warm rather than excessively hot.",
+      "During your treatment, controlled heat is applied to the selected area of your skin. Your skin temperature is raised into a mild hyperthermic range, typically around 39°C to 45°C. At this temperature, the stratum corneum becomes temporarily more permeable, supporting the transdermal movement of the selected compound.",
     after:
-      "The treated area may feel warm or appear mildly flushed for a short period. Any following skincare, scalp care or device-based steps are completed according to the selected treatment protocol.",
+      "After the controlled hyperthermic phase ends, the increase in your skin-barrier permeability is temporary. Your treatment then continues according to the selected transdermal-delivery protocol and any required finishing care.",
     recommendation:
-      "Hyperthermia Dermal Penetration is used within selected treatment protocols rather than booked as a stand-alone treatment. Its use and frequency are determined during consultation according to the treatment plan.",
+      "Hyperthermia Dermal Penetration is used as part of a selected transdermal-delivery protocol rather than as a stand-alone cosmetic treatment. Whether it is suitable for you depends on the compound being delivered, your treatment area and the intended application.",
   },
   {
     /* The client's source wording was "ion charged pulse polarity
