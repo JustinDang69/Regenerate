@@ -32,6 +32,58 @@ export type Concern = {
    SKIN CONCERNS
    -------------------------------------------------------------------------- */
 export const skinConcerns: Concern[] = [
+  /* CLIENT ORDER (28 Sep 2026): Rejuvenation & Aging · Scarring & Texture ·
+     Pigmentation & Brightening · Acne & Congestion. "Hydration & Dullness"
+     is not in that list and has never appeared in the navigation; it is kept
+     unchanged as the last, page-only section pending a client decision. */
+  {
+    slug: "rejuvenation",
+    title: "Rejuvenation & Aging",
+    category: "skin",
+    // NOTE(compliance): frame ageing-support carefully. Never "fix ageing".
+    summary: "Supportive care for skin vitality and a rested appearance.",
+    problem:
+      "Over time, skin can lose some of its firmness and bounce, and may benefit from considered, ongoing support.",
+    approach:
+      "Layered programs may combine micro-needling, mesotherapy, radio frequency and hydra to support renewal.",
+    benefits:
+      "Designed to support firmer-looking, revitalised skin. Suitability and expectations are confirmed in consultation.",
+    technologies: ["radiofrequency", "ems"],
+    relatedPackages: ["forever-twenty", "skin-reclaim"],
+  },
+  {
+    slug: "scarring",
+    title: "Scarring & Texture",
+    category: "skin",
+    summary: "Refining the look of scarring and uneven surface texture.",
+    problem:
+      "Once breakouts settle, uneven texture and the appearance of scarring can remain and feel difficult to shift at home.",
+    approach:
+      "Micro-needling courses may be paired with scar-support protocols and nourishing actives to encourage skin renewal.",
+    benefits:
+      "Designed to support smoother-looking, more refined skin texture over time. Results vary by individual.",
+    technologies: ["led", "electroporation"],
+    relatedPackages: ["skin-reclaim"],
+  },
+  {
+    /* NEW (client brief 28 Sep 2026). Written on the client's behalf in the
+       same register as the concerns around it: describes the concern, promises
+       nothing. TODO(client): clinical sign-off. No photograph assigned yet, so
+       the labelled placeholder renders — as it does for the other concerns. */
+    slug: "pigmentation",
+    title: "Pigmentation & Brightening",
+    category: "skin",
+    summary:
+      "Support for uneven tone, visible pigmentation and dullness, with treatment options selected according to your skin and goals.",
+    problem:
+      "Uneven tone, visible pigmentation and dullness can build up gradually, influenced by sun exposure, past breakouts and everyday environmental stress.",
+    approach:
+      "Options such as MedicalFACIAL and facial mesotherapy may be considered, with actives and delivery technology selected for your skin in consultation.",
+    benefits:
+      "Designed to support a clearer, more even-looking and brighter complexion over a considered course. Results vary by individual.",
+    technologies: ["electroporation", "ultrasound"],
+    relatedPackages: ["forever-twenty"],
+  },
   {
     slug: "acne",
     title: "Acne & Congestion",
@@ -55,20 +107,6 @@ export const skinConcerns: Concern[] = [
     },
   },
   {
-    slug: "scarring",
-    title: "Acne Scarring & Texture",
-    category: "skin",
-    summary: "Refining the look of scarring and uneven surface texture.",
-    problem:
-      "Once breakouts settle, uneven texture and the appearance of scarring can remain and feel difficult to shift at home.",
-    approach:
-      "Micro-needling courses may be paired with scar-support protocols and nourishing actives to encourage skin renewal.",
-    benefits:
-      "Designed to support smoother-looking, more refined skin texture over time. Results vary by individual.",
-    technologies: ["led", "electroporation"],
-    relatedPackages: ["skin-reclaim"],
-  },
-  {
     slug: "hydration",
     title: "Hydration & Dullness",
     category: "skin",
@@ -82,32 +120,21 @@ export const skinConcerns: Concern[] = [
     technologies: ["ultrasound", "electroporation"],
     relatedPackages: ["forever-twenty"],
   },
-  {
-    slug: "rejuvenation",
-    title: "Rejuvenation & Vitality",
-    category: "skin",
-    // NOTE(compliance): frame ageing-support carefully. Never "fix ageing".
-    summary: "Supportive care for skin vitality and a rested appearance.",
-    problem:
-      "Over time, skin can lose some of its firmness and bounce, and may benefit from considered, ongoing support.",
-    approach:
-      "Layered programs may combine micro-needling, mesotherapy, radio frequency and hydra to support renewal.",
-    benefits:
-      "Designed to support firmer-looking, revitalised skin. Suitability and expectations are confirmed in consultation.",
-    technologies: ["radiofrequency", "ems"],
-    relatedPackages: ["forever-twenty", "skin-reclaim"],
-  },
 ];
 
 /* --------------------------------------------------------------------------
    HAIR CONCERNS
    -------------------------------------------------------------------------- */
 export const hairConcerns: Concern[] = [
+  /* CLIENT ORDER (28 Sep 2026): Hair thinning + Hair loss · Scalp health ·
+     Hair greying. "Recovery & Vitality" is not in that list and has never
+     appeared in the navigation; it is kept unchanged as the last, page-only
+     section pending a client decision. */
   {
     slug: "thinning",
-    title: "Thinning Hair Support",
+    title: "Hair thinning + Hair loss",
     category: "hair",
-    summary: "Consultation-led support for those noticing thinning or reduced density.",
+    summary: "Consultation-led support for those noticing thinning, hair loss or reduced density.",
     problem:
       "Noticing thinning or reduced density can be unsettling, and is influenced by many personal and lifestyle factors.",
     approach:
@@ -119,7 +146,7 @@ export const hairConcerns: Concern[] = [
   },
   {
     slug: "scalp",
-    title: "Scalp Health",
+    title: "Scalp health",
     category: "hair",
     summary: "Restoring comfort and condition to the scalp.",
     problem:
@@ -130,6 +157,21 @@ export const hairConcerns: Concern[] = [
       "Designed to support a comfortable, well-conditioned scalp and a sense of everyday wellbeing.",
     technologies: ["led", "high-frequency"],
     relatedPackages: ["ultimate-warrior", "happy-hair-happy-life"],
+  },
+  {
+    slug: "grey",
+    title: "Hair greying",
+    category: "hair",
+    // NOTE(compliance): grey-hair claims require clinical/legal confirmation.
+    summary: "Considered, ritual-led pathways for those exploring grey-hair support.",
+    problem:
+      "Some clients wish to explore supportive pathways as their hair changes over time.",
+    approach:
+      "Programs may pair mesotherapy and MedicalSCALP with the UltraSCALP ritual, planned with you in consultation.",
+    benefits:
+      "Designed as a considered, supportive experience. Suitability is confirmed in consultation and results vary.",
+    technologies: ["ultrasound", "radiofrequency"],
+    relatedPackages: ["return-of-a-hero", "happy-hair-happy-life"],
   },
   {
     slug: "recovery",
@@ -144,21 +186,6 @@ export const hairConcerns: Concern[] = [
       "Designed to support hair vitality and scalp condition as part of an ongoing routine.",
     technologies: ["ultrasound", "radiofrequency"],
     relatedPackages: ["ultimate-warrior", "lift-camp-1"],
-  },
-  {
-    slug: "grey",
-    title: "Grey-Hair Pathways",
-    category: "hair",
-    // NOTE(compliance): grey-hair claims require clinical/legal confirmation.
-    summary: "Considered, ritual-led pathways for those exploring grey-hair support.",
-    problem:
-      "Some clients wish to explore supportive pathways as their hair changes over time.",
-    approach:
-      "Programs may pair mesotherapy and MedicalSCALP with the UltraSCALP ritual, planned with you in consultation.",
-    benefits:
-      "Designed as a considered, supportive experience. Suitability is confirmed in consultation and results vary.",
-    technologies: ["ultrasound", "radiofrequency"],
-    relatedPackages: ["return-of-a-hero", "happy-hair-happy-life"],
   },
 ];
 

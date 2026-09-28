@@ -2,7 +2,7 @@
    SITE CONFIG — single source of truth for brand, navigation, and NAP details.
    Swap values here to update the header, footer, contact page, and metadata.
    ========================================================================== */
-import { serviceParamForTreatment } from "@/lib/bookings/service-map";
+import { SERVICE_BY_TREATMENT_SLUG, serviceParamForTreatment } from "@/lib/bookings/service-map";
 
 export const site = {
   name: "Regenerate Skin & Hair Clinic",
@@ -86,20 +86,37 @@ export type NavItem = {
   children?: { label: string; href: string; hint?: string }[];
 };
 
+/* -----------------------------------------------------------------------------
+   Treatment links for nav groups 05 and 06.
+
+   An INTENTIONAL duplicate of access, not of data (client brief 28 Sep 2026):
+   these are the treatment pages that used to sit under the old Treatments
+   menu. Labels come from SERVICE_BY_TREATMENT_SLUG — the same canonical names
+   the booking form shows — so a treatment is never named in two places, and
+   the slugs are the existing /treatments/[slug] pages.
+   -------------------------------------------------------------------------- */
+const SKIN_TREATMENT_SLUGS = ["facial-microneedling", "facial-mesotherapy", "hydrafacial", "facespa"];
+const HAIR_TREATMENT_SLUGS = ["scalp-microneedling", "scalp-mesotherapy", "hydrascalp-therapy", "scalpspa"];
+
+function treatmentLinks(slugs: string[]) {
+  return slugs.map((slug) => ({ label: SERVICE_BY_TREATMENT_SLUG[slug] ?? slug, href: `/treatments/${slug}` }));
+}
+
+/* Numbering (01, 02 …) in the menu is derived from array position in the
+   Header, so the order below IS the numbering. */
 export const primaryNav: NavItem[] = [
   { label: "Home", href: "/" },
-  /* Browse BY SERVICE. Skin/Hair below remain the BY CONCERN entry points —
-     the two serve different journeys and both are kept deliberately. */
+  /* 02 — formerly "Treatments". The index page moved to /concerns; /treatments
+     redirects there (next.config.ts). */
   {
-    label: "Treatments",
-    href: "/treatments",
+    label: "Concerns",
+    href: "/concerns",
     children: [
-      { label: "All Treatments", href: "/treatments", hint: "The full treatment guide" },
-      { label: "Skin Treatments", href: "/treatments#skin-treatments" },
-      { label: "Hair Treatments", href: "/treatments#hair-scalp-treatments" },
+      { label: "Skin Concerns", href: "/concerns#skin-concerns" },
+      { label: "Hair Concerns", href: "/concerns#hair-concerns" },
       {
         label: "Skin and Scalp Technologies",
-        href: "/treatments#technologies",
+        href: "/concerns#technologies",
         hint: "Applied within treatments",
       },
     ],
@@ -109,9 +126,10 @@ export const primaryNav: NavItem[] = [
     href: "/skin",
     children: [
       { label: "Skin Treatments", href: "/skin", hint: "Concern-led pathways" },
-      { label: "Acne & Congestion", href: "/skin#acne" },
+      { label: "Rejuvenation & Aging", href: "/skin#rejuvenation" },
       { label: "Scarring & Texture", href: "/skin#scarring" },
-      { label: "Rejuvenation & Vitality", href: "/skin#rejuvenation" },
+      { label: "Pigmentation & Brightening", href: "/skin#pigmentation" },
+      { label: "Acne & Congestion", href: "/skin#acne" },
     ],
   },
   {
@@ -119,10 +137,21 @@ export const primaryNav: NavItem[] = [
     href: "/hair",
     children: [
       { label: "Hair Treatments", href: "/hair", hint: "Scalp & hair support" },
-      { label: "Thinning Support", href: "/hair#thinning" },
-      { label: "Scalp Health", href: "/hair#scalp" },
-      { label: "Grey-Hair Pathways", href: "/hair#grey" },
+      { label: "Hair thinning + Hair loss", href: "/hair#thinning" },
+      { label: "Scalp health", href: "/hair#scalp" },
+      { label: "Hair greying", href: "/hair#grey" },
     ],
+  },
+  /* 05 / 06 — the individual treatments, by area. */
+  {
+    label: "Skin Treatments",
+    href: "/concerns#skin-treatments",
+    children: treatmentLinks(SKIN_TREATMENT_SLUGS),
+  },
+  {
+    label: "Hair Treatments",
+    href: "/concerns#hair-scalp-treatments",
+    children: treatmentLinks(HAIR_TREATMENT_SLUGS),
   },
   {
     label: "Pricing",
@@ -191,7 +220,7 @@ export const footerNav = {
   treatments: [
     { label: "Skin Treatments", href: "/skin" },
     { label: "Hair Treatments", href: "/hair" },
-    { label: "Treatment Guide", href: "/treatments" },
+    { label: "Treatment Guide", href: "/concerns" },
     { label: "Packages", href: "/pricing#packages" },
     { label: "Single Treatments", href: "/pricing#single" },
     { label: "Products", href: "/products" },

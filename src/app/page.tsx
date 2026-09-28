@@ -1,7 +1,7 @@
 /* =============================================================================
    HOME — strongest conversion + strategic summary page.
-   Sections: Hero · Trust · Pathways (Skin/Hair/Packages) · Practitioners ·
-   Location · Final enquiry CTA.
+   Sections: Hero · Our Position · Trust · Pathways (Skin/Hair/Packages) ·
+   Practitioners · Location · Final enquiry CTA.
    -----------------------------------------------------------------------------
    CLIENT REVISION (round 1): the "Concerns We Support", "Featured Programs" and
    science-led editorial sections were removed from the homepage. The concern →
@@ -25,7 +25,8 @@ import { cta } from "@/lib/site";
 /* Top-level entry points. Data-driven so cards stay consistent and easy to edit.
 
    ROUTING (client-confirmed): the homepage treatment journey is BY SERVICE and
-   points at /treatments, which carries the approved treatment presentation.
+   points at the treatment sections of /concerns (formerly /treatments), which
+   carry the approved treatment presentation.
    The concern-led /skin and /hair pages are the BY CONCERN journey and stay
    reachable from the main navigation — they are not linked from here. */
 const pathways = [
@@ -33,8 +34,8 @@ const pathways = [
     eyebrow: "Skin",
     title: "Skin Treatments",
     description:
-      "Support for acne and congestion, scarring and texture, hydration and rejuvenation — with technology selected to suit each concern.",
-    cta: { label: cta.exploreSkin, href: "/treatments#skin-treatments" },
+      "Medical-led support for rejuvenation, acne scarring, pigmentation, acne and congestion",
+    cta: { label: cta.exploreSkin, href: "/concerns#skin-treatments" },
     /* Client mapping: the ONE-bed room. Intentionally the same photograph as
        About → Private Treatment Room (client-confirmed reuse). Not the two-bed
        room — that is reserved for Skin → Acne & Congestion. */
@@ -49,7 +50,7 @@ const pathways = [
     title: "Hair Treatments",
     description:
       "Consultation-led support for thinning, scalp health, restorative recovery and considered grey-hair pathways.",
-    cta: { label: cta.exploreHair, href: "/treatments#hair-scalp-treatments" },
+    cta: { label: cta.exploreHair, href: "/concerns#hair-scalp-treatments" },
     /* Client mapping: the THREE-bed room. */
     image: {
       label: "Hair & scalp treatment",
@@ -71,13 +72,14 @@ export default function HomePage() {
   return (
     <>
       <Hero />
-      <TrustStrip />
 
       {/* --- Healthcare positioning ------------------------------------------
-          ROUND 3: the client's supplied statement, verbatim. Placed after the
-          hero and trust strip and before the treatment pathways, so a visitor
-          meets the clinic, then its position, then the treatments. */}
+          The client's supplied statement, verbatim. CLIENT REVISION (28 Sep
+          2026): moved directly under the hero, ABOVE the trust strip — the
+          two swapped places — so the clinic's position is the first thing a
+          visitor reads after the hero. */}
       <HealthcareStatement />
+      <TrustStrip />
 
       {/* --- Skin · Hair · Packages pathways -------------------------------- */}
       <Section id="pathways" tone="base">

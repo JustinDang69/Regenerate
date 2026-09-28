@@ -77,7 +77,12 @@ export default async function TreatmentDetailPage(
            confirmed facts ("12 steps · 50 minutes"). */
         lead={treatment.overview ?? meta}
         primary={{ label: cta.book, href: bookHrefFor(treatment.slug) }}
-        secondary={{ label: "Back to Treatments", href: "/treatments" }}
+        /* Returns to this treatment's own section of /concerns (the page that
+           replaced the /treatments index), not the top of the page. */
+        secondary={{
+          label: "Back to Treatments",
+          href: treatment.group === "skin" ? "/concerns#skin-treatments" : "/concerns#hair-scalp-treatments",
+        }}
       />
 
       {/* How it works / process */}
@@ -166,7 +171,7 @@ export default async function TreatmentDetailPage(
             <p className="mt-8 text-[0.85rem] text-muted">
               Consultation, scanning and general aftercare principles that apply to every
               treatment are covered once in{" "}
-              <Link href="/treatments#shared-information" className="underline underline-offset-2 hover:text-accent-contrast">
+              <Link href="/concerns#shared-information" className="underline underline-offset-2 hover:text-accent-contrast">
                 Shared Treatment Information
               </Link>
               .

@@ -1,7 +1,8 @@
 /* =============================================================================
    Header — sticky, scroll-aware navigation with dropdowns + mobile drawer.
-   Nav: Home · Treatments (by service) · Skin · Hair (by concern) · Pricing ·
-   About, plus a persistent booking CTA.
+   Nav (from primaryNav in lib/site.ts): Home · Concerns · Skin · Hair ·
+   Skin Treatments · Hair Treatments · Pricing · About, plus a persistent
+   booking CTA. The drawer's 01, 02 … numbering is the array position.
    Accessible: keyboard-operable dropdowns, focus-visible, aria-expanded, ESC to
    close the mobile drawer, body scroll lock while open.
    ========================================================================== */
@@ -84,7 +85,12 @@ export default function Header() {
                   /* ROUND 3: an olive underline sweeps in from the left on hover
                      and stays put for the active route — more intentional feedback
                      than a colour change alone, and it keeps the header white. */
-                  className={`group/nav relative inline-flex items-center gap-1 px-4 py-2 text-[0.9rem] font-medium transition-colors duration-[var(--dur-fast)] ${
+                  /* Eight top-level items since 28 Sep 2026. Measured: at 1024px
+                     they only fit on one line with 10px side padding, so padding
+                     tightens between lg and xl and returns to the original 16px
+                     from xl (1280px) up, where it already fits. nowrap stops
+                     "Skin Treatments" breaking onto two lines. */
+                  className={`group/nav relative inline-flex items-center gap-1 whitespace-nowrap px-2.5 py-2 text-[0.9rem] font-medium transition-colors duration-[var(--dur-fast)] xl:px-4 ${
                     isActive(item.href)
                       ? "text-accent-contrast"
                       : "text-secondary hover:text-accent-contrast"
@@ -93,7 +99,7 @@ export default function Header() {
                   {item.label}
                   <span
                     aria-hidden
-                    className={`pointer-events-none absolute inset-x-4 bottom-1 h-px origin-right scale-x-0 bg-accent transition-transform duration-[var(--dur-base)] ease-[var(--ease-soft)] group-hover/nav:origin-left group-hover/nav:scale-x-100 ${
+                    className={`pointer-events-none absolute inset-x-2.5 bottom-1 h-px origin-right xl:inset-x-4 scale-x-0 bg-accent transition-transform duration-[var(--dur-base)] ease-[var(--ease-soft)] group-hover/nav:origin-left group-hover/nav:scale-x-100 ${
                       isActive(item.href) ? "scale-x-100" : ""
                     }`}
                   />

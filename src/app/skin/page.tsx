@@ -68,7 +68,7 @@ export default function SkinPage() {
         <p className="mt-5 max-w-2xl text-[0.85rem] text-secondary text-pretty">
           For full treatment-by-treatment detail — how each works, what to expect and
           aftercare —{" "}
-          <Link href="/treatments#skin-treatments" className="font-semibold text-accent-contrast underline underline-offset-2 hover:text-accent-hover">
+          <Link href="/concerns#skin-treatments" className="font-semibold text-accent-contrast underline underline-offset-2 hover:text-accent-hover">
             see our Skin Treatments guide
           </Link>
           .

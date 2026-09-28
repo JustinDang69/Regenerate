@@ -21,11 +21,25 @@ import {
 } from "@/content/treatments";
 import { cta } from "@/lib/site";
 
+/* =============================================================================
+   CONCERNS — the former /treatments index, repositioned (client brief 28 Sep 2026).
+   -----------------------------------------------------------------------------
+   ROUTING: this page moved from /treatments to /concerns. /treatments now
+   redirects here (next.config.ts). Treatment detail pages are NOT moved —
+   they stay at /treatments/[slug] and /treatments/technologies/[slug], so
+   every booking link and shared treatment URL keeps working.
+
+   Section order: Skin Concerns · Skin Treatments · Hair Concerns · Hair
+   Treatments · Technologies · Ingredients · Shared information.
+
+   Every anchor id this page carried as /treatments is kept, so old deep links
+   (/treatments#skin-treatments, #technologies …) arrive at the same section.
+   ========================================================================== */
 export const metadata: Metadata = {
-  title: "Treatments",
+  title: "Skin & Hair Concerns",
   description:
-    "Skin and hair treatments at Regenerate Skin & Hair Clinic, Melbourne — facial and scalp microneedling, mesotherapy, MedicalFACIAL, MedicalSCALP, and the skin and scalp technologies used within them.",
-  alternates: { canonical: "/treatments" },
+    "Skin and hair concerns at Regenerate Skin & Hair Clinic, Melbourne — rejuvenation, scarring, pigmentation, acne, hair thinning, scalp health and greying — with the treatments commonly considered for each.",
+  alternates: { canonical: "/concerns" },
 };
 
 /* Small pill next to a section heading — keeps treatments and technologies
@@ -41,25 +55,31 @@ function Kind({ children }: { children: React.ReactNode }) {
 const skinTreatments = treatments.filter((t) => t.group === "skin");
 const scalpTreatments = treatments.filter((t) => t.group === "scalp");
 
-export default function TreatmentsPage() {
+export default function ConcernsPage() {
   return (
     <>
       <PageHero
-        eyebrow="Treatments"
-        title="Skin and hair treatments, explained clearly"
-        lead="Every treatment begins with a consultation and, where relevant, a professional skin or scalp scan. Below is what each treatment is, what it supports and what to expect."
+        eyebrow="Concerns"
+        title="Start with what you'd like to improve"
+        lead="Explore common skin and hair concerns and the treatment options commonly considered at Regenerate. Your individual treatment plan is confirmed during consultation."
         primary={{ label: cta.book, href: cta.bookHref }}
       />
 
-      {/* --- CONCERN SELECTOR ------------------------------------------------
-          Client request (Sep 2026): let visitors start from what they want to
-          work on rather than from a treatment name. Sits above the treatment
-          lists so it is the first thing on the discovery page. */}
-      <Section id="concerns" tone="base" className="scroll-mt-28">
-        <ConcernSelector />
+      {/* --- 1. SKIN CONCERNS -------------------------------------------------
+          The combined "Skin & hair concerns" selector, split in two (client
+          brief 28 Sep 2026). Skin is a 2 × 2 grid. The legacy #concerns anchor
+          is kept here so any link to the old combined section still lands. */}
+      <Section id="skin-concerns" tone="base" className="scroll-mt-28">
+        <span id="concerns" aria-hidden className="block scroll-mt-28" />
+        <ConcernSelector
+          group="skin"
+          eyebrow="Skin"
+          title="Skin Concerns"
+          lead="Choose what you'd like to work on and we'll show what it usually involves at Regenerate."
+        />
       </Section>
 
-      {/* --- A. SKIN TREATMENTS --------------------------------------------- */}
+      {/* --- 2. SKIN TREATMENTS (unchanged) --------------------------------- */}
       <Section id="skin-treatments" tone="base" space="spacious" className="scroll-mt-28">
         <Container>
           <div className="flex flex-wrap items-center justify-between gap-4">
@@ -76,7 +96,20 @@ export default function TreatmentsPage() {
         </Container>
       </Section>
 
-      {/* --- B. HAIR & SCALP TREATMENTS -------------------------------------- */}
+      {/* --- 3. HAIR CONCERNS ------------------------------------------------
+          Three across. Shares the elevated tone with Hair Treatments below, so
+          the hair half of the page reads as one block, as the skin half does. */}
+      <Section id="hair-concerns" tone="elevated" className="scroll-mt-28">
+        <ConcernSelector
+          group="hair"
+          eyebrow="Hair"
+          title="Hair Concerns"
+          lead="Choose what you'd like to work on and we'll show what it usually involves at Regenerate."
+          onElevated
+        />
+      </Section>
+
+      {/* --- 4. HAIR & SCALP TREATMENTS (unchanged) -------------------------- */}
       <Section id="hair-scalp-treatments" tone="elevated" space="spacious" className="scroll-mt-28">
         <Container>
           <div className="flex flex-wrap items-center justify-between gap-4">

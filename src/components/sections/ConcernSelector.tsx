@@ -1,16 +1,20 @@
 /* =============================================================================
    ConcernSelector — "start from a concern" entry point (client component).
    -----------------------------------------------------------------------------
-   Six concern buttons; selecting one reveals a short informational description
-   and the treatments Regenerate commonly considers for it, each linking to the
-   booking form with that treatment preselected.
+   One group of concern buttons (skin OR hair); selecting one reveals a short
+   informational description and the treatments Regenerate commonly considers
+   for it, each linking to the booking form with that treatment preselected.
+
+   Used twice on /concerns (client brief, 28 Sep 2026): Skin Concerns as a
+   2 × 2 grid, Hair Concerns as three across. Same component, same design —
+   only the group and its grid differ.
 
    One panel is open at a time, and clicking the open concern closes it, so the
    section never pushes the page around unexpectedly.
 
    Accessibility: the buttons are a real tablist — arrow keys move between
    concerns, the panel is labelled by its button, and only the active button is
-   in the tab order (standard tabs pattern).
+   in the tab order (standard tabs pattern). Each instance is its own tablist.
 
    Wording is informational, never diagnostic. See src/content/concern-selector.ts.
    ========================================================================== */
@@ -22,18 +26,43 @@ import Container from "@/components/ui/Container";
 import SectionHeader from "@/components/ui/SectionHeader";
 import Button from "@/components/ui/Button";
 import Reveal from "@/components/motion/Reveal";
-import { selectableConcerns } from "@/content/concern-selector";
+import { concernsInGroup, type ConcernGroup } from "@/content/concern-selector";
 import { treatmentBySlug } from "@/content/treatments";
 import { bookHrefFor, cta } from "@/lib/site";
 
-export default function ConcernSelector() {
+/* Grid per group. Skin is a 2 × 2, capped so each button keeps the width it
+   had in the original three-across row rather than stretching to half the
+   page. Hair is three across. Both go single-column on phones: the new labels
+   ("Pigmentation & Brightening", "Hair thinning + Hair loss") are too long
+   for half-width buttons at 375–414px and would break mid-phrase. */
+const GRID: Record<ConcernGroup, string> = {
+  skin: "grid-cols-1 sm:grid-cols-2 sm:max-w-[49rem]",
+  hair: "grid-cols-1 sm:grid-cols-3",
+};
+
+export default function ConcernSelector({
+  group,
+  eyebrow,
+  title,
+  lead,
+  onElevated = false,
+}: {
+  group: ConcernGroup;
+  eyebrow: string;
+  title: string;
+  lead?: string;
+  /** True when the section sits on the elevated tone, so the open panel
+   *  takes the base surface instead of blending into the background. */
+  onElevated?: boolean;
+}) {
+  const concerns = concernsInGroup(group);
   const [openSlug, setOpenSlug] = useState<string | null>(null);
   const buttonRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
-  const open = selectableConcerns.find((c) => c.slug === openSlug) ?? null;
+  const open = concerns.find((c) => c.slug === openSlug) ?? null;
 
   function onKeyDown(e: React.KeyboardEvent, index: number) {
-    const last = selectableConcerns.length - 1;
+    const last = concerns.length - 1;
     let next: number | null = null;
     if (e.key === "ArrowRight" || e.key === "ArrowDown") next = index === last ? 0 : index + 1;
     else if (e.key === "ArrowLeft" || e.key === "ArrowUp") next = index === 0 ? last : index - 1;
@@ -46,18 +75,10 @@ export default function ConcernSelector() {
 
   return (
     <Container>
-      <SectionHeader
-        eyebrow="Where would you like to start?"
-        title="Skin & hair concerns"
-        lead="Choose what you'd like to work on and we'll show what that usually involves at Regenerate. Your treatment plan is always confirmed with you in consultation."
-      />
+      <SectionHeader eyebrow={eyebrow} title={title} lead={lead} />
 
-      <div
-        role="tablist"
-        aria-label="Skin and hair concerns"
-        className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:mt-12 lg:gap-4"
-      >
-        {selectableConcerns.map((concern, i) => {
+      <div role="tablist" aria-label={title} className={`mt-10 grid gap-3 lg:mt-12 lg:gap-4 ${GRID[group]}`}>
+        {concerns.map((concern, i) => {
           const isOpen = concern.slug === openSlug;
           return (
             <button
@@ -74,7 +95,7 @@ export default function ConcernSelector() {
               onClick={() => setOpenSlug(isOpen ? null : concern.slug)}
               onKeyDown={(e) => onKeyDown(e, i)}
               className={[
-                "min-h-[3.25rem] rounded-[var(--radius-md)] border px-4 py-3.5 text-[0.9rem] font-semibold",
+                "min-h-[3.25rem] rounded-[var(--radius-md)] border px-4 py-3.5 text-[0.9rem] font-semibold text-balance",
                 "transition-all duration-[var(--dur-base)] ease-[var(--ease-soft)]",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40",
                 isOpen
@@ -93,7 +114,9 @@ export default function ConcernSelector() {
           role="tabpanel"
           id={`concern-panel-${open.slug}`}
           aria-labelledby={`concern-tab-${open.slug}`}
-          className="mt-6 rounded-[var(--radius-lg)] border border-border bg-surface-elevated p-6 sm:p-8 lg:mt-8"
+          className={`mt-6 rounded-[var(--radius-lg)] border border-border p-6 sm:p-8 lg:mt-8 ${
+            onElevated ? "bg-surface" : "bg-surface-elevated"
+          }`}
         >
           <p className="max-w-[46rem] text-[0.95rem] leading-relaxed text-secondary text-pretty">
             {open.description}
@@ -112,7 +135,9 @@ export default function ConcernSelector() {
               return (
                 <li
                   key={slug}
-                  className="flex flex-col gap-3 rounded-[var(--radius-md)] border border-border bg-surface p-5"
+                  className={`flex flex-col gap-3 rounded-[var(--radius-md)] border border-border p-5 ${
+                    onElevated ? "bg-surface-elevated" : "bg-surface"
+                  }`}
                 >
                   <h3 className="text-h3 text-[1.1rem]">{treatment.name}</h3>
                   {treatment.summary && (

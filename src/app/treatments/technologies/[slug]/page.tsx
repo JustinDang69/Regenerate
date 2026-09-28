@@ -45,7 +45,7 @@ export default async function TechnologyDetailPage(
         eyebrow="Skin and Scalp Technology · applied within treatments"
         title={tech.name}
         lead={tech.overview}
-        primary={{ label: "See Treatments", href: "/treatments#skin-treatments" }}
+        primary={{ label: "See Treatments", href: "/concerns#skin-treatments" }}
       />
 
       <Section tone="base" space="spacious">
@@ -144,7 +144,7 @@ export default async function TechnologyDetailPage(
             <p className="mt-2 text-[0.9rem] text-secondary">
               {tech.name} is a technology applied within a treatment, selected in consultation —
               it is not booked on its own.{" "}
-              <Link href="/treatments#skin-treatments" className="underline underline-offset-2 hover:text-accent-contrast">
+              <Link href="/concerns#skin-treatments" className="underline underline-offset-2 hover:text-accent-contrast">
                 See the treatments it may be used within
               </Link>
               .
@@ -161,7 +161,7 @@ export default async function TechnologyDetailPage(
             title="Curious whether this suits you?"
             body="Which technologies are used, and how, is confirmed in consultation and tailored to your goals."
             primary={{ label: cta.book, href: cta.bookHref }}
-            secondary={{ label: "See all Technologies", href: "/treatments#technologies" }}
+            secondary={{ label: "See all Technologies", href: "/concerns#technologies" }}
           />
         </Container>
       </Section>
