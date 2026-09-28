@@ -100,8 +100,15 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
+    /* data-scroll-behavior="smooth": globals.css gives <html> `scroll-behavior:
+       smooth`. Next.js 16 only switches that off for the scroll it performs on
+       a ROUTE CHANGE when this attribute is present — without it, a link such
+       as /concerns#technologies animated for ~1s from the previous page's
+       offset instead of arriving at the section. Same-page anchors stay
+       smooth; only cross-page arrivals become instant. */
     <html
       lang="en-AU"
+      data-scroll-behavior="smooth"
       className={`${cormorant.variable} ${manrope.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-background">

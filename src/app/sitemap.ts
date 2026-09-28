@@ -4,7 +4,7 @@ import { treatments, skinTechnologies } from "@/content/treatments";
 
 /* Static sitemap for phase-one routes. Extend when blog/articles ship (phase two). */
 export default function sitemap(): MetadataRoute.Sitemap {
-  const routes = ["", "/skin", "/hair", "/concerns", "/pricing", "/about", "/contact", "/products"];
+  const routes = ["", "/skin", "/hair", "/concerns", "/skin-treatments", "/hair-treatments", "/pricing", "/about", "/contact", "/products"];
   const treatmentRoutes = treatments.map((t) => `/treatments/${t.slug}`);
   const technologyRoutes = skinTechnologies.map((t) => `/treatments/technologies/${t.slug}`);
   const now = new Date();

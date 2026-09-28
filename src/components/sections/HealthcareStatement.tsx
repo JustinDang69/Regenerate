@@ -26,7 +26,7 @@ import Container from "@/components/ui/Container";
 import Button from "@/components/ui/Button";
 import Motif from "@/components/brand/Motif";
 import Reveal from "@/components/motion/Reveal";
-import { gsap, ScrollTrigger } from "@/lib/motion/gsap";
+import { gsap } from "@/lib/motion/gsap";
 import { cta } from "@/lib/site";
 
 export default function HealthcareStatement() {
@@ -64,9 +64,20 @@ export default function HealthcareStatement() {
       );
     }, el);
 
+    /* NO ScrollTrigger.refresh() here — it broke cross-page anchor links.
+
+       This cleanup runs when a visitor navigates AWAY from Home. By then
+       Next.js has already scrolled the new page to its #anchor. A global
+       refresh() then measures by scrolling to 0 and "restores" the position
+       from ScrollTrigger's scroll CACHE — which still holds the old Home
+       offset, because the scroll event from Next's jump has not fired yet.
+       Result: /concerns#technologies opened at the Home scroll position
+       instead of at Technologies (Sep 2026).
+
+       ctx.revert() already kills every trigger this component created, and
+       no other page uses ScrollTrigger, so there is nothing left to refresh. */
     return () => {
       ctx.revert();
-      ScrollTrigger.refresh();
     };
   }, []);
 

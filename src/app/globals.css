@@ -233,8 +233,15 @@
 
   html {
     -webkit-text-size-adjust: 100%;
+  }
+  /* Smooth in-page anchor scrolling, scoped to AFTER hydration (`.js` is
+     added by SmoothScroll). Unscoped, it also applied to the browser's own
+     jump when a page is OPENED at an anchor (/concerns#technologies in a new
+     tab), which then glided from the top for ~1s instead of arriving. That
+     jump happens before `.js` exists, so it is now instant. Route changes are
+     made instant by data-scroll-behavior on <html> (see layout.tsx). */
+  html.js {
     scroll-behavior: smooth;
-    /* Lenis manages smooth scroll; native fallback kept for no-JS + a11y. */
   }
 
   html.lenis,

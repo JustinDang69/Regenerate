@@ -64,7 +64,7 @@ export default function HairPage() {
         </p>
         <p className="mt-5 max-w-2xl text-[0.85rem] text-secondary text-pretty">
           For full treatment-by-treatment detail — including MedicalSCALP —{" "}
-          <Link href="/concerns#hair-scalp-treatments" className="font-semibold text-accent-contrast underline underline-offset-2 hover:text-accent-hover">
+          <Link href="/hair-treatments" className="font-semibold text-accent-contrast underline underline-offset-2 hover:text-accent-hover">
             see our Hair Treatments guide
           </Link>
           .

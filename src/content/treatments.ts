@@ -418,6 +418,15 @@ export function treatmentBySlug(slug: string) {
   return treatments.find((t) => t.slug === slug);
 }
 
+/* Short intros for the treatment lists (client brief, 28 Sep 2026). Written
+   once here and shown both on the dedicated /skin-treatments and
+   /hair-treatments pages and under the matching sections of /concerns. */
+export const skinTreatmentsIntro =
+  "Explore our facial treatments designed to support skin quality, texture, hydration and rejuvenation. Your treatment pathway is selected according to your skin concerns, goals and consultation.";
+
+export const hairTreatmentsIntro =
+  "Explore our scalp and hair treatments designed to support scalp health, thinning concerns and overall hair quality. Your treatment pathway is selected according to your assessment, goals and consultation.";
+
 /* =============================================================================
    C. SKIN AND SCALP TECHNOLOGIES
    -----------------------------------------------------------------------------

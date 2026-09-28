@@ -99,9 +99,9 @@ export default function Hero() {
               {cta.book}
             </Button>
             {/* BY SERVICE journey — the treatment experience the client
-                approved lives on /concerns (formerly /treatments). The concern-led /skin and /hair
+                approved lives on /skin-treatments. The concern-led /skin and /hair
                 pages remain reachable from the main navigation. */}
-            <Button href="/concerns#skin-treatments" variant="secondary" size="lg">
+            <Button href="/skin-treatments" variant="secondary" size="lg">
               {cta.exploreSkin}
             </Button>
           </div>

@@ -25,7 +25,7 @@ import { cta } from "@/lib/site";
 /* Top-level entry points. Data-driven so cards stay consistent and easy to edit.
 
    ROUTING (client-confirmed): the homepage treatment journey is BY SERVICE and
-   points at the treatment sections of /concerns (formerly /treatments), which
+   points at the dedicated /skin-treatments and /hair-treatments pages, which
    carry the approved treatment presentation.
    The concern-led /skin and /hair pages are the BY CONCERN journey and stay
    reachable from the main navigation — they are not linked from here. */
@@ -35,7 +35,7 @@ const pathways = [
     title: "Skin Treatments",
     description:
       "Medical-led support for rejuvenation, acne scarring, pigmentation, acne and congestion",
-    cta: { label: cta.exploreSkin, href: "/concerns#skin-treatments" },
+    cta: { label: cta.exploreSkin, href: "/skin-treatments" },
     /* Client mapping: the ONE-bed room. Intentionally the same photograph as
        About → Private Treatment Room (client-confirmed reuse). Not the two-bed
        room — that is reserved for Skin → Acne & Congestion. */
@@ -50,7 +50,7 @@ const pathways = [
     title: "Hair Treatments",
     description:
       "Consultation-led support for thinning, scalp health, restorative recovery and considered grey-hair pathways.",
-    cta: { label: cta.exploreHair, href: "/concerns#hair-scalp-treatments" },
+    cta: { label: cta.exploreHair, href: "/hair-treatments" },
     /* Client mapping: the THREE-bed room. */
     image: {
       label: "Hair & scalp treatment",

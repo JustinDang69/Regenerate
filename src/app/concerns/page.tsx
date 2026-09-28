@@ -7,12 +7,14 @@ import Accordion from "@/components/ui/Accordion";
 import Reveal from "@/components/motion/Reveal";
 import Divider from "@/components/brand/Divider";
 import CTABlock from "@/components/sections/CTABlock";
-import TreatmentIndexCard from "@/components/cards/TreatmentIndexCard";
+import TreatmentGridSection from "@/components/sections/TreatmentGridSection";
+import Kind from "@/components/ui/Kind";
 import ConcernSelector from "@/components/sections/ConcernSelector";
 import TechnologyCard from "@/components/cards/TechnologyCard";
 
 import {
-  treatments,
+  skinTreatmentsIntro,
+  hairTreatmentsIntro,
   skinTechnologies,
   technologiesIntro,
   compounds,
@@ -42,19 +44,6 @@ export const metadata: Metadata = {
   alternates: { canonical: "/concerns" },
 };
 
-/* Small pill next to a section heading — keeps treatments and technologies
-   from reading as the same commercial hierarchy (client requirement). */
-function Kind({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="inline-block rounded-[var(--radius-pill)] border border-border px-3 py-1 text-[0.66rem] font-bold uppercase tracking-[0.14em] text-muted">
-      {children}
-    </span>
-  );
-}
-
-const skinTreatments = treatments.filter((t) => t.group === "skin");
-const scalpTreatments = treatments.filter((t) => t.group === "scalp");
-
 export default function ConcernsPage() {
   return (
     <>
@@ -79,22 +68,15 @@ export default function ConcernsPage() {
         />
       </Section>
 
-      {/* --- 2. SKIN TREATMENTS (unchanged) --------------------------------- */}
-      <Section id="skin-treatments" tone="base" space="spacious" className="scroll-mt-28">
-        <Container>
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <SectionHeader eyebrow="Skin" title="Skin Treatments" />
-            <Kind>Bookable treatments</Kind>
-          </div>
-          <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3 lg:mt-14 lg:gap-8">
-            {skinTreatments.map((t, i) => (
-              <Reveal key={t.slug} delay={(i % 3) * 70} className="h-full">
-                <TreatmentIndexCard treatment={t} />
-              </Reveal>
-            ))}
-          </div>
-        </Container>
-      </Section>
+      {/* --- 2. SKIN TREATMENTS ----------------------------------------------
+          Same grid as before, shared with /skin-treatments; the client's
+          intro now sits under the heading (28 Sep 2026). */}
+      <TreatmentGridSection
+        group="skin"
+        id="skin-treatments"
+        tone="base"
+        header={{ eyebrow: "Skin", title: "Skin Treatments", lead: skinTreatmentsIntro }}
+      />
 
       {/* --- 3. HAIR CONCERNS ------------------------------------------------
           Three across. Shares the elevated tone with Hair Treatments below, so
@@ -109,22 +91,14 @@ export default function ConcernsPage() {
         />
       </Section>
 
-      {/* --- 4. HAIR & SCALP TREATMENTS (unchanged) -------------------------- */}
-      <Section id="hair-scalp-treatments" tone="elevated" space="spacious" className="scroll-mt-28">
-        <Container>
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <SectionHeader eyebrow="Hair" title="Hair Treatments" />
-            <Kind>Bookable treatments</Kind>
-          </div>
-          <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3 lg:mt-14 lg:gap-8">
-            {scalpTreatments.map((t, i) => (
-              <Reveal key={t.slug} delay={(i % 3) * 70} className="h-full">
-                <TreatmentIndexCard treatment={t} />
-              </Reveal>
-            ))}
-          </div>
-        </Container>
-      </Section>
+      {/* --- 4. HAIR & SCALP TREATMENTS --------------------------------------
+          Same grid as before, shared with /hair-treatments; intro added. */}
+      <TreatmentGridSection
+        group="scalp"
+        id="hair-scalp-treatments"
+        tone="elevated"
+        header={{ eyebrow: "Hair", title: "Hair Treatments", lead: hairTreatmentsIntro }}
+      />
 
       {/* --- C. SKIN AND SCALP TECHNOLOGIES ----------------------------------
           Showcased as real cards, comparable in prominence to the treatment

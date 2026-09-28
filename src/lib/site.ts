@@ -142,15 +142,16 @@ export const primaryNav: NavItem[] = [
       { label: "Hair greying", href: "/hair#grey" },
     ],
   },
-  /* 05 / 06 — the individual treatments, by area. */
+  /* 05 / 06 — dedicated treatment pages (28 Sep 2026, second pass); their
+     children still open the individual /treatments/[slug] pages. */
   {
     label: "Skin Treatments",
-    href: "/concerns#skin-treatments",
+    href: "/skin-treatments",
     children: treatmentLinks(SKIN_TREATMENT_SLUGS),
   },
   {
     label: "Hair Treatments",
-    href: "/concerns#hair-scalp-treatments",
+    href: "/hair-treatments",
     children: treatmentLinks(HAIR_TREATMENT_SLUGS),
   },
   {

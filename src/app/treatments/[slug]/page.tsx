@@ -77,11 +77,10 @@ export default async function TreatmentDetailPage(
            confirmed facts ("12 steps · 50 minutes"). */
         lead={treatment.overview ?? meta}
         primary={{ label: cta.book, href: bookHrefFor(treatment.slug) }}
-        /* Returns to this treatment's own section of /concerns (the page that
-           replaced the /treatments index), not the top of the page. */
+        /* Returns to this treatment's own dedicated index page. */
         secondary={{
           label: "Back to Treatments",
-          href: treatment.group === "skin" ? "/concerns#skin-treatments" : "/concerns#hair-scalp-treatments",
+          href: treatment.group === "skin" ? "/skin-treatments" : "/hair-treatments",
         }}
       />
 
