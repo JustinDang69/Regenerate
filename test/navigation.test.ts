@@ -11,6 +11,7 @@ import { readFileSync, existsSync } from "node:fs";
 import { primaryNav, footerNav, bookHrefFor, cta } from "@/lib/site";
 import { selectableConcerns, concernsInGroup } from "@/content/concern-selector";
 import { skinConcerns, hairConcerns } from "@/content/concerns";
+import { skinTechnologies } from "@/content/treatments";
 
 function group(label: string) {
   const g = primaryNav.find((n) => n.label === label);
@@ -19,7 +20,7 @@ function group(label: string) {
 }
 const childLabels = (label: string) => (group(label).children ?? []).map((c) => c.label);
 
-test("top-level order and numbering: 01 Home … 08 About", () => {
+test("top-level order and numbering: 01 Home … 09 About", () => {
   const numbered = primaryNav.map((n, i) => `${String(i + 1).padStart(2, "0")} ${n.label}`);
   assert.deepEqual(numbered, [
     "01 Home",
@@ -28,8 +29,9 @@ test("top-level order and numbering: 01 Home … 08 About", () => {
     "04 Hair",
     "05 Skin Treatments",
     "06 Hair Treatments",
-    "07 Pricing",
-    "08 About",
+    "07 Medical Technologies",
+    "08 Pricing",
+    "09 About",
   ]);
 });
 
@@ -57,6 +59,22 @@ test("04 Hair: Hair Treatments, then the three concerns in client order", () => 
     "Scalp health",
     "Hair greying",
   ]);
+});
+
+test("07 Medical Technologies opens its own page and lists every technology from the data", () => {
+  const g = group("Medical Technologies");
+  assert.equal(g.href, "/medical-technologies");
+  assert.ok(existsSync("src/app/medical-technologies/page.tsx"), "/medical-technologies route is missing");
+  assert.deepEqual(
+    (g.children ?? []).map((c) => [c.label, c.href]),
+    skinTechnologies.map((t) => [t.name, `/treatments/technologies/${t.slug}`])
+  );
+  for (const slug of ["hyperthermia-dermal-penetration", "iontophoresis"]) {
+    assert.ok(skinTechnologies.some((t) => t.slug === slug), `${slug} missing from skinTechnologies`);
+  }
+  assert.equal(skinTechnologies.find((t) => t.slug === "iontophoresis")?.name, "Iontophoresis");
+  // 02 Concerns keeps its own technologies link and heading target.
+  assert.ok((group("Concerns").children ?? []).some((c) => c.href === "/concerns#technologies"));
 });
 
 test("05 / 06 open the dedicated treatment pages, which exist as routes", () => {

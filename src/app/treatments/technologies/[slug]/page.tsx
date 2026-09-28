@@ -161,7 +161,7 @@ export default async function TechnologyDetailPage(
             title="Curious whether this suits you?"
             body="Which technologies are used, and how, is confirmed in consultation and tailored to your goals."
             primary={{ label: cta.book, href: cta.bookHref }}
-            secondary={{ label: "See all Technologies", href: "/concerns#technologies" }}
+            secondary={{ label: "See all Medical Technologies", href: "/medical-technologies" }}
           />
         </Container>
       </Section>

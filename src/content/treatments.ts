@@ -696,6 +696,91 @@ export const skinTechnologies: SkinTechnology[] = [
     recommendation:
       "An intensive course of 1–3 sessions weekly for 4–8 weeks is commonly used, followed by maintenance sessions. Wavelength, dose and frequency are matched to acne, rejuvenation, redness, recovery or scalp goals.",
   },
+  /* Added 28 Sep 2026 from the client's note. Copy is exact and deliberately
+     restrained — explanatory, not therapeutic. Do not strengthen it into
+     claims (penetration, absorption, growth or removal outcomes). */
+  {
+    slug: "hyperthermia-dermal-penetration",
+    name: "Hyperthermia Dermal Penetration",
+    fullName: "Hyperthermia Dermal Penetration Technology",
+    tagline: "Controlled warming within skin and scalp treatment protocols",
+    summary:
+      "Uses controlled warmth as part of selected treatment protocols to prepare and condition the treatment area before topical application or device-based care.",
+    overview:
+      "Hyperthermia Dermal Penetration uses controlled warming as part of selected skin and scalp treatment protocols. The warming phase helps prepare the treatment area and supports the even application of compatible topical products or subsequent device-based steps. Settings are selected according to the treatment area, skin or scalp condition and client comfort.",
+    howItWorks:
+      "A treatment handpiece applies controlled warmth to the selected area while the practitioner monitors comfort and skin response. The warming stage is used as part of a broader treatment sequence and may be combined with compatible topical products or other non-invasive technologies. Temperature, treatment time and technique are adjusted according to the protocol being performed.",
+    modes: [
+      { title: "Facial preparation", body: "Uses controlled warming to prepare selected facial areas before subsequent treatment steps." },
+      { title: "Scalp preparation", body: "Applies controlled warmth as part of selected scalp-conditioning and device-assisted protocols." },
+      { title: "Topical application support", body: "May be used before or alongside compatible topical products as part of a structured treatment sequence." },
+      { title: "Combination protocol", body: "Can be incorporated with other non-invasive technologies when selected during consultation." },
+    ],
+    bestFor: [
+      "Treatment protocols that include controlled warming",
+      "Skin or scalp preparation before selected device-based steps",
+      "Clients suitable for non-invasive technology-assisted care",
+      "Combination skin-conditioning protocols",
+      "Combination scalp-conditioning protocols",
+    ],
+    benefits: [
+      "Controlled and adjustable warming",
+      "Supports preparation of the treatment area",
+      "Integrates with selected topical and device-based protocols",
+      "Non-invasive application",
+      "Settings can be adjusted according to treatment area and comfort",
+    ],
+    before:
+      "The treatment area is assessed and cleansed before the warming stage begins. Relevant sensitivities, treatment history and suitability are reviewed so the practitioner can select appropriate settings and compatible products.",
+    during:
+      "The handpiece is moved across the selected area while controlled warmth is applied. Temperature and treatment time are adjusted according to the protocol and client comfort. The treatment should feel warm rather than excessively hot.",
+    after:
+      "The treated area may feel warm or appear mildly flushed for a short period. Any following skincare, scalp care or device-based steps are completed according to the selected treatment protocol.",
+    recommendation:
+      "Hyperthermia Dermal Penetration is used within selected treatment protocols rather than booked as a stand-alone treatment. Its use and frequency are determined during consultation according to the treatment plan.",
+  },
+  {
+    /* The client's source wording was "ion charged pulse polarity
+       [iontophoresis] technology"; the public name is simply Iontophoresis. */
+    slug: "iontophoresis",
+    name: "Iontophoresis",
+    fullName: "Iontophoresis — Ion-Driven Product Infusion",
+    tagline: "Polarity-assisted application of compatible topical ingredients",
+    summary:
+      "Uses a mild controlled electrical current to support the movement of compatible ionised topical ingredients during selected skin or scalp treatments.",
+    overview:
+      "Iontophoresis is a non-invasive technology that uses a mild controlled electrical current and polarity to support the movement of compatible ionised topical ingredients across the treatment area. It can be incorporated into selected facial or scalp protocols when suitable products and treatment goals are identified during consultation.",
+    howItWorks:
+      "A controlled direct electrical current is applied through suitable electrodes or a treatment handpiece together with a compatible ionised product. Electrical polarity is selected according to the formulation and protocol. Intensity is increased gradually and kept within a comfortable treatment range.",
+    modes: [
+      { title: "Positive-polarity protocol", body: "Uses positive polarity with a compatible formulation when specified by the treatment protocol." },
+      { title: "Negative-polarity protocol", body: "Uses negative polarity with a compatible formulation when specified by the treatment protocol." },
+      { title: "Facial application", body: "Can be incorporated into selected facial protocols using compatible topical ingredients." },
+      { title: "Scalp application", body: "Can be incorporated into selected scalp-conditioning protocols using compatible topical products." },
+    ],
+    bestFor: [
+      "Selected topical-infusion protocols",
+      "Facial skin-conditioning treatments",
+      "Scalp-conditioning treatments",
+      "Clients seeking a needle-free technology option",
+      "Combination treatment programs",
+    ],
+    benefits: [
+      "Non-invasive and needle-free",
+      "Controlled electrical intensity",
+      "Supports application of compatible ionised topical ingredients",
+      "Can be used in facial or scalp protocols",
+      "Integrates with selected professional treatments",
+    ],
+    before:
+      "The treatment area is assessed and cleansed, and the practitioner reviews suitability before selecting the formulation, polarity and electrical settings. Only products compatible with the protocol should be used.",
+    during:
+      "A compatible product is applied and the treatment handpiece or electrodes deliver a mild controlled current. Clients may notice light tingling while intensity is adjusted gradually for comfort.",
+    after:
+      "The remaining product is incorporated according to the treatment protocol. Mild temporary tingling or redness may occur, and appropriate finishing skincare or scalp care is applied where required.",
+    recommendation:
+      "Iontophoresis is used within selected professional treatments rather than booked independently. Whether it is included, and how often, is determined according to the treatment area, selected product and consultation.",
+  },
 ];
 
 export function technologyBySlug(slug: string) {

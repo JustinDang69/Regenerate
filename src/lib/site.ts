@@ -3,6 +3,7 @@
    Swap values here to update the header, footer, contact page, and metadata.
    ========================================================================== */
 import { SERVICE_BY_TREATMENT_SLUG, serviceParamForTreatment } from "@/lib/bookings/service-map";
+import { skinTechnologies } from "@/content/treatments";
 
 export const site = {
   name: "Regenerate Skin & Hair Clinic",
@@ -153,6 +154,13 @@ export const primaryNav: NavItem[] = [
     label: "Hair Treatments",
     href: "/hair-treatments",
     children: treatmentLinks(HAIR_TREATMENT_SLUGS),
+  },
+  /* 07 — dedicated page (28 Sep 2026). Children come straight from the one
+     skinTechnologies array, so a technology added there appears here too. */
+  {
+    label: "Medical Technologies",
+    href: "/medical-technologies",
+    children: skinTechnologies.map((t) => ({ label: t.name, href: `/treatments/technologies/${t.slug}` })),
   },
   {
     label: "Pricing",
