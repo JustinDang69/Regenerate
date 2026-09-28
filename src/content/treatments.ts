@@ -700,48 +700,48 @@ export const skinTechnologies: SkinTechnology[] = [
      restrained — explanatory, not therapeutic. Do not strengthen it into
      claims (penetration, absorption, growth or removal outcomes). */
   {
-    /* Rewritten 28 Sep 2026 from the clinic's clarification: controlled heat
-       (mild hyperthermia, ~39–45°C) temporarily increases stratum corneum
-       permeability to accelerate transdermal delivery. Customer-facing voice.
-       Do not add rates, percentages or outcome claims. */
+    /* Clinic's clarified mechanism (28 Sep 2026): controlled mild hyperthermia
+       (~39–45°C) temporarily increases stratum corneum permeability to
+       accelerate transdermal delivery. Third-person clinical voice, matching
+       the other technologies. No rates, percentages or outcome claims. */
     slug: "hyperthermia-dermal-penetration",
     name: "Hyperthermia Dermal Penetration",
     fullName: "Hyperthermia Dermal Penetration Technology",
     tagline: "Controlled heat for enhanced transdermal delivery",
     summary:
-      "Uses mild, controlled hyperthermia to temporarily increase the permeability of your skin barrier and support faster transdermal delivery of selected compounds.",
+      "Uses mild, controlled hyperthermia to temporarily increase skin-barrier permeability and support faster transdermal delivery of selected compounds.",
     overview:
-      "Hyperthermia Dermal Penetration Technology uses controlled heat to temporarily increase the permeability of your skin's outer barrier. By raising your skin temperature into a mild hyperthermic range, typically around 39°C to 45°C, the stratum corneum becomes more permeable. This can accelerate the transdermal movement of selected drugs, therapeutic agents or cosmetic compounds across your skin barrier.",
+      "Hyperthermia Dermal Penetration Technology uses controlled heat to temporarily increase the permeability of the skin's outer barrier. By raising skin temperature into a mild hyperthermic range, typically around 39°C to 45°C, the stratum corneum becomes more permeable. This can accelerate the transdermal movement of selected drugs, therapeutic agents or cosmetic compounds across the skin barrier.",
     howItWorks:
-      "The stratum corneum normally acts as the primary barrier that limits substances entering through your skin. Controlled hyperthermia temporarily alters this barrier function. As your skin temperature rises within the mild hyperthermic range of approximately 39°C to 45°C, the permeability of the stratum corneum increases, allowing selected compounds to move through your skin more readily. This effect is temporary and is used as part of a controlled transdermal-delivery protocol.",
+      "The stratum corneum normally acts as the skin's primary barrier to substances entering from the surface. Controlled hyperthermia temporarily alters this barrier function. As skin temperature rises within the mild hyperthermic range of approximately 39°C to 45°C, the permeability of the stratum corneum increases, allowing selected compounds to move through the skin more readily. This effect is temporary and is used as part of a controlled transdermal-delivery protocol.",
     modes: [
-      { title: "Cosmetic compound delivery", body: "Uses controlled hyperthermia to temporarily increase your skin's permeability and support transdermal delivery of selected cosmetic compounds." },
-      { title: "Therapeutic compound delivery", body: "The temporary increase in permeability may be used within an appropriate treatment protocol to support delivery of selected therapeutic compounds through your skin." },
-      { title: "Drug-delivery application", body: "Hyperthermia-assisted penetration can be used as a transdermal-delivery approach for selected drugs where this forms part of an appropriate clinical protocol for you." },
-      { title: "Controlled hyperthermic protocol", body: "Your skin temperature is raised into a mild hyperthermic range, typically around 39°C to 45°C, to temporarily increase barrier permeability during the delivery phase." },
+      { title: "Cosmetic compound delivery", body: "Uses controlled hyperthermia to temporarily increase skin permeability and support transdermal delivery of selected cosmetic compounds." },
+      { title: "Therapeutic compound delivery", body: "The temporary increase in skin permeability may be used within an appropriate treatment protocol to support delivery of selected therapeutic compounds." },
+      { title: "Drug-delivery application", body: "Hyperthermia-assisted penetration can be used as a transdermal-delivery approach for selected drugs where this forms part of an appropriate clinical protocol." },
+      { title: "Controlled hyperthermic protocol", body: "Skin temperature is raised into a mild hyperthermic range, typically around 39°C to 45°C, to temporarily increase barrier permeability during the delivery phase." },
     ],
     bestFor: [
       "Transdermal-delivery protocols using compatible topical compounds",
-      "Cosmetic compound delivery through your skin barrier",
+      "Cosmetic compound delivery through the skin barrier",
       "Selected therapeutic-delivery applications",
-      "Protocols where temporary enhancement of your skin permeability is desired",
+      "Protocols where temporary enhancement of skin permeability is desired",
       "Controlled hyperthermia-assisted topical delivery",
     ],
     benefits: [
-      "Temporarily increases the permeability of your stratum corneum",
+      "Temporarily increases the permeability of the stratum corneum",
       "Supports faster transdermal movement of selected compounds",
       "Uses controlled mild hyperthermia rather than uncontrolled heating",
       "Can support delivery of selected cosmetic or therapeutic compounds",
-      "Provides a controlled way to temporarily modify skin-barrier permeability",
+      "Provides a controlled method of temporarily modifying skin-barrier permeability",
     ],
     before:
-      "Before your treatment, your practitioner reviews the compound being delivered, your treatment area and whether a hyperthermia-assisted transdermal protocol is suitable for you. Treatment parameters are then selected according to your intended application.",
+      "Before treatment, the compound being delivered, treatment area and suitability for a hyperthermia-assisted transdermal protocol are reviewed. Treatment parameters are then selected according to the intended application.",
     during:
-      "During your treatment, controlled heat is applied to the selected area of your skin. Your skin temperature is raised into a mild hyperthermic range, typically around 39°C to 45°C. At this temperature, the stratum corneum becomes temporarily more permeable, supporting the transdermal movement of the selected compound.",
+      "During treatment, controlled heat is applied to the selected skin area. Skin temperature is raised into a mild hyperthermic range, typically around 39°C to 45°C. At this temperature, the stratum corneum becomes temporarily more permeable, supporting transdermal movement of the selected compound.",
     after:
-      "After the controlled hyperthermic phase ends, the increase in your skin-barrier permeability is temporary. Your treatment then continues according to the selected transdermal-delivery protocol and any required finishing care.",
+      "After the controlled hyperthermic phase ends, the increase in skin-barrier permeability is temporary. Treatment then continues according to the selected transdermal-delivery protocol and any required finishing care.",
     recommendation:
-      "Hyperthermia Dermal Penetration is used as part of a selected transdermal-delivery protocol rather than as a stand-alone cosmetic treatment. Whether it is suitable for you depends on the compound being delivered, your treatment area and the intended application.",
+      "Hyperthermia Dermal Penetration is used as part of a selected transdermal-delivery protocol rather than as a stand-alone cosmetic treatment. Suitability depends on the compound being delivered, treatment area and intended application.",
   },
   {
     /* The client's source wording was "ion charged pulse polarity
