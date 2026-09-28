@@ -23,8 +23,8 @@ export type TreatmentGroup = "skin" | "scalp";
 
 export type ProcessStep = { title: string; body: string };
 
-/** A multi-step treatment process. `rail` suits a short sequence (MedicalFACIAL's
- *  5 steps); `accordion` suits a long one (MedicalSCALP's 15 stages) so the page
+/** A multi-step treatment process. `rail` suits a short sequence of described
+ *  steps; `accordion` suits a long one (MedicalFACIAL/MedicalSCALP: 17) so the page
  *  never renders many always-open cards at once. */
 export type Process = { display: "rail" | "accordion"; steps: ProcessStep[] };
 
@@ -147,14 +147,29 @@ export const treatments: Treatment[] = [
       "A multi-step, non-invasive facial treatment that combines cleansing, exfoliation, vacuum-assisted extraction and topical hydration.",
     overview:
       "MedicalFACIAL is a multi-step, non-invasive facial treatment that combines cleansing, exfoliation, vacuum-assisted extraction and topical hydration.",
+    /* Steps and duration: the client's list of 28 Sep 2026 (Treatments.pdf),
+       exact wording, titles only — do not "correct" or expand them. */
+    duration: "65 minutes",
     process: {
-      display: "rail",
+      display: "accordion",
       steps: [
-        { title: "Cleanse", body: "Removes makeup, oil and surface impurities." },
-        { title: "Exfoliate", body: "Lifts dull surface cells and refines texture using a selected tip and solution." },
-        { title: "Extract", body: "Vacuum-assisted suction loosens and removes debris from congested pores." },
-        { title: "Hydrate and infuse", body: "Applies selected hydrating and skin-conditioning ingredients." },
-        { title: "Protect", body: "Finishing moisturiser and broad-spectrum sunscreen support the skin after treatment." },
+        { title: "Scan & Consultation", body: "" },
+        { title: "Makeup/ sunscreen/ debris Removal", body: "" },
+        { title: "Toner Exfoliation", body: "" },
+        { title: "Steam", body: "" },
+        { title: "Oxygenated Essence Water", body: "" },
+        { title: "Deep-cleanse", body: "" },
+        { title: "Face & Neck Massage", body: "" },
+        { title: "Ultrasonic Exfoliation & Extraction", body: "" },
+        { title: "Toner Neutralisation", body: "" },
+        { title: "Hydrodermabrasion Treatment", body: "" },
+        { title: "Serum Highfrequency Treatment", body: "" },
+        { title: "Serum Electroporosis (Electrical Microneedling) Treatment", body: "" },
+        { title: "Serum Ultrasound Treatment", body: "" },
+        { title: "Serum Radiofrequency Treatment", body: "" },
+        { title: "Moisturiser Pore Miniature Treatment", body: "" },
+        { title: "Light Therapy Treatment", body: "" },
+        { title: "Sun Protection", body: "" },
       ],
     },
     benefits: [
@@ -257,69 +272,29 @@ export const treatments: Treatment[] = [
       "A comprehensive, multi-step scalp treatment combining deep cleansing, scalp conditioning, massage, professional topical ingredients and selected device-based technologies.",
     overview:
       "MedicalSCALP is a comprehensive, multi-step scalp treatment that combines deep cleansing, scalp conditioning, massage, professional topical ingredients and selected device-based technologies. The treatment removes excess oil, product residue and surface buildup; improves scalp hydration; supports a balanced scalp environment; stimulates the scalp and hair follicles; addresses common scalp concerns and promotes ultimate relaxation eliminating stress.",
+    /* Steps and duration: the client's list of 28 Sep 2026 (Treatments.pdf),
+       exact wording, titles only — do not "correct" or expand them. */
+    duration: "65 minutes",
     process: {
       display: "accordion",
       steps: [
-        {
-          title: "Scalp scan and analysis",
-          body: "Magnified imaging allows the practitioner to examine the scalp surface, follicular openings, oil distribution, visible flaking, congestion and areas requiring focused treatment. The findings are used to customise the procedure and provide appropriate home-care recommendations.",
-        },
-        {
-          title: "Oxygen essence-water application",
-          body: "A fine mist of oxygen-infused essence water is sprayed across the scalp to refresh the treatment area, loosen surface impurities and provide an initial layer of hydration. This prepares the scalp for cleansing and subsequent treatment stages.",
-        },
-        {
-          title: "Scalp steam",
-          body: "Controlled steam gently warms and softens accumulated oil, dead skin cells and product residue. It helps prepare congested follicular openings for cleansing while providing a comfortable and relaxing start to the treatment.",
-        },
-        {
-          title: "Scalp cleansing",
-          body: "The scalp is cleansed section by section using selected professional scalp-cleansing solutions. This stage removes excess sebum, sweat, environmental impurities, loose flakes and styling-product buildup without requiring a conventional hair wash.",
-        },
-        {
-          title: "Scalp-purifying treatment",
-          body: "Professional hygienic techniques and selected device-based treatment are used to reduce surface contamination and promote a clean, refreshed scalp environment. As living skin cannot be medically sterilised, this stage is designed to cleanse and purify the scalp rather than claim complete sterilisation.",
-        },
-        {
-          title: "High-frequency therapy",
-          body: "A high-frequency glass electrode is moved systematically across the scalp. The treatment produces a mild warming and stimulating sensation and has a surface-purifying effect. It assists with excess oil, visible congestion and scalp freshness while stimulating local microcirculation.",
-        },
-        {
-          title: "Application of selected active compounds",
-          body: "Professional topical active compounds are selected according to the scalp analysis. These may include hydrating, soothing, oil-balancing, exfoliating, antioxidant, peptide, amino-acid or hair-conditioning ingredients. Where a regulated pharmaceutical product is clinically indicated, it is used only when lawfully supplied and administered by an appropriately authorised practitioner.",
-        },
-        {
-          title: "Selected essential oils",
-          body: "Suitably diluted essential oils may be incorporated for their scalp-conditioning, aromatic and relaxation benefits. The formulation is selected for the client's scalp condition and is avoided where there is sensitivity, allergy, pregnancy-related unsuitability or another contraindication.",
-        },
-        {
-          title: "Scalp massage",
-          body: "A structured massage is performed to release scalp tension, distribute the selected topical products and stimulate superficial circulation. The massage also promotes relaxation and supports a comfortable, refreshed feeling throughout the scalp.",
-        },
-        {
-          title: "Ultrasound infusion",
-          body: "Low-frequency mechanical vibrations assist the even distribution and absorption of selected water-based topical ingredients. Ultrasound also provides gentle scalp stimulation and supports the conditioning and hydration stages of the treatment.",
-        },
-        {
-          title: "Electroporation",
-          body: "Controlled electrical pulses temporarily increase the permeability of the scalp's outer barrier, supporting the non-invasive delivery of compatible topical active ingredients. This allows selected formulations to be applied efficiently without needles.",
-        },
-        {
-          title: "Radiofrequency therapy",
-          body: "Controlled radiofrequency energy produces gentle, uniform warming within the treated tissue. This stimulates the scalp, supports local circulation and enhances the overall conditioning treatment. Energy levels are adjusted carefully for comfort and scalp sensitivity.",
-        },
-        {
-          title: "Cold-hammer therapy",
-          body: "A cooling handpiece is applied after the warming and infusion stages. It calms the scalp, reduces the sensation of heat, supports comfort and leaves the treated area feeling soothed and refreshed.",
-        },
-        {
-          title: "LED scalp therapy",
-          body: "Selected wavelengths of non-invasive LED light are applied to the scalp. Red and near-infrared wavelengths support photobiomodulation, scalp circulation and cellular activity associated with a healthy follicular environment. Other wavelengths may be selected where oiliness, visible inflammation or scalp congestion is a concern.",
-        },
-        {
-          title: "Final conditioning and protection",
-          body: "The treatment concludes with selected leave-on scalp-conditioning ingredients. These help maintain hydration, comfort and scalp balance without leaving the hair unnecessarily heavy.",
-        },
+        { title: "Scan & Consultation", body: "" },
+        { title: "Toner Exfoliation", body: "" },
+        { title: "Steam", body: "" },
+        { title: "Natural oils Exfoliation", body: "" },
+        { title: "Oxygenated Essence Water", body: "" },
+        { title: "Deep-cleanse", body: "" },
+        { title: "Scalp Massage", body: "" },
+        { title: "Neck Massage", body: "" },
+        { title: "Ultrasonic Exfoliation & Extraction", body: "" },
+        { title: "Toner Neutralisation", body: "" },
+        { title: "Hydrodermabrasion Treatment", body: "" },
+        { title: "Serum Highfrequency Treatment", body: "" },
+        { title: "Serum Electroporosis (Electrical Microneedling) Treatment", body: "" },
+        { title: "Serum Ultrasound Treatment", body: "" },
+        { title: "Serum Radiofrequency Treatment", body: "" },
+        { title: "Moisturiser Pore Miniature Treatment", body: "" },
+        { title: "Light Therapy Treatment", body: "" },
       ],
     },
     benefits: [
