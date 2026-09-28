@@ -61,8 +61,20 @@ for (const [slug, exp] of Object.entries(expected)) {
     assert.equal(t.duration, exp.duration);
     assert.deepEqual(t.process?.steps.map((s) => s.title), exp.steps);
     assert.equal(treatmentMeta(t), `${exp.steps.length} steps · ${exp.duration}`);
+    // Every step carries its description, so the accordion is expandable.
+    for (const s of t.process!.steps) assert.ok(s.body.trim().length > 0, `${exp.name}: "${s.title}" has no body`);
   });
 }
+
+test("the same step title has the same description in every treatment", () => {
+  const seen = new Map<string, string>();
+  for (const slug of Object.keys(expected)) {
+    for (const s of treatmentBySlug(slug)!.process!.steps) {
+      if (seen.has(s.title)) assert.equal(s.body, seen.get(s.title), `"${s.title}" differs between treatments`);
+      else seen.set(s.title, s.body);
+    }
+  }
+});
 
 test("the Medical treatments keep their benefits, aftercare and recommendation", () => {
   for (const slug of ["hydrafacial", "hydrascalp-therapy"]) {
