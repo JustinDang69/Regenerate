@@ -16,7 +16,9 @@
 import { createAppointment, findBookableService, getCustomQuestions } from "@/lib/bookings/graph";
 import { buildCustomQuestionAnswers, missingQuestionNames } from "@/lib/bookings/custom-questions";
 import { composeAppointmentNotes } from "@/lib/bookings/notes";
-import { computeSlots, isDateInBookingWindow, MAX_DAYS_AHEAD, parseHM, parseLocalDate, SLOT_MINUTES } from "@/lib/bookings/availability";
+import { computeSlots, parseHM, parseLocalDate, SLOT_MINUTES } from "@/lib/bookings/availability";
+import { checkAppointmentDate } from "@/lib/bookings/booking-calendar";
+import { quotePrice, toPublicPrice } from "@/lib/bookings/booking-pricing";
 import { bookingsConfigured, fail, logSafe, notConfigured, ok, readJson, str, upstreamError } from "@/lib/bookings/http";
 import { localDateString, melbourneHM, MELBOURNE_TZ } from "@/lib/bookings/time";
 import { customerFacingName } from "@/lib/bookings/service-map";
@@ -61,7 +63,10 @@ export async function POST(req: Request) {
   }
   if (!serviceId) problems.serviceId = "Please choose a treatment.";
   if (!date) problems.date = "Please choose a valid date (YYYY-MM-DD).";
-  else if (!isDateInBookingWindow(date)) problems.date = `Please choose a date within the next ${MAX_DAYS_AHEAD} days.`;
+  else {
+    const dateCheck = checkAppointmentDate(localDateString(date));
+    if (!dateCheck.ok) problems.date = dateCheck.message;
+  }
   if (!time) problems.time = "Please choose a time (HH:MM).";
   if (Object.keys(problems).length > 0) {
     return fail(422, "validation", "Please check the highlighted fields.", { fields: problems });
@@ -109,12 +114,21 @@ export async function POST(req: Request) {
       notes,
     });
 
+    /* PRICE — calculated here from the treatment and the APPOINTMENT date.
+       Any price-like field in the request body is ignored: `body` is only
+       ever read for the named fields above. */
+    const quote = quotePrice(customerFacingName(service.displayName), localDateString(date!));
+    if (!quote) {
+      logSafe("warn", "bookings: no price rule for service — booking without a price", { serviceId: service.id });
+    }
+
     const created = await createAppointment({
       serviceId: service.id,
       staffMemberId,
       startUtc: slot.startUtc,
       endUtc: slot.endUtc,
       durationMinutes: SLOT_MINUTES,
+      priceCents: quote?.priceCents,
       customer: { firstName, lastName, email, phone, notes: composedNotes || undefined },
       customQuestionAnswers: answers,
     });
@@ -126,7 +140,19 @@ export async function POST(req: Request) {
       time,
       customAnswers: answers.length,
       notesFallback: unmapped.length,
+      priceCents: quote?.priceCents ?? null,
+      offer: quote?.offer?.id ?? null,
     });
+
+    /* Microsoft echoes the stored appointment back; if the price it recorded
+       differs from ours, say so in the log (amounts only — no customer data). */
+    if (quote && created.price !== null && Math.round(created.price * 100) !== quote.priceCents) {
+      logSafe("warn", "bookings: Bookings stored a different price", {
+        appointmentId: created.id,
+        sentCents: quote.priceCents,
+        storedCents: Math.round(created.price * 100),
+      });
+    }
 
     /* CONFIRMATION TIME — read this before changing it.
 
@@ -150,6 +176,7 @@ export async function POST(req: Request) {
           endTime: melbourneHM(slot.endUtc),
           durationMinutes: SLOT_MINUTES,
           timeZone: MELBOURNE_TZ,
+          price: quote ? toPublicPrice(quote) : null,
         },
       },
       201

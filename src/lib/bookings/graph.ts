@@ -270,18 +270,24 @@ export type CreateAppointmentInput = {
   customer: { firstName: string; lastName: string; email: string; phone: string; notes?: string };
   /** Answers to the business's custom questions (Age / Height / Weight). */
   customQuestionAnswers?: BookingQuestionAnswer[];
+  /** Server-calculated effective price (booking-pricing.ts), in cents. When
+   *  absent the appointment is created without a price. */
+  priceCents?: number;
 };
 
 export type CreatedAppointment = {
   id: string | null;
   startUtc: number | null;
   endUtc: number | null;
+  /** The price Microsoft recorded, in dollars, as echoed on create. */
+  price: number | null;
 };
 
 type GraphAppointment = {
   id?: string;
   startDateTime?: GraphDateTimeTimeZone;
   endDateTime?: GraphDateTimeTimeZone;
+  price?: number;
 };
 
 /**
@@ -336,6 +342,16 @@ export function buildAppointmentBody(input: CreateAppointmentInput): Record<stri
     duration: `PT${input.durationMinutes}M`,
     customerTimeZone: timeZone,
     isLocationOnline: false,
+    /* The effective price for THIS appointment — the appointment date decides
+       it, so it can differ from the service's default price. Sent as a fixed
+       price with its enum annotation, per Microsoft's documented example. */
+    ...(typeof input.priceCents === "number"
+      ? {
+          price: input.priceCents / 100,
+          "priceType@odata.type": "#microsoft.graph.bookingPriceType",
+          priceType: "fixedPrice",
+        }
+      : {}),
     // Let Bookings send its own confirmation email to the customer.
     optOutOfCustomerEmail: false,
     smsNotificationsEnabled: false,
@@ -353,5 +369,6 @@ export async function createAppointment(input: CreateAppointmentInput): Promise<
     id: json.id ?? null,
     startUtc: parseGraphDateTime(json.startDateTime),
     endUtc: parseGraphDateTime(json.endDateTime),
+    price: typeof json.price === "number" ? json.price : null,
   };
 }

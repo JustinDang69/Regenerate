@@ -42,8 +42,8 @@ import {
 
 export const SLOT_MINUTES = 50;
 export const MIN_LEAD_MINUTES = 30;
-/** How far ahead the website accepts bookings. */
-export const MAX_DAYS_AHEAD = 90;
+/* Which DATES may be booked (opening date, rolling two-month window, closures)
+   lives in booking-calendar.ts — one rule set for the form and both routes. */
 
 const MS = 60_000;
 
@@ -225,11 +225,3 @@ export function parseHM(input: unknown): string | null {
   return `${m[1]}:${m[2]}`;
 }
 
-/** Date must be today (Melbourne) or up to MAX_DAYS_AHEAD days later. */
-export function isDateInBookingWindow(date: LocalDate, nowUtc = Date.now()) {
-  const today = melbourneDate(nowUtc);
-  const dayMs = melbourneToUtcMs(date, 12, 0);
-  const todayMs = melbourneToUtcMs(today, 12, 0);
-  const diffDays = Math.round((dayMs - todayMs) / (24 * 60 * MS));
-  return diffDays >= 0 && diffDays <= MAX_DAYS_AHEAD;
-}

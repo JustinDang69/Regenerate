@@ -606,6 +606,27 @@ test("with no answers, the customQuestionAnswers key is omitted entirely", () =>
   assert.equal("customQuestionAnswers@odata.type" in c, false);
 });
 
+test("the server-calculated price is written onto the appointment as a fixed price", () => {
+  const withPrice = buildAppointmentBody({
+    serviceId: "svc-1",
+    staffMemberId: "staff-1",
+    startUtc: at(10, 20),
+    endUtc: at(10, 20) + SLOT_MINUTES * MS,
+    durationMinutes: SLOT_MINUTES,
+    customer: { firstName: "Ada", lastName: "Lovelace", email: "a@example.com", phone: "0400000000" },
+    priceCents: 18830,
+  }) as Record<string, unknown>;
+  assert.equal(withPrice.price, 188.3); // dollars, exact
+  assert.equal(withPrice.priceType, "fixedPrice");
+  assert.equal(withPrice["priceType@odata.type"], "#microsoft.graph.bookingPriceType");
+});
+
+test("without a price rule the appointment carries no price at all (never $0)", () => {
+  const body = payload() as unknown as Record<string, unknown>;
+  assert.equal("price" in body, false);
+  assert.equal("priceType" in body, false);
+});
+
 test("staff assignment and timing in the payload are unchanged", () => {
   const body = payload();
   assert.deepEqual(body.staffMemberIds, ["staff-1"]);

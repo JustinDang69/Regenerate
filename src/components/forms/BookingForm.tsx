@@ -25,11 +25,17 @@ import { useSearchParams } from "next/navigation";
 import Button from "@/components/ui/Button";
 import { site } from "@/lib/site";
 import { resolveServiceId, type ServiceLike } from "@/lib/bookings/service-map";
+import { bookingWindow, longDate, shortDate } from "@/lib/bookings/booking-calendar";
+/* Type-only: the price is always calculated on the server and arrives ready to
+   display. Nothing here computes or sends a price. */
+import type { PublicPrice } from "@/lib/bookings/booking-pricing";
 
 type Service = ServiceLike & { durationMinutes: number | null; appointmentMinutes: number };
 
 type ServicesState = "loading" | "ready" | "error";
-type SlotsState = "idle" | "loading" | "ready" | "error";
+/* "rejected" = the SERVER declined the date itself (before opening, beyond
+   the booking window, clinic closed) and sent the reason to show. */
+type SlotsState = "idle" | "loading" | "ready" | "rejected" | "error";
 type Submit = "idle" | "submitting" | "success" | "error";
 
 type Fields = {
@@ -53,6 +59,7 @@ type Confirmation = {
   date: string;
   time: string;
   endTime: string;
+  price: PublicPrice | null;
 };
 
 const EMPTY: Fields = {
@@ -70,21 +77,6 @@ const EMPTY: Fields = {
 };
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const MELBOURNE_TZ = "Australia/Melbourne";
-const MAX_DAYS_AHEAD = 90;
-
-/* --- Melbourne-aware date helpers (the visitor may be in any timezone) ----- */
-
-function melbourneToday(): string {
-  // en-CA gives YYYY-MM-DD directly.
-  return new Intl.DateTimeFormat("en-CA", { timeZone: MELBOURNE_TZ }).format(new Date());
-}
-
-function addDays(iso: string, days: number): string {
-  const [y, m, d] = iso.split("-").map(Number);
-  const t = new Date(Date.UTC(y, m - 1, d + days));
-  return t.toISOString().slice(0, 10);
-}
 
 /** "13:40" → "1:40 PM". */
 function to12Hour(hm: string): string {
@@ -95,18 +87,6 @@ function to12Hour(hm: string): string {
   return `${hour12}:${String(m).padStart(2, "0")} ${period}`;
 }
 
-/** "2026-09-24" → "Thursday 24 September 2026" (Melbourne calendar date). */
-function longDate(iso: string): string {
-  const [y, m, d] = iso.split("-").map(Number);
-  if (!y || !m || !d) return iso;
-  return new Intl.DateTimeFormat("en-AU", {
-    timeZone: "UTC",
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  }).format(new Date(Date.UTC(y, m - 1, d)));
-}
 
 /* --- Component ------------------------------------------------------------- */
 
@@ -122,6 +102,10 @@ export default function BookingForm() {
 
   const [slots, setSlots] = useState<string[]>([]);
   const [slotsState, setSlotsState] = useState<SlotsState>("idle");
+  /* Server's reason when it rejects a date (closure, before opening …). */
+  const [dateMessage, setDateMessage] = useState<string>("");
+  /* Server-calculated price for the chosen treatment + appointment date. */
+  const [price, setPrice] = useState<PublicPrice | null>(null);
 
   const [submit, setSubmit] = useState<Submit>("idle");
   const [formMessage, setFormMessage] = useState<string>("");
@@ -132,8 +116,9 @@ export default function BookingForm() {
   /* Preselection must apply once, and must not fight the customer. */
   const preselected = useRef(false);
 
-  const today = melbourneToday();
-  const maxDate = addDays(today, MAX_DAYS_AHEAD);
+  /* Picker limits from the shared calendar rules (opening date, rolling
+     two-month window). A convenience only — the server re-checks every date. */
+  const range = bookingWindow();
 
   const set = useCallback(<K extends keyof Fields>(key: K, value: Fields[K]) => {
     setFields((f) => ({
@@ -181,6 +166,8 @@ export default function BookingForm() {
   /* --- Load availability whenever service or date changes ------------------ */
   const loadAvailability = useCallback(async (serviceId: string, date: string) => {
     const run = ++availabilityRun.current;
+    setPrice(null);
+    setDateMessage("");
     if (!serviceId || !date) {
       setSlots([]);
       setSlotsState("idle");
@@ -194,13 +181,25 @@ export default function BookingForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ serviceId, date }),
       });
-      const json = (await res.json().catch(() => null)) as { success?: boolean; slots?: string[] } | null;
+      const json = (await res.json().catch(() => null)) as {
+        success?: boolean;
+        slots?: string[];
+        price?: PublicPrice | null;
+        error?: { code?: string; message?: string };
+      } | null;
       if (run !== availabilityRun.current) return; // a newer request won
+      if (res.status === 422 && json?.error?.message) {
+        // The date itself is not bookable — show the server's reason.
+        setDateMessage(json.error.message);
+        setSlotsState("rejected");
+        return;
+      }
       if (!res.ok || !json?.success || !Array.isArray(json.slots)) {
         setSlotsState("error");
         return;
       }
       setSlots(json.slots);
+      setPrice(json.price ?? null);
       setSlotsState("ready");
     } catch {
       if (run === availabilityRun.current) setSlotsState("error");
@@ -267,7 +266,13 @@ export default function BookingForm() {
       const json = (await res.json().catch(() => null)) as
         | {
             success?: boolean;
-            appointment?: { serviceName?: string; date?: string; time?: string; endTime?: string };
+            appointment?: {
+              serviceName?: string;
+              date?: string;
+              time?: string;
+              endTime?: string;
+              price?: PublicPrice | null;
+            };
             error?: { code?: string; message?: string };
             fields?: Record<string, string>;
           }
@@ -279,6 +284,7 @@ export default function BookingForm() {
           date: json.appointment.date ?? fields.date,
           time: json.appointment.time ?? fields.time,
           endTime: json.appointment.endTime ?? "",
+          price: json.appointment.price ?? null,
         });
         setSubmit("success");
         return;
@@ -320,6 +326,8 @@ export default function BookingForm() {
     setErrors({});
     setSlots([]);
     setSlotsState("idle");
+    setPrice(null);
+    setDateMessage("");
     setConfirmation(null);
     setFormMessage("");
     setSubmit("idle");
@@ -368,6 +376,20 @@ export default function BookingForm() {
               {confirmation.endTime ? ` – ${to12Hour(confirmation.endTime)}` : ""}
             </dd>
           </div>
+          {confirmation.price && (
+            <div className="flex items-baseline justify-between gap-4 px-5 py-3.5">
+              <dt className="eyebrow text-muted">Price</dt>
+              <dd className="text-right">
+                <span className="font-serif text-[1.15rem] text-accent-contrast">{confirmation.price.price}</span>
+                {confirmation.price.discounted && (
+                  <span className="block text-[0.78rem] text-muted">
+                    Normally <s>{confirmation.price.normalPrice}</s>
+                    {confirmation.price.offerLabel ? ` · ${confirmation.price.offerLabel}` : ""}
+                  </span>
+                )}
+              </dd>
+            </div>
+          )}
         </dl>
 
         <p className="mt-1 text-[0.78rem] text-muted">
@@ -496,14 +518,22 @@ export default function BookingForm() {
           <input
             name="date"
             type="date"
-            min={today}
-            max={maxDate}
+            min={range.earliest}
+            max={range.latest}
             value={fields.date}
             onChange={(e) => handleDateChange(e.target.value)}
             aria-invalid={!!errors.date}
             className={cls("date")}
           />
-          {errors.date && <span className={errCls}>{errors.date}</span>}
+          {errors.date ? (
+            <span className={errCls}>{errors.date}</span>
+          ) : dateMessage ? (
+            <span className={errCls} role="alert">{dateMessage}</span>
+          ) : (
+            <span className="text-[0.78rem] font-normal text-muted">
+              Appointments available {shortDate(range.earliest)} – {shortDate(range.latest)}
+            </span>
+          )}
         </label>
 
         <label className={labelCls}>
@@ -522,7 +552,9 @@ export default function BookingForm() {
                 ? "Choose a treatment and date first"
                 : slotsState === "loading"
                   ? "Checking availability…"
-                  : slotsState === "error"
+                  : slotsState === "rejected"
+                    ? "Not available on this date"
+                    : slotsState === "error"
                     ? "Couldn't load times — please try again"
                     : slots.length === 0
                       ? "No appointments available on this date"
@@ -542,6 +574,42 @@ export default function BookingForm() {
           )}
         </label>
       </div>
+
+      {/* PRICE — for the chosen treatment AND appointment date, calculated by
+          the server (the offer depends on the appointment date). Refreshes
+          whenever either changes. Kept out of the treatment dropdown. */}
+      {fields.serviceId && fields.date && (slotsState === "loading" || slotsState === "ready") && (
+        <div
+          aria-live="polite"
+          className="rounded-[var(--radius-md)] border border-border bg-surface-elevated px-5 py-4"
+        >
+          <span className="eyebrow text-muted">Price</span>
+          {slotsState === "loading" ? (
+            <p className="mt-1.5 text-[0.9rem] text-muted">Calculating price…</p>
+          ) : price ? (
+            <>
+              <div className="mt-1 flex flex-wrap items-baseline gap-x-3 gap-y-1.5">
+                <span className="font-serif text-[2.2rem] leading-none text-accent-contrast">{price.price}</span>
+                {price.discounted && (
+                  <span className="text-[0.88rem] text-muted">
+                    Normally <s>{price.normalPrice}</s>
+                  </span>
+                )}
+                {price.discounted && price.offerLabel && (
+                  <span className="rounded-[var(--radius-pill)] border border-accent/40 bg-accent-soft/60 px-2.5 py-0.5 text-[0.68rem] font-semibold uppercase tracking-[0.12em] text-accent-contrast">
+                    {price.offerLabel}
+                  </span>
+                )}
+              </div>
+              <p className="mt-2 text-[0.75rem] text-muted">
+                For an appointment on {longDate(fields.date)}. Prices in AUD.
+              </p>
+            </>
+          ) : (
+            <p className="mt-1.5 text-[0.9rem] text-muted">Your price is confirmed with the clinic.</p>
+          )}
+        </div>
+      )}
 
       {/* Optional medical profile. Plain clinical labels, never questions.
           Three across from the small breakpoint up, stacked on a phone. */}
