@@ -190,7 +190,7 @@ test("a discounted quote carries its offer label; a full-price one does not", ()
   assert.equal(formatAud(p1.normalCents), "$119");
 
   const p2 = quotePrice("UltraFACIAL", "2026-11-20")!;
-  assert.equal(p2.offer?.label, "Opening Season Offer");
+  assert.equal(p2.offer?.label, "20% Opening Offer");
 
   const consult = quotePrice("Consultation", "2026-10-30")!;
   assert.equal(consult.discounted, false);

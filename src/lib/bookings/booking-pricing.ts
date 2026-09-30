@@ -57,7 +57,7 @@ export const PROMOTIONS: Promotion[] = [
     id: "opening-season",
     // The brief named only Phase 1's label; this one is a short placeholder
     // the clinic may rename here without touching anything else.
-    label: "Opening Season Offer",
+    label: "20% Opening Offer",
     from: "2026-11-16",
     to: "2026-12-16",
     percentOff: 20,
