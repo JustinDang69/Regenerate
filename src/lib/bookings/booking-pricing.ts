@@ -22,8 +22,22 @@ import { singleTreatments } from "@/content/packages";
 import { CANONICAL_TREATMENTS } from "@/lib/bookings/service-map";
 import type { IsoDate } from "@/lib/bookings/booking-calendar";
 
-/** Consultation price. Never discounted. */
+/** Consultation normal price. */
 export const CONSULTATION_PRICE_CENTS = 3900;
+
+/**
+ * Consultation promotion (client brief, 30 Sep 2026): a FIXED $29 for
+ * appointments 26 Oct – 16 Dec 2026 inclusive — across BOTH the Grand Opening
+ * and 20% Opening Offer phases. It is not a percentage off $39, and it is
+ * separate from PROMOTIONS below (which never touch Consultation). From
+ * 17 Dec 2026 Consultation is back to $39.
+ */
+export const CONSULTATION_PROMO = {
+  id: "consultation-opening",
+  from: "2026-10-26" as IsoDate,
+  to: "2026-12-16" as IsoDate,
+  cents: 2900,
+};
 
 export type Promotion = {
   id: string;
@@ -64,7 +78,7 @@ export const PROMOTIONS: Promotion[] = [
   },
 ];
 
-/** Treatments no promotion ever applies to. */
+/** Treatments the percentage PROMOTIONS never apply to (Consultation has its own fixed promo). */
 const NEVER_DISCOUNTED = new Set(["Consultation"]);
 
 /** Normal price in cents for a canonical treatment name, or null if unknown. */
@@ -89,7 +103,7 @@ export type PriceQuote = {
   normalCents: number;
   discounted: boolean;
   /** Present only when a discount actually applies. */
-  offer: { id: string; label: string } | null;
+  offer: { id: string; label: string | null } | null;
 };
 
 /**
@@ -100,6 +114,20 @@ export type PriceQuote = {
 export function quotePrice(treatmentName: string, appointmentDate: IsoDate): PriceQuote | null {
   const normalCents = normalPriceCents(treatmentName);
   if (normalCents === null) return null;
+
+  if (treatmentName === "Consultation") {
+    const inPromo = appointmentDate >= CONSULTATION_PROMO.from && appointmentDate <= CONSULTATION_PROMO.to;
+    const priceCents = inPromo ? CONSULTATION_PROMO.cents : normalCents;
+    return {
+      treatment: treatmentName,
+      appointmentDate,
+      priceCents,
+      normalCents,
+      discounted: priceCents < normalCents,
+      // No badge text: the form shows "$29 · Normally $39" only.
+      offer: inPromo ? { id: CONSULTATION_PROMO.id, label: null } : null,
+    };
+  }
 
   const promo = NEVER_DISCOUNTED.has(treatmentName) ? null : promotionOn(appointmentDate);
   let priceCents = normalCents;

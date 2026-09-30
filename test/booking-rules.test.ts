@@ -12,7 +12,7 @@ import {
   checkAppointmentDate,
   melbourneTodayIso,
 } from "@/lib/bookings/booking-calendar";
-import { CONSULTATION_PRICE_CENTS, formatAud, normalPriceCents, quotePrice } from "@/lib/bookings/booking-pricing";
+import { CONSULTATION_PRICE_CENTS, formatAud, normalPriceCents, quotePrice, toPublicPrice } from "@/lib/bookings/booking-pricing";
 
 /** A UTC instant that is the given Melbourne wall-clock time (AEST +10 before 4 Oct 2026, AEDT +11 after). */
 function melbourne(iso: string, hh = 12, mm = 0) {
@@ -135,7 +135,7 @@ test("normal prices match the /pricing page, plus Consultation $39", () => {
 });
 
 const PHASE_1 = {
-  Consultation: "$39",
+  Consultation: "$29",
   UltraFACIAL: "$69",
   UltraSCALP: "$69",
   MedicalFACIAL: "$99",
@@ -147,7 +147,7 @@ const PHASE_1 = {
 };
 
 const PHASE_2 = {
-  Consultation: "$39",
+  Consultation: "$29",
   "Facial Microneedling": "$215.20",
   "Scalp Microneedling": "$215.20",
   "Facial Mesotherapy": "$303.20",
@@ -192,13 +192,38 @@ test("a discounted quote carries its offer label; a full-price one does not", ()
   const p2 = quotePrice("UltraFACIAL", "2026-11-20")!;
   assert.equal(p2.offer?.label, "20% Opening Offer");
 
-  const consult = quotePrice("Consultation", "2026-10-30")!;
+  const consult = quotePrice("Consultation", "2027-01-04")!;
   assert.equal(consult.discounted, false);
   assert.equal(consult.offer, null);
 
   const normal = quotePrice("UltraFACIAL", "2026-12-20")!;
   assert.equal(normal.discounted, false);
   assert.equal(normal.offer, null);
+});
+
+/* --- Consultation: fixed $29 from 26 Oct to 16 Dec 2026, else $39 ------------ */
+
+test("Consultation — $29 fixed across both phases, $39 from 17 Dec; date before opening is refused", () => {
+  const now = melbourne("2026-09-30");
+  // Before the clinic opens: not bookable at all.
+  assert.equal(checkAppointmentDate("2026-10-25", now).ok, false);
+  const expect = [
+    ["2026-10-26", "$29"],
+    ["2026-11-15", "$29"],
+    ["2026-11-16", "$29"],
+    ["2026-12-16", "$29"],
+    ["2026-12-17", "$39"],
+  ] as const;
+  for (const [d, p] of expect) assert.equal(price("Consultation", d), p, d);
+  // Fixed price, never a percentage: not 70%/80% of $39 ($27.30 / $31.20).
+  for (const d of ["2026-11-02", "2026-12-01"]) assert.equal(quotePrice("Consultation", d)!.priceCents, 2900);
+});
+
+test("Consultation quote shows Normally $39, no badge text; $39 after 16 Dec is plain", () => {
+  const promo = quotePrice("Consultation", "2026-11-20")!;
+  assert.deepEqual(toPublicPrice(promo), { price: "$29", normalPrice: "$39", discounted: true, offerLabel: null });
+  const normal = quotePrice("Consultation", "2026-12-17")!;
+  assert.deepEqual(toPublicPrice(normal), { price: "$39", normalPrice: "$39", discounted: false, offerLabel: null });
 });
 
 test("the APPOINTMENT date decides the price, not the booking date (brief's three examples)", () => {
